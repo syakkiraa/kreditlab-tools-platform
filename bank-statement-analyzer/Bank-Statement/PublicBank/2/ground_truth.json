@@ -1,0 +1,47 @@
+{
+  "LSR PBB 5622 2025 3.pdf": {
+    "opening_balance": null,
+    "closing_balance": 202680.19,
+    "gross_debits": 1272384.51,
+    "gross_credits": 1390553.37,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "LSR PBB 5622 2025 4.pdf": {
+    "opening_balance": null,
+    "closing_balance": 2588.14,
+    "gross_debits": 582962.23,
+    "gross_credits": 382870.18,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "LSR PBB 5622 2025 6.pdf": {
+    "opening_balance": null,
+    "closing_balance": 18229.07,
+    "gross_debits": 846341.15,
+    "gross_credits": 829460.39,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "LSR PBB 5622 2025 7.pdf": {
+    "opening_balance": null,
+    "closing_balance": 44035.38,
+    "gross_debits": 1010939.98,
+    "gross_credits": 1036746.29,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "LSR PBB 5622 2025 8.pdf": {
+    "opening_balance": null,
+    "closing_balance": 410.09,
+    "gross_debits": 955707.3,
+    "gross_credits": 912082.01,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

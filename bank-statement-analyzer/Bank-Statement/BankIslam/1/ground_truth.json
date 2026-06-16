@@ -1,0 +1,47 @@
+{
+  "BANK ISLAM 03-2025.pdf": {
+    "opening_balance": 55142.1,
+    "closing_balance": 29752.15,
+    "gross_debits": 81758.0,
+    "gross_credits": 56368.05,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "BANK ISLAM 04-2025.pdf": {
+    "opening_balance": 29752.15,
+    "closing_balance": 723.45,
+    "gross_debits": 54030.0,
+    "gross_credits": 25001.3,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "BANK ISLAM 06-2025.pdf": {
+    "opening_balance": 62648.55,
+    "closing_balance": 52961.94,
+    "gross_debits": 81758.0,
+    "gross_credits": 72071.39,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "BANK ISLAM 07-2025.pdf": {
+    "opening_balance": 52961.94,
+    "closing_balance": 29984.74,
+    "gross_debits": 81758.0,
+    "gross_credits": 58780.8,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "BANK ISLAM 08-2025.pdf": {
+    "opening_balance": 29984.74,
+    "closing_balance": 27360.46,
+    "gross_debits": 54627.2,
+    "gross_credits": 52002.92,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

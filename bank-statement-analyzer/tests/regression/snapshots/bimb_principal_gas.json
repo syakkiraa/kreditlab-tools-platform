@@ -1,0 +1,99 @@
+{
+  "account_type": "Current",
+  "classification": {
+    "by_category": {
+      "C01": 5,
+      "C02": 14,
+      "C03": 1,
+      "C04": 9,
+      "C06": 2,
+      "C07": 1,
+      "C12": 4,
+      "C27": 18,
+      "UNCLASSIFIED": 122
+    },
+    "classified": 54,
+    "rate_pct": 30.68,
+    "total": 176,
+    "unclassified": 122
+  },
+  "consolidated": {
+    "net_credits": 881531.27,
+    "net_debits": -59309.59
+  },
+  "convention": "CR",
+  "counterparty_ledger": {
+    "pattern_matched": 165,
+    "raw_fallback": 1,
+    "special_bucket": 10,
+    "total": 65
+  },
+  "deduped_rows": 176,
+  "label": "bimb_principal_gas",
+  "parsed_rows": 176,
+  "reconciliation": {
+    "months_passed": 5,
+    "months_total": 5
+  },
+  "rp_scan": {
+    "auto_confirmed": 2,
+    "high": 2,
+    "low": 9,
+    "medium": 1,
+    "total": 12
+  },
+  "top_payees": [
+    {
+      "amount": 1168374.97,
+      "count": 14,
+      "name": "PRINCIPAL GAS (OWN-PARTY)"
+    },
+    {
+      "amount": 329046.31,
+      "count": 9,
+      "name": "MERCHANT STREET"
+    },
+    {
+      "amount": 109910.0,
+      "count": 4,
+      "name": "JOZATECH TRADING"
+    },
+    {
+      "amount": 103130.45,
+      "count": 6,
+      "name": "TETUAN IIB GLOBAL RE"
+    },
+    {
+      "amount": 85148.25,
+      "count": 7,
+      "name": "PISER FUEL"
+    }
+  ],
+  "top_payers": [
+    {
+      "amount": 2335929.35,
+      "count": 5,
+      "name": "PRINCIPAL GAS (OWN-PARTY)"
+    },
+    {
+      "amount": 40000.0,
+      "count": 1,
+      "name": "MERCHANT STREET"
+    },
+    {
+      "amount": 1000.0,
+      "count": 1,
+      "name": "E THREE SOLUTIONS"
+    },
+    {
+      "amount": 1000.0,
+      "count": 1,
+      "name": "PGSB BIMB"
+    },
+    {
+      "amount": 950.0,
+      "count": 1,
+      "name": "NUR FARDLIZA IRZA BI"
+    }
+  ]
+}

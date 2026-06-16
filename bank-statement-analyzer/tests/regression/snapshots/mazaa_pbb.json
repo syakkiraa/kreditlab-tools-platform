@@ -1,0 +1,90 @@
+{
+  "account_type": "Current",
+  "classification": {
+    "by_category": {
+      "C01": 55,
+      "C19": 371,
+      "C20": 20,
+      "C24": 10,
+      "UNCLASSIFIED": 41
+    },
+    "classified": 458,
+    "rate_pct": 92.15,
+    "total": 497,
+    "unclassified": 39
+  },
+  "consolidated": {
+    "net_credits": 1137592.94,
+    "net_debits": 191414.39
+  },
+  "convention": "CR",
+  "counterparty_ledger": {
+    "pattern_matched": 55,
+    "raw_fallback": 8,
+    "special_bucket": 432,
+    "total": 14
+  },
+  "deduped_rows": 497,
+  "label": "mazaa_pbb",
+  "parsed_rows": 497,
+  "reconciliation": {
+    "months_passed": 6,
+    "months_total": 6
+  },
+  "rp_scan": {
+    "auto_confirmed": 0,
+    "high": 0,
+    "low": 0,
+    "medium": 0,
+    "total": 0
+  },
+  "top_payees": [
+    {
+      "amount": 1075337.57,
+      "count": 29,
+      "name": "UNNAMED PUBLIC BANK TRANSFER (DR)"
+    },
+    {
+      "amount": 470.8,
+      "count": 1,
+      "name": "CHEQ 223858"
+    },
+    {
+      "amount": 367.2,
+      "count": 1,
+      "name": "GIRO PYMT-ATM/EFT 648132"
+    },
+    {
+      "amount": 183.6,
+      "count": 1,
+      "name": "GIRO PYMT-ATM/EFT 083238"
+    },
+    {
+      "amount": 175.0,
+      "count": 1,
+      "name": "GIRO PYMT-ATM/EFT 072777"
+    }
+  ],
+  "top_payers": [
+    {
+      "amount": 941100.0,
+      "count": 55,
+      "name": "MAZAA"
+    },
+    {
+      "amount": 4000.0,
+      "count": 1,
+      "name": "TSFR FUND CR-ATM/EFT 603451"
+    },
+    {
+      "amount": 1743.0,
+      "count": 2,
+      "name": "UNNAMED PUBLIC BANK TRANSFER (CR)"
+    },
+    {
+      "amount": 470.8,
+      "count": 1,
+      "name": "HSE CHEQ RTN 223858"
+    }
+  ]
+}

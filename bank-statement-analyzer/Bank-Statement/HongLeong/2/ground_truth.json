@@ -1,0 +1,56 @@
+{
+  "Current Account 032025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 15240.43,
+    "gross_debits": 156858.8,
+    "gross_credits": 139055.88,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Current Account 042025 (1).pdf": {
+    "opening_balance": null,
+    "closing_balance": 35647.13,
+    "gross_debits": 49630.3,
+    "gross_credits": 70037.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Current Account 052025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 32102.48,
+    "gross_debits": 76001.05,
+    "gross_credits": 72456.4,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Current Account 062025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 33649.08,
+    "gross_debits": 57880.8,
+    "gross_credits": 59427.4,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Current Account 072025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 88602.63,
+    "gross_debits": 42211.05,
+    "gross_credits": 97164.6,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Current Account 082025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 43933.97,
+    "gross_debits": 113295.3,
+    "gross_credits": 68626.64,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

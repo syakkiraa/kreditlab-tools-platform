@@ -1,0 +1,8 @@
+Track 2 EOD sanity — Layer 2 cross-corpus check
+========================================================================
+Felcra         6 months, eod_average range [     35,530.61,     225,064.77], (4373 rows from 6 PDFs)
+Mazaa          6 months, eod_average range [      9,669.61,      34,027.66], (497 rows from 6 PDFs)
+Waja           7 months, eod_average range [     13,780.05,      78,156.52], (1037 rows from 7 PDFs)
+Mytutor        6 months, eod_average range [     15,545.00,     117,783.26], (8046 rows from 6 PDFs)
+KMZ            6 months, eod_average range [     20,886.72,     146,047.08], (192 rows from 6 PDFs)
+PrincipalGas   5 months, eod_average range [      1,000.00,     387,755.78], (176 rows from 5 PDFs)

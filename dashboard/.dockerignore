@@ -1,0 +1,19 @@
+# Use Linux deps built by `npm ci` in the image, never the host's (macOS) ones.
+node_modules
+.next
+.git
+.gitignore
+
+# Secrets / local env — never bake into the image.
+.env
+.env.*
+
+# Local-only artifacts.
+financial-statement-analysis-logic/__pycache__
+financial-statement-analysis-logic/samples
+**/*.pyc
+**/*.bak
+*.log
+npm-debug.log*
+.DS_Store
+supabase

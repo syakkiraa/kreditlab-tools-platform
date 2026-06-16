@@ -1,0 +1,56 @@
+{
+  "03. AMBANK STATEMENT MAC_24.pdf": {
+    "opening_balance": 502157.62,
+    "closing_balance": 289072.37,
+    "gross_debits": 925845.24,
+    "gross_credits": 712759.99,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "04. AMBANK STATEMENT APR_24.pdf": {
+    "opening_balance": 289072.37,
+    "closing_balance": 156253.95,
+    "gross_debits": 845671.89,
+    "gross_credits": 712853.47,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "05. AMBANK STATEMENT MAY_24.pdf": {
+    "opening_balance": 156253.95,
+    "closing_balance": 419588.82,
+    "gross_debits": 633803.02,
+    "gross_credits": 897137.89,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "06. AMBANK STATEMENT JUN_24.pdf": {
+    "opening_balance": 419588.82,
+    "closing_balance": 396030.74,
+    "gross_debits": 814556.14,
+    "gross_credits": 790998.06,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "07. AMBANK STATEMENT JUL_24.pdf": {
+    "opening_balance": 396030.74,
+    "closing_balance": 445549.69,
+    "gross_debits": 718522.47,
+    "gross_credits": 768041.42,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "08. AMBANK STATEMENT AUG_24.pdf": {
+    "opening_balance": 445549.69,
+    "closing_balance": 223548.53,
+    "gross_debits": 945027.89,
+    "gross_credits": 723026.73,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

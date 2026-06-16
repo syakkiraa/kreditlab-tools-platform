@@ -1,0 +1,65 @@
+{
+  "MBB QFE-06-2025.pdf": {
+    "opening_balance": 1458.23,
+    "closing_balance": 15712.86,
+    "gross_debits": 48323.77,
+    "gross_credits": 62578.4,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "MBB QFE-07-2025.pdf": {
+    "opening_balance": 15712.86,
+    "closing_balance": 491.08,
+    "gross_debits": 705972.98,
+    "gross_credits": 690751.2,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "MBB QFE-08-2025.pdf": {
+    "opening_balance": 491.08,
+    "closing_balance": 53555.01,
+    "gross_debits": 125828.85,
+    "gross_credits": 178892.78,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "MBB QFE-09-2025.pdf": {
+    "opening_balance": 53555.01,
+    "closing_balance": 69197.78,
+    "gross_debits": 261732.98,
+    "gross_credits": 277375.75,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "MBB QFE-10-2025.pdf": {
+    "opening_balance": 69197.78,
+    "closing_balance": 91250.36,
+    "gross_debits": 249111.71,
+    "gross_credits": 271164.29,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "MBB QFE-11-2025.pdf": {
+    "opening_balance": 91250.36,
+    "closing_balance": 26720.95,
+    "gross_debits": 737414.96,
+    "gross_credits": 672885.55,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "MBB QFE-12-2025.pdf": {
+    "opening_balance": 26720.95,
+    "closing_balance": 641410.58,
+    "gross_debits": 337732.94,
+    "gross_credits": 952422.57,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

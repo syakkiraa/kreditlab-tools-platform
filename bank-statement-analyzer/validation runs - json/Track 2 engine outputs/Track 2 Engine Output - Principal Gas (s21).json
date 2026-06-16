@@ -1,0 +1,4089 @@
+{
+  "report_info": {
+    "schema_version": "6.3.5",
+    "company_name": "PRINCIPAL GAS SDN BHD",
+    "generated_at": "2026-05-14T05:16:22Z",
+    "period_start": "2025-08-26",
+    "period_end": "2025-12-31",
+    "total_accounts": 1,
+    "total_months": 5,
+    "related_parties": []
+  },
+  "accounts": [
+    {
+      "bank_name": "Bank Islam",
+      "account_number": "_unknown",
+      "account_holder": "PRINCIPAL GAS SDN BHD",
+      "account_type": "Current",
+      "is_od": false,
+      "od_limit": null,
+      "account_type_determination": {
+        "tested_formulas": [],
+        "locked_type": "CR",
+        "confidence": "LOW",
+        "locked_rationale": "Track 2 default \u2014 parser meta not threaded."
+      },
+      "period_start": "2025-08-26",
+      "period_end": "2025-12-31",
+      "opening_balance": 0.0,
+      "closing_balance": 62332.79,
+      "total_credits": 2378952.55,
+      "total_debits": 2316619.76,
+      "transaction_count": 176
+    }
+  ],
+  "monthly_analysis": [
+    {
+      "month": "2025-08",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "gross_credits": 1000.0,
+      "gross_debits": 0.0,
+      "net_credits": 1000.0,
+      "net_debits": 0.0,
+      "credit_count": 1,
+      "debit_count": 0,
+      "own_party_cr": 0.0,
+      "own_party_dr": 0.0,
+      "related_party_cr": 0.0,
+      "related_party_dr": 0.0,
+      "reversal_cr": 0.0,
+      "returned_cheques_inward_count": 0,
+      "returned_cheques_inward_amount": 0.0,
+      "returned_cheques_outward_count": 0,
+      "returned_cheques_outward_amount": 0.0,
+      "loan_disbursement_cr": 0.0,
+      "fd_interest_cr": 0.0,
+      "round_figure_cr": 0.0,
+      "high_value_cr": 0.0,
+      "cash_deposits_count": 0,
+      "cash_deposits_amount": 0.0,
+      "cash_withdrawals_count": 0,
+      "cash_withdrawals_amount": 0.0,
+      "cheque_deposits_count": 0,
+      "cheque_deposits_amount": 0.0,
+      "cheque_issues_count": 0,
+      "cheque_issues_amount": 0.0,
+      "loan_repayment_dr": 0.0,
+      "salary_paid": 0.0,
+      "statutory_epf": 0.0,
+      "statutory_socso": 0.0,
+      "statutory_tax": 0.0,
+      "statutory_hrdf": 0.0,
+      "eod_lowest": 1000.0,
+      "eod_highest": 1000.0,
+      "eod_average": 1000.0,
+      "opening_balance": 0.0,
+      "closing_balance": 1000.0,
+      "fx_credit_count": 0,
+      "fx_credit_amount": 0.0,
+      "fx_debit_count": 0,
+      "fx_debit_amount": 0.0,
+      "fx_currencies": [],
+      "reconciliation_status": "PASS",
+      "reconciliation_delta": 0.0,
+      "extraction_gaps": 0,
+      "missing_debit_amount": 0.0,
+      "missing_credit_amount": 0.0,
+      "data_quality_note": null,
+      "own_party_cr_count": 0,
+      "own_party_dr_count": 0,
+      "related_party_cr_count": 0,
+      "related_party_dr_count": 0,
+      "loan_repayment_count": 0,
+      "inward_return_cr": 0.0,
+      "trade_income_count": 0,
+      "trade_income_amount": 0.0,
+      "trade_expense_count": 0,
+      "trade_expense_amount": 0.0,
+      "unclassified_cr_count": 1,
+      "unclassified_cr_amount": 1000.0,
+      "unclassified_dr_count": 0,
+      "unclassified_dr_amount": 0.0
+    },
+    {
+      "month": "2025-09",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "gross_credits": 1373463.39,
+      "gross_debits": 1004001.0,
+      "net_credits": 3.54,
+      "net_debits": 4000.0,
+      "credit_count": 3,
+      "debit_count": 3,
+      "own_party_cr": 1373459.85,
+      "own_party_dr": 1000001.0,
+      "related_party_cr": 0.0,
+      "related_party_dr": 0.0,
+      "reversal_cr": 0.0,
+      "returned_cheques_inward_count": 0,
+      "returned_cheques_inward_amount": 0.0,
+      "returned_cheques_outward_count": 0,
+      "returned_cheques_outward_amount": 0.0,
+      "loan_disbursement_cr": 0.0,
+      "fd_interest_cr": 0.0,
+      "round_figure_cr": 300000.0,
+      "high_value_cr": 1073459.85,
+      "cash_deposits_count": 0,
+      "cash_deposits_amount": 0.0,
+      "cash_withdrawals_count": 0,
+      "cash_withdrawals_amount": 0.0,
+      "cheque_deposits_count": 0,
+      "cheque_deposits_amount": 0.0,
+      "cheque_issues_count": 0,
+      "cheque_issues_amount": 0.0,
+      "loan_repayment_dr": 0.0,
+      "salary_paid": 0.0,
+      "statutory_epf": 0.0,
+      "statutory_socso": 0.0,
+      "statutory_tax": 0.0,
+      "statutory_hrdf": 0.0,
+      "eod_lowest": 999.0,
+      "eod_highest": 370462.39,
+      "eod_average": 129094.77,
+      "opening_balance": 1000.0,
+      "closing_balance": 370462.39,
+      "fx_credit_count": 0,
+      "fx_credit_amount": 0.0,
+      "fx_debit_count": 0,
+      "fx_debit_amount": 0.0,
+      "fx_currencies": [],
+      "reconciliation_status": "PASS",
+      "reconciliation_delta": -0.0,
+      "extraction_gaps": 0,
+      "missing_debit_amount": 0.0,
+      "missing_credit_amount": 0.0,
+      "data_quality_note": null,
+      "own_party_cr_count": 2,
+      "own_party_dr_count": 2,
+      "related_party_cr_count": 0,
+      "related_party_dr_count": 0,
+      "loan_repayment_count": 0,
+      "inward_return_cr": 0.0,
+      "trade_income_count": 0,
+      "trade_income_amount": 0.0,
+      "trade_expense_count": 0,
+      "trade_expense_amount": 0.0,
+      "unclassified_cr_count": 1,
+      "unclassified_cr_amount": 3.54,
+      "unclassified_dr_count": 1,
+      "unclassified_dr_amount": 4000.0
+    },
+    {
+      "month": "2025-10",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "gross_credits": 615923.19,
+      "gross_debits": 581467.79,
+      "net_credits": 30.19,
+      "net_debits": 462965.79,
+      "credit_count": 3,
+      "debit_count": 48,
+      "own_party_cr": 615893.0,
+      "own_party_dr": 118502.0,
+      "related_party_cr": 0.0,
+      "related_party_dr": 195980.0,
+      "reversal_cr": 0.0,
+      "returned_cheques_inward_count": 0,
+      "returned_cheques_inward_amount": 0.0,
+      "returned_cheques_outward_count": 0,
+      "returned_cheques_outward_amount": 0.0,
+      "loan_disbursement_cr": 0.0,
+      "fd_interest_cr": 0.0,
+      "round_figure_cr": 0.0,
+      "high_value_cr": 0.0,
+      "cash_deposits_count": 0,
+      "cash_deposits_amount": 0.0,
+      "cash_withdrawals_count": 0,
+      "cash_withdrawals_amount": 0.0,
+      "cheque_deposits_count": 0,
+      "cheque_deposits_amount": 0.0,
+      "cheque_issues_count": 0,
+      "cheque_issues_amount": 0.0,
+      "loan_repayment_dr": 0.0,
+      "salary_paid": 44770.3,
+      "statutory_epf": 0.0,
+      "statutory_socso": 0.0,
+      "statutory_tax": 0.0,
+      "statutory_hrdf": 0.0,
+      "eod_lowest": 196008.39,
+      "eod_highest": 580074.19,
+      "eod_average": 354477.13,
+      "opening_balance": 370462.39,
+      "closing_balance": 404917.79,
+      "fx_credit_count": 0,
+      "fx_credit_amount": 0.0,
+      "fx_debit_count": 0,
+      "fx_debit_amount": 0.0,
+      "fx_currencies": [],
+      "reconciliation_status": "PASS",
+      "reconciliation_delta": -0.0,
+      "extraction_gaps": 0,
+      "missing_debit_amount": 0.0,
+      "missing_credit_amount": 0.0,
+      "data_quality_note": null,
+      "own_party_cr_count": 2,
+      "own_party_dr_count": 5,
+      "related_party_cr_count": 0,
+      "related_party_dr_count": 4,
+      "loan_repayment_count": 0,
+      "inward_return_cr": 0.0,
+      "trade_income_count": 0,
+      "trade_income_amount": 0.0,
+      "trade_expense_count": 5,
+      "trade_expense_amount": 60764.4,
+      "unclassified_cr_count": 1,
+      "unclassified_cr_amount": 30.19,
+      "unclassified_dr_count": 33,
+      "unclassified_dr_amount": 161451.09
+    },
+    {
+      "month": "2025-11",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "gross_credits": 346609.63,
+      "gross_debits": 575223.43,
+      "net_credits": 33.13,
+      "net_debits": 540679.56,
+      "credit_count": 2,
+      "debit_count": 83,
+      "own_party_cr": 346576.5,
+      "own_party_dr": 34543.87,
+      "related_party_cr": 0.0,
+      "related_party_dr": 118066.31,
+      "reversal_cr": 0.0,
+      "returned_cheques_inward_count": 0,
+      "returned_cheques_inward_amount": 0.0,
+      "returned_cheques_outward_count": 0,
+      "returned_cheques_outward_amount": 0.0,
+      "loan_disbursement_cr": 0.0,
+      "fd_interest_cr": 0.0,
+      "round_figure_cr": 0.0,
+      "high_value_cr": 0.0,
+      "cash_deposits_count": 0,
+      "cash_deposits_amount": 0.0,
+      "cash_withdrawals_count": 0,
+      "cash_withdrawals_amount": 0.0,
+      "cheque_deposits_count": 0,
+      "cheque_deposits_amount": 0.0,
+      "cheque_issues_count": 0,
+      "cheque_issues_amount": 0.0,
+      "loan_repayment_dr": 0.0,
+      "salary_paid": 0.0,
+      "statutory_epf": 6600.0,
+      "statutory_socso": 6387.3,
+      "statutory_tax": 0.0,
+      "statutory_hrdf": 0.0,
+      "eod_lowest": 176303.99,
+      "eod_highest": 644275.87,
+      "eod_average": 387755.78,
+      "opening_balance": 404917.79,
+      "closing_balance": 176303.99,
+      "fx_credit_count": 0,
+      "fx_credit_amount": 0.0,
+      "fx_debit_count": 0,
+      "fx_debit_amount": 0.0,
+      "fx_currencies": [],
+      "reconciliation_status": "PASS",
+      "reconciliation_delta": 0.0,
+      "extraction_gaps": 0,
+      "missing_debit_amount": 0.0,
+      "missing_credit_amount": 0.0,
+      "data_quality_note": null,
+      "own_party_cr_count": 1,
+      "own_party_dr_count": 6,
+      "related_party_cr_count": 0,
+      "related_party_dr_count": 4,
+      "loan_repayment_count": 0,
+      "inward_return_cr": 0.0,
+      "trade_income_count": 0,
+      "trade_income_amount": 0.0,
+      "trade_expense_count": 9,
+      "trade_expense_amount": 105200.0,
+      "unclassified_cr_count": 1,
+      "unclassified_cr_amount": 33.13,
+      "unclassified_dr_count": 61,
+      "unclassified_dr_amount": 304425.95
+    },
+    {
+      "month": "2025-12",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "gross_credits": 41956.34,
+      "gross_debits": 155927.54,
+      "net_credits": 1956.34,
+      "net_debits": 140599.44,
+      "credit_count": 4,
+      "debit_count": 29,
+      "own_party_cr": 0.0,
+      "own_party_dr": 15328.1,
+      "related_party_cr": 40000.0,
+      "related_party_dr": 15000.0,
+      "reversal_cr": 0.0,
+      "returned_cheques_inward_count": 0,
+      "returned_cheques_inward_amount": 0.0,
+      "returned_cheques_outward_count": 0,
+      "returned_cheques_outward_amount": 0.0,
+      "loan_disbursement_cr": 0.0,
+      "fd_interest_cr": 0.0,
+      "round_figure_cr": 40000.0,
+      "high_value_cr": 0.0,
+      "cash_deposits_count": 0,
+      "cash_deposits_amount": 0.0,
+      "cash_withdrawals_count": 0,
+      "cash_withdrawals_amount": 0.0,
+      "cheque_deposits_count": 0,
+      "cheque_deposits_amount": 0.0,
+      "cheque_issues_count": 0,
+      "cheque_issues_amount": 0.0,
+      "loan_repayment_dr": 0.0,
+      "salary_paid": 0.0,
+      "statutory_epf": 0.0,
+      "statutory_socso": 0.0,
+      "statutory_tax": 0.0,
+      "statutory_hrdf": 0.0,
+      "eod_lowest": 44574.55,
+      "eod_highest": 147331.69,
+      "eod_average": 95633.84,
+      "opening_balance": 176303.99,
+      "closing_balance": 62332.79,
+      "fx_credit_count": 0,
+      "fx_credit_amount": 0.0,
+      "fx_debit_count": 0,
+      "fx_debit_amount": 0.0,
+      "fx_currencies": [],
+      "reconciliation_status": "PASS",
+      "reconciliation_delta": 0.0,
+      "extraction_gaps": 0,
+      "missing_debit_amount": 0.0,
+      "missing_credit_amount": 0.0,
+      "data_quality_note": null,
+      "own_party_cr_count": 0,
+      "own_party_dr_count": 1,
+      "related_party_cr_count": 1,
+      "related_party_dr_count": 1,
+      "loan_repayment_count": 0,
+      "inward_return_cr": 0.0,
+      "trade_income_count": 0,
+      "trade_income_amount": 0.0,
+      "trade_expense_count": 4,
+      "trade_expense_amount": 24812.87,
+      "unclassified_cr_count": 3,
+      "unclassified_cr_amount": 1956.34,
+      "unclassified_dr_count": 23,
+      "unclassified_dr_amount": 100786.57
+    }
+  ],
+  "consolidated": {
+    "gross_credits": 2378952.55,
+    "gross_debits": 2316619.76,
+    "net_credits": 3023.2,
+    "net_debits": 1148244.79,
+    "annualized_net_credits": 7255.68,
+    "annualized_net_debits": 2755787.5,
+    "total_own_party_cr": 2335929.35,
+    "total_own_party_dr": 1168374.97,
+    "total_related_party_cr": 40000.0,
+    "total_related_party_dr": 329046.31,
+    "total_reversal_cr": 0.0,
+    "total_returned_cheques_inward": 0.0,
+    "total_returned_cheques_outward": 0.0,
+    "total_loan_disbursement_cr": 0.0,
+    "total_fd_interest_cr": 0.0,
+    "total_round_figure_cr": 340000.0,
+    "total_high_value_cr": 1073459.85,
+    "total_cash_deposits": 0.0,
+    "total_cash_withdrawals": 0.0,
+    "total_cheque_deposits": 0.0,
+    "total_cheque_issues": 0.0,
+    "total_loan_repayment_dr": 0.0,
+    "total_salary_paid": 44770.3,
+    "total_statutory_epf": 6600.0,
+    "total_statutory_socso": 6387.3,
+    "total_statutory_tax": 0.0,
+    "total_statutory_hrdf": 0.0,
+    "total_trade_income_cr": 0.0,
+    "total_trade_income_count": 0,
+    "total_trade_expense_dr": 190777.27,
+    "total_trade_expense_count": 18,
+    "eod_lowest": 999.0,
+    "eod_highest": 644275.87,
+    "eod_average": 193592.3,
+    "total_fx_credits": 0.0,
+    "total_fx_debits": 0.0,
+    "data_completeness": "COMPLETE",
+    "months_with_gaps": 0,
+    "total_extraction_gaps": 0,
+    "total_missing_debits": 0.0,
+    "total_missing_credits": 0.0,
+    "total_inward_return_cr": 0.0,
+    "total_unclassified_cr": 3023.2,
+    "total_unclassified_dr": 570663.61,
+    "statutory_compliance": {
+      "salary_months_active": 1,
+      "salary_months_list": [
+        "2025-10"
+      ],
+      "epf_months_paid": 1,
+      "epf_months_list": [
+        "2025-11"
+      ],
+      "epf_months_missing": [
+        "2025-10"
+      ],
+      "epf_coverage_pct": 0.0,
+      "socso_months_paid": 1,
+      "socso_months_list": [
+        "2025-11"
+      ],
+      "socso_months_missing": [
+        "2025-10"
+      ],
+      "socso_coverage_pct": 0.0,
+      "lhdn_months_paid": 0,
+      "lhdn_detected": false,
+      "hrdf_months_paid": 0,
+      "hrdf_detected": false,
+      "epf_per_month_ratios": [],
+      "socso_per_month_ratios": [],
+      "subthreshold_employer": {
+        "is_subthreshold": false,
+        "total_salary_amount": 44770.3,
+        "threshold_amount": 30000.0,
+        "reason": "Total salary RM 44,770.30 above sub-threshold."
+      },
+      "channel_blind_employer": {
+        "is_channel_blind": false,
+        "cheque_dr_amount": 0.0,
+        "gross_dr_amount": 2316619.76,
+        "cheque_dr_ratio": 0.0,
+        "threshold_amount": 500000.0,
+        "threshold_ratio": 0.1,
+        "reason": "No cheque-DR activity; channel-blind check N/A."
+      },
+      "overall_status": "CRITICAL"
+    }
+  },
+  "top_parties": {
+    "top_payers": [
+      {
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)",
+        "total_amount": 2335929.35,
+        "transaction_count": 5,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-09",
+            "amount": 1373459.85,
+            "count": 2
+          },
+          {
+            "month": "2025-10",
+            "amount": 615893.0,
+            "count": 2
+          },
+          {
+            "month": "2025-11",
+            "amount": 346576.5,
+            "count": 1
+          }
+        ],
+        "rank": 1
+      },
+      {
+        "party_name": "MERCHANT STREET",
+        "total_amount": 40000.0,
+        "transaction_count": 1,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-12",
+            "amount": 40000.0,
+            "count": 1
+          }
+        ],
+        "rank": 2
+      },
+      {
+        "party_name": "E THREE SOLUTIONS",
+        "total_amount": 1000.0,
+        "transaction_count": 1,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-12",
+            "amount": 1000.0,
+            "count": 1
+          }
+        ],
+        "rank": 3
+      },
+      {
+        "party_name": "PGSB BIMB",
+        "total_amount": 1000.0,
+        "transaction_count": 1,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-08",
+            "amount": 1000.0,
+            "count": 1
+          }
+        ],
+        "rank": 4
+      },
+      {
+        "party_name": "NUR FARDLIZA IRZA BI",
+        "total_amount": 950.0,
+        "transaction_count": 1,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-12",
+            "amount": 950.0,
+            "count": 1
+          }
+        ],
+        "rank": 5
+      }
+    ],
+    "top_payees": [
+      {
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)",
+        "total_amount": 1168374.97,
+        "transaction_count": 14,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-09",
+            "amount": 1000001.0,
+            "count": 2
+          },
+          {
+            "month": "2025-10",
+            "amount": 118502.0,
+            "count": 5
+          },
+          {
+            "month": "2025-11",
+            "amount": 34543.87,
+            "count": 6
+          },
+          {
+            "month": "2025-12",
+            "amount": 15328.1,
+            "count": 1
+          }
+        ],
+        "rank": 1
+      },
+      {
+        "party_name": "MERCHANT STREET",
+        "total_amount": 329046.31,
+        "transaction_count": 9,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-10",
+            "amount": 195980.0,
+            "count": 4
+          },
+          {
+            "month": "2025-11",
+            "amount": 118066.31,
+            "count": 4
+          },
+          {
+            "month": "2025-12",
+            "amount": 15000.0,
+            "count": 1
+          }
+        ],
+        "rank": 2
+      },
+      {
+        "party_name": "JOZATECH TRADING",
+        "total_amount": 109910.0,
+        "transaction_count": 4,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-10",
+            "amount": 59910.0,
+            "count": 3
+          },
+          {
+            "month": "2025-11",
+            "amount": 50000.0,
+            "count": 1
+          }
+        ],
+        "rank": 3
+      },
+      {
+        "party_name": "TETUAN IIB GLOBAL RE",
+        "total_amount": 103130.45,
+        "transaction_count": 6,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-10",
+            "amount": 53359.8,
+            "count": 3
+          },
+          {
+            "month": "2025-11",
+            "amount": 49770.65,
+            "count": 3
+          }
+        ],
+        "rank": 4
+      },
+      {
+        "party_name": "PISER FUEL",
+        "total_amount": 85148.25,
+        "transaction_count": 7,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-10",
+            "amount": 33048.25,
+            "count": 3
+          },
+          {
+            "month": "2025-11",
+            "amount": 52100.0,
+            "count": 4
+          }
+        ],
+        "rank": 5
+      },
+      {
+        "party_name": "MIZWAR BIN ABU BAKAR",
+        "total_amount": 73187.78,
+        "transaction_count": 18,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-10",
+            "amount": 12724.94,
+            "count": 3
+          },
+          {
+            "month": "2025-11",
+            "amount": 29293.96,
+            "count": 10
+          },
+          {
+            "month": "2025-12",
+            "amount": 31168.88,
+            "count": 5
+          }
+        ],
+        "rank": 6
+      },
+      {
+        "party_name": "ELSANA TRADING",
+        "total_amount": 67012.87,
+        "transaction_count": 5,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-11",
+            "amount": 48500.0,
+            "count": 2
+          },
+          {
+            "month": "2025-12",
+            "amount": 18512.87,
+            "count": 3
+          }
+        ],
+        "rank": 7
+      },
+      {
+        "party_name": "VTA BALL VALVES",
+        "total_amount": 49032.0,
+        "transaction_count": 1,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-11",
+            "amount": 49032.0,
+            "count": 1
+          }
+        ],
+        "rank": 8
+      },
+      {
+        "party_name": "MULTI CARGO EXPRESS",
+        "total_amount": 33229.11,
+        "transaction_count": 5,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-11",
+            "amount": 20556.81,
+            "count": 4
+          },
+          {
+            "month": "2025-12",
+            "amount": 12672.3,
+            "count": 1
+          }
+        ],
+        "rank": 9
+      },
+      {
+        "party_name": "FLUX SOURCE",
+        "total_amount": 32000.0,
+        "transaction_count": 1,
+        "is_related_party": false,
+        "monthly_breakdown": [
+          {
+            "month": "2025-10",
+            "amount": 32000.0,
+            "count": 1
+          }
+        ],
+        "rank": 10
+      }
+    ]
+  },
+  "large_credits": [
+    {
+      "date": "2025-10-14",
+      "description": "1554 CA DR&CR ADVICE 14201 REFUND INTO CUSTOME R'S ACCOUNT",
+      "amount": 259571.0,
+      "balance": 455579.39
+    },
+    {
+      "date": "2025-10-24",
+      "description": "1554 CA DR&CR ADVICE 14201 FUND TRANSFE R",
+      "amount": 356322.0,
+      "balance": 602385.39
+    },
+    {
+      "date": "2025-11-13",
+      "description": "1554 CA DR&CR ADVICE 14201 TRANSFE R FUND",
+      "amount": 346576.5,
+      "balance": 644275.87
+    },
+    {
+      "date": "2025-09-17",
+      "description": "1554 CA DR&CR ADVICE 14201 TRF FUND",
+      "amount": 1073459.85,
+      "balance": 1074458.85
+    },
+    {
+      "date": "2025-09-30",
+      "description": "9895 INW DuitNow Transfer",
+      "amount": 300000.0,
+      "balance": 370458.85
+    }
+  ],
+  "own_related_transactions": {
+    "summary": {
+      "own_party_cr": 2335929.35,
+      "own_party_dr": 1168374.97,
+      "related_party_cr": 40000.0,
+      "related_party_dr": 329046.31
+    },
+    "transactions": [
+      {
+        "date": "2025-10-09",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 100000.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-10-14",
+        "description": "1554 CA DR&CR ADVICE 14201 REFUND INTO CUSTOME R'S ACCOUNT",
+        "amount": 259571.0,
+        "type": "CREDIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-10-15",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 170000.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-10-18",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 15000.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-10-24",
+        "description": "1554 CA DR&CR ADVICE 14201 FUND TRANSFE R",
+        "amount": 356322.0,
+        "type": "CREDIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-10-29",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 1163.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-10-29",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 911.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-10-29",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 15326.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-10-29",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 5880.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-10-29",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 1102.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-10-29",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 5100.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-11-06",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 30500.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-11-13",
+        "description": "1554 CA DR&CR ADVICE 14201 TRANSFE R FUND",
+        "amount": 346576.5,
+        "type": "CREDIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-11-14",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 20000.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-11-20",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 55000.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-11-28",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 15326.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-11-28",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 911.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-11-28",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 2088.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-11-28",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 1163.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-11-28",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 2305.87,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-11-28",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 12566.31,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-11-28",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 12750.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-12-11",
+        "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+        "amount": 15000.0,
+        "type": "DEBIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-12-31",
+        "description": "9895 INW DuitNow Transfer MERCHANT STREET SDN BHD",
+        "amount": 40000.0,
+        "type": "CREDIT",
+        "party_type": "RELATED",
+        "account_number": "_unknown",
+        "party_name": "MERCHANT STREET"
+      },
+      {
+        "date": "2025-12-31",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 15328.1,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-09-11",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 1.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-09-17",
+        "description": "1554 CA DR&CR ADVICE 14201 TRF FUND",
+        "amount": 1073459.85,
+        "type": "CREDIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-09-17",
+        "description": "9124 CDB CS TO IBFTS3",
+        "amount": 1000000.0,
+        "type": "DEBIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      },
+      {
+        "date": "2025-09-30",
+        "description": "9895 INW DuitNow Transfer",
+        "amount": 300000.0,
+        "type": "CREDIT",
+        "party_type": "OWN",
+        "account_number": "_unknown",
+        "party_name": "PRINCIPAL GAS (OWN-PARTY)"
+      }
+    ]
+  },
+  "loan_transactions": {
+    "disbursements": [],
+    "repayments": []
+  },
+  "flags": {
+    "indicators": [
+      {
+        "id": 1,
+        "name": "Returned Cheques (Inward)",
+        "detected": false,
+        "remarks": "No inward returned cheques in the period."
+      },
+      {
+        "id": 2,
+        "name": "Returned Cheques (Outward)",
+        "detected": false,
+        "remarks": "No outward returned cheques in the period."
+      },
+      {
+        "id": 3,
+        "name": "Round Figure Credits (AML)",
+        "detected": true,
+        "remarks": "2 round-figure credits totalling RM 340,000.00."
+      },
+      {
+        "id": 4,
+        "name": "High Value Credits (>3x EOD)",
+        "detected": true,
+        "remarks": "5 credits exceed 3x daily EOD totalling RM 1,073,459.85."
+      },
+      {
+        "id": 5,
+        "name": "Cash Deposits (AML)",
+        "detected": false,
+        "remarks": "No cash deposits in the period."
+      },
+      {
+        "id": 6,
+        "name": "EPF Compliance",
+        "detected": true,
+        "remarks": "EPF coverage 0.0% \u2014 review monthly contributions."
+      },
+      {
+        "id": 7,
+        "name": "SOCSO Compliance",
+        "detected": true,
+        "remarks": "SOCSO coverage 0.0% \u2014 review monthly contributions."
+      },
+      {
+        "id": 8,
+        "name": "LHDN Tax Payments",
+        "detected": true,
+        "remarks": "No LHDN tax payments detected despite active salary months \u2014 possible PCB non-remittance (soft concern, not hard failure)."
+      },
+      {
+        "id": 9,
+        "name": "Large Credits (>=RM100K)",
+        "detected": true,
+        "remarks": "5 large credits (>=RM100K) totalling RM 2,335,929.35."
+      },
+      {
+        "id": 10,
+        "name": "Own Party Transactions",
+        "detected": true,
+        "remarks": "Own-party CR RM 2,335,929.35 (98.2% of gross credits); DR RM 1,168,374.97 (50.4% of gross debits)."
+      },
+      {
+        "id": 11,
+        "name": "Related Party Transactions",
+        "detected": true,
+        "remarks": "Related-party CR RM 40,000.00 (1.7% of gross credits); DR RM 329,046.31 (14.2% of gross debits). Parties: (no canonical names provided)."
+      },
+      {
+        "id": 12,
+        "name": "Loan Activity",
+        "detected": false,
+        "remarks": "No loan disbursements or repayments detected."
+      },
+      {
+        "id": 13,
+        "name": "Data Quality",
+        "detected": false,
+        "remarks": "Statement data complete across the period."
+      },
+      {
+        "id": 14,
+        "name": "FX Transactions",
+        "detected": false,
+        "remarks": "No FX (foreign-currency) activity detected."
+      },
+      {
+        "id": 15,
+        "name": "Low Closing Balance",
+        "detected": false,
+        "remarks": "Closing balance stayed at or above RM 1,000.00 every month."
+      },
+      {
+        "id": 16,
+        "name": "HRDF Payments",
+        "detected": true,
+        "remarks": "No HRDF payments detected despite active salary months \u2014 soft concern (PSMB exempts <10-employee firms in covered industries)."
+      }
+    ]
+  },
+  "observations": {
+    "positive": [
+      "All months reconciled to bank statements within tolerance.",
+      "Net credits of RM 3,023.20 indicate active turnover."
+    ],
+    "concerns": [
+      "Statutory compliance CRITICAL \u2014 EPF 0.0% / SOCSO 0.0%.",
+      "Unclassified rows: CR RM 3,023.20 / DR RM 570,663.61 \u2014 V1 deferred categories.",
+      "Round Figure Credits (AML): 2 round-figure credits totalling RM 340,000.00."
+    ]
+  },
+  "parsing_metadata": {
+    "overall_success_rate": 1.0,
+    "total_transactions_extracted": 176,
+    "total_balance_checks": 5,
+    "total_balance_checks_passed": 5,
+    "account_month_checks": [
+      {
+        "month": "2025-08",
+        "account_number": "_unknown",
+        "bank_name": "Bank Islam",
+        "opening_balance": 0.0,
+        "closing_balance": 1000.0,
+        "gross_credits": 1000.0,
+        "gross_debits": 0.0,
+        "expected_closing": 1000.0,
+        "reconciliation_delta": 0.0,
+        "passed": true,
+        "transactions_extracted": 1
+      },
+      {
+        "month": "2025-09",
+        "account_number": "_unknown",
+        "bank_name": "Bank Islam",
+        "opening_balance": 1000.0,
+        "closing_balance": 370462.39,
+        "gross_credits": 1373463.39,
+        "gross_debits": 1004001.0,
+        "expected_closing": 370462.39,
+        "reconciliation_delta": 0.0,
+        "passed": true,
+        "transactions_extracted": 6
+      },
+      {
+        "month": "2025-10",
+        "account_number": "_unknown",
+        "bank_name": "Bank Islam",
+        "opening_balance": 370462.39,
+        "closing_balance": 404917.79,
+        "gross_credits": 615923.19,
+        "gross_debits": 581467.79,
+        "expected_closing": 404917.79,
+        "reconciliation_delta": 0.0,
+        "passed": true,
+        "transactions_extracted": 51
+      },
+      {
+        "month": "2025-11",
+        "account_number": "_unknown",
+        "bank_name": "Bank Islam",
+        "opening_balance": 404917.79,
+        "closing_balance": 176303.99,
+        "gross_credits": 346609.63,
+        "gross_debits": 575223.43,
+        "expected_closing": 176303.99,
+        "reconciliation_delta": 0.0,
+        "passed": true,
+        "transactions_extracted": 85
+      },
+      {
+        "month": "2025-12",
+        "account_number": "_unknown",
+        "bank_name": "Bank Islam",
+        "opening_balance": 176303.99,
+        "closing_balance": 62332.79,
+        "gross_credits": 41956.34,
+        "gross_debits": 155927.54,
+        "expected_closing": 62332.79,
+        "reconciliation_delta": 0.0,
+        "passed": true,
+        "transactions_extracted": 33
+      }
+    ],
+    "extraction_gaps": []
+  },
+  "unclassified_transactions": [
+    {
+      "date": "2025-10-09",
+      "description": "9124 CDB CS TO IBFTS3 FLUX SOURCE SDN BHD Manpower Supply",
+      "amount": 32000.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-10-18",
+      "description": "9124 CDB CS TO IBFTS3 OPTIMUS DISTRIBUTOR Ball Valve",
+      "amount": 11021.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-10-29",
+      "description": "9124 CDB CS TO IBFTS3 ROSDZAMAN BIN MOHD Y",
+      "amount": 10000.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-10-29",
+      "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD Sal PFSB",
+      "amount": 21357.15,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-10-31",
+      "description": "9124 CDB CS TO IBFTS3 NYLAFLEX SDN BHD",
+      "amount": 13700.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-04",
+      "description": "9124 CDB CS TO IBFTS3 MULTI CARGO EXPRESS Duty Shipment Aliaxis",
+      "amount": 14179.8,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-06",
+      "description": "9124 CDB CS TO IBFTS3 EVAN'S GENERAL SERVI Subcontra ctor",
+      "amount": 18050.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-14",
+      "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD",
+      "amount": 20000.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-18",
+      "description": "9124 CDB CS TO IBFTS3 VTA BALL VALVES (M) Ball Valve 4pcs 30percent",
+      "amount": 49032.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-20",
+      "description": "9124 CDB CS TO IBFTS3 LUGUAN CONSTRUCTION PS Bokara Partial",
+      "amount": 10000.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-20",
+      "description": "9124 CDB CS TO IBFTS3 EVAN'S GENERAL SERVI PS Batu 13 Kuching Serian Balance",
+      "amount": 14250.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-28",
+      "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD",
+      "amount": 21400.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-28",
+      "description": "9124 CDB CS TO IBFTS3 TETUAN IIB GLOBAL RE SAL1125",
+      "amount": 42483.35,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-11-30",
+      "description": "9124 CDB CS TO IBFTS3 SMALL MEDIUM ENTERPR Rental 12A 0925 1025",
+      "amount": 16200.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-12-03",
+      "description": "9124 CDB CS TO IBFTS3 EVAN'S GENERAL SERVI",
+      "amount": 10000.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-12-03",
+      "description": "9124 CDB CS TO IBFTS3 MULTI CARGO EXPRESS Delivery to PS Kidurong Height",
+      "amount": 12672.3,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-12-05",
+      "description": "9124 CDB CS TO IBFTS3 NYLAFLEX SDN BHD",
+      "amount": 13700.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-12-08",
+      "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+      "amount": 12151.69,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    },
+    {
+      "date": "2025-12-10",
+      "description": "9124 CDB CS TO IBFTS3 TEKSER (M) SDN BHD",
+      "amount": 15000.0,
+      "type": "DEBIT",
+      "account_number": "_unknown",
+      "bank_name": "Bank Islam",
+      "reason": "No dispatcher rung matched"
+    }
+  ],
+  "classification_config": {
+    "rulebook_version": "v3.5",
+    "large_credit_threshold": 100000.0,
+    "unclassified_listing_threshold": 10000.0,
+    "known_factoring_entities": [],
+    "execution_mode": "FULL_CODE"
+  },
+  "pdf_integrity": {},
+  "counterparty_ledger": {
+    "version": "1.0",
+    "total_counterparties": 65,
+    "extraction_stats": {
+      "pattern_matched": 165,
+      "special_bucket": 10,
+      "raw_fallback": 1,
+      "total_transactions": 176
+    },
+    "counterparties": [
+      {
+        "counterparty_name": "PRINCIPAL GAS (OWN-PARTY)",
+        "total_credits": 2335929.35,
+        "total_debits": 1168374.97,
+        "credit_count": 5,
+        "debit_count": 14,
+        "transactions": [
+          {
+            "date": "2025-09-11",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 1.0,
+            "type": "DEBIT",
+            "balance": 999.0,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/9. BIMB8489 Sept 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-09-17",
+            "description": "1554 CA DR&CR ADVICE 14201 TRF FUND",
+            "amount": 1073459.85,
+            "type": "CREDIT",
+            "balance": 1074458.85,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/9. BIMB8489 Sept 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-09-17",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 1000000.0,
+            "type": "DEBIT",
+            "balance": 74458.85,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/9. BIMB8489 Sept 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-09-30",
+            "description": "9895 INW DuitNow Transfer",
+            "amount": 300000.0,
+            "type": "CREDIT",
+            "balance": 370458.85,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/9. BIMB8489 Sept 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-09",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 100000.0,
+            "type": "DEBIT",
+            "balance": 270462.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-14",
+            "description": "1554 CA DR&CR ADVICE 14201 REFUND INTO CUSTOME R'S ACCOUNT",
+            "amount": 259571.0,
+            "type": "CREDIT",
+            "balance": 455579.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-24",
+            "description": "1554 CA DR&CR ADVICE 14201 FUND TRANSFE R",
+            "amount": 356322.0,
+            "type": "CREDIT",
+            "balance": 602385.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 1163.0,
+            "type": "DEBIT",
+            "balance": 559374.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 911.0,
+            "type": "DEBIT",
+            "balance": 557261.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 15326.0,
+            "type": "DEBIT",
+            "balance": 541935.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 1102.0,
+            "type": "DEBIT",
+            "balance": 518794.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-13",
+            "description": "1554 CA DR&CR ADVICE 14201 TRANSFE R FUND",
+            "amount": 346576.5,
+            "type": "CREDIT",
+            "balance": 644275.87,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 15326.0,
+            "type": "DEBIT",
+            "balance": 350874.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 911.0,
+            "type": "DEBIT",
+            "balance": 349963.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 2088.0,
+            "type": "DEBIT",
+            "balance": 346737.89,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 1163.0,
+            "type": "DEBIT",
+            "balance": 344296.89,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 2305.87,
+            "type": "DEBIT",
+            "balance": 341991.02,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 12750.0,
+            "type": "DEBIT",
+            "balance": 252791.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-31",
+            "description": "9124 CDB CS TO IBFTS3",
+            "amount": 15328.1,
+            "type": "DEBIT",
+            "balance": 62326.45,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": 1167554.38,
+        "transaction_count": 19
+      },
+      {
+        "counterparty_name": "MERCHANT STREET",
+        "total_credits": 40000.0,
+        "total_debits": 329046.31,
+        "credit_count": 1,
+        "debit_count": 9,
+        "transactions": [
+          {
+            "date": "2025-10-15",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 170000.0,
+            "type": "DEBIT",
+            "balance": 285579.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-18",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 15000.0,
+            "type": "DEBIT",
+            "balance": 270579.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 5880.0,
+            "type": "DEBIT",
+            "balance": 536055.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 5100.0,
+            "type": "DEBIT",
+            "balance": 513694.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-06",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 30500.0,
+            "type": "DEBIT",
+            "balance": 314926.44,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-14",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 20000.0,
+            "type": "DEBIT",
+            "balance": 619392.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 55000.0,
+            "type": "DEBIT",
+            "balance": 437339.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 12566.31,
+            "type": "DEBIT",
+            "balance": 265541.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-11",
+            "description": "9124 CDB CS TO IBFTS3 MERCHANT STREET SDN BHD",
+            "amount": 15000.0,
+            "type": "DEBIT",
+            "balance": 53933.76,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-31",
+            "description": "9895 INW DuitNow Transfer MERCHANT STREET SDN BHD",
+            "amount": 40000.0,
+            "type": "CREDIT",
+            "balance": 84574.55,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -289046.31,
+        "transaction_count": 10
+      },
+      {
+        "counterparty_name": "JOZATECH TRADING",
+        "total_credits": 0.0,
+        "total_debits": 109910.0,
+        "credit_count": 0,
+        "debit_count": 4,
+        "transactions": [
+          {
+            "date": "2025-10-12",
+            "description": "9124 CDB CS TO IBFTS3 JOZATECH TRADING",
+            "amount": 40000.0,
+            "type": "DEBIT",
+            "balance": 196008.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 JOZATECH TRADING",
+            "amount": 15110.0,
+            "type": "DEBIT",
+            "balance": 520945.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-31",
+            "description": "9124 CDB CS TO IBFTS3 JOZATECH TRADING",
+            "amount": 4800.0,
+            "type": "DEBIT",
+            "balance": 426058.14,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-25",
+            "description": "9124 CDB CS TO IBFTS3 JOZATECH TRADING",
+            "amount": 50000.0,
+            "type": "DEBIT",
+            "balance": 372395.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -109910.0,
+        "transaction_count": 4
+      },
+      {
+        "counterparty_name": "TETUAN IIB GLOBAL RE",
+        "total_credits": 0.0,
+        "total_debits": 103130.45,
+        "credit_count": 0,
+        "debit_count": 6,
+        "transactions": [
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 TETUAN IIB GLOBAL RE",
+            "amount": 813.5,
+            "type": "DEBIT",
+            "balance": 512180.69,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 TETUAN IIB GLOBAL RE",
+            "amount": 7776.0,
+            "type": "DEBIT",
+            "balance": 504404.69,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 TETUAN IIB GLOBAL RE Net Pay",
+            "amount": 44770.3,
+            "type": "DEBIT",
+            "balance": 431586.14,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 TETUAN IIB GLOBAL RE Caruman Socso 10/25",
+            "amount": 687.3,
+            "type": "DEBIT",
+            "balance": 349275.89,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 TETUAN IIB GLOBAL RE SAL1125",
+            "amount": 42483.35,
+            "type": "DEBIT",
+            "balance": 278107.67,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 TETUAN IIB GLOBAL RE KWSP Caruman 11/25",
+            "amount": 6600.0,
+            "type": "DEBIT",
+            "balance": 240491.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -103130.45,
+        "transaction_count": 6
+      },
+      {
+        "counterparty_name": "PISER FUEL",
+        "total_credits": 0.0,
+        "total_debits": 85148.25,
+        "credit_count": 0,
+        "debit_count": 7,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD",
+            "amount": 5000.0,
+            "type": "DEBIT",
+            "balance": 589285.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD",
+            "amount": 6691.1,
+            "type": "DEBIT",
+            "balance": 497713.59,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD Sal PFSB",
+            "amount": 21357.15,
+            "type": "DEBIT",
+            "balance": 476356.44,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-06",
+            "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD",
+            "amount": 5000.0,
+            "type": "DEBIT",
+            "balance": 366823.03,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-14",
+            "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD",
+            "amount": 20000.0,
+            "type": "DEBIT",
+            "balance": 599392.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD",
+            "amount": 21400.0,
+            "type": "DEBIT",
+            "balance": 320591.02,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 PISER FUEL SDN BHD KWSP, Socso",
+            "amount": 5700.0,
+            "type": "DEBIT",
+            "balance": 247091.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -85148.25,
+        "transaction_count": 7
+      },
+      {
+        "counterparty_name": "MIZWAR BIN ABU BAKAR",
+        "total_credits": 0.0,
+        "total_debits": 73187.78,
+        "credit_count": 0,
+        "debit_count": 18,
+        "transactions": [
+          {
+            "date": "2025-10-09",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR 9710",
+            "amount": 2454.0,
+            "type": "DEBIT",
+            "balance": 236008.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 4537.0,
+            "type": "DEBIT",
+            "balance": 575537.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-31",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 5733.94,
+            "type": "DEBIT",
+            "balance": 420324.2,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-01",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 4096.69,
+            "type": "DEBIT",
+            "balance": 400821.1,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-01",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 6822.24,
+            "type": "DEBIT",
+            "balance": 393998.86,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-01",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 860.0,
+            "type": "DEBIT",
+            "balance": 393138.86,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-04",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 1018.18,
+            "type": "DEBIT",
+            "balance": 377940.88,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 1106.91,
+            "type": "DEBIT",
+            "balance": 305531.96,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 6822.24,
+            "type": "DEBIT",
+            "balance": 298709.72,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-14",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR 13Pax",
+            "amount": 3510.0,
+            "type": "DEBIT",
+            "balance": 591382.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 1617.7,
+            "type": "DEBIT",
+            "balance": 585884.59,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-25",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 2000.0,
+            "type": "DEBIT",
+            "balance": 422395.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-30",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 1440.0,
+            "type": "DEBIT",
+            "balance": 238002.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-08",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 3391.0,
+            "type": "DEBIT",
+            "balance": 111849.42,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-08",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 12151.69,
+            "type": "DEBIT",
+            "balance": 99697.73,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-10",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 3480.1,
+            "type": "DEBIT",
+            "balance": 97167.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-10",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 7146.09,
+            "type": "DEBIT",
+            "balance": 90021.54,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-11",
+            "description": "9124 CDB CS TO IBFTS3 MIZWAR BIN ABU BAKAR",
+            "amount": 5000.0,
+            "type": "DEBIT",
+            "balance": 68933.76,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -73187.78,
+        "transaction_count": 18
+      },
+      {
+        "counterparty_name": "ELSANA TRADING",
+        "total_credits": 0.0,
+        "total_debits": 67012.87,
+        "credit_count": 0,
+        "debit_count": 5,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 ELSANA TRADING & SER",
+            "amount": 3500.0,
+            "type": "DEBIT",
+            "balance": 433285.51,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-30",
+            "description": "9124 CDB CS TO IBFTS3 ELSANA TRADING & SER",
+            "amount": 45000.0,
+            "type": "DEBIT",
+            "balance": 192852.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-04",
+            "description": "9124 CDB CS TO IBFTS3 ELSANA TRADING & SER",
+            "amount": 5000.0,
+            "type": "DEBIT",
+            "balance": 142331.69,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-05",
+            "description": "9124 CDB CS TO IBFTS3 ELSANA TRADING & SER",
+            "amount": 8512.87,
+            "type": "DEBIT",
+            "balance": 119240.42,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-06",
+            "description": "9124 CDB CS TO IBFTS3 ELSANA TRADING & SER",
+            "amount": 5000.0,
+            "type": "DEBIT",
+            "balance": 115240.42,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -67012.87,
+        "transaction_count": 5
+      },
+      {
+        "counterparty_name": "VTA BALL VALVES",
+        "total_credits": 0.0,
+        "total_debits": 49032.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 VTA BALL VALVES (M) Ball Valve 4pcs 30percent",
+            "amount": 49032.0,
+            "type": "DEBIT",
+            "balance": 531305.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -49032.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "UNNAMED BANK ISLAM TRANSFER (DR)",
+        "total_credits": 0.0,
+        "total_debits": 48722.0,
+        "credit_count": 0,
+        "debit_count": 6,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9230 CDB JOMPAY ON-US U22 07 AIR SELANGOR 855567491 3",
+            "amount": 36.0,
+            "type": "DEBIT",
+            "balance": 580774.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-11-06",
+            "description": "9124 CDB CS TO IBFTS3 EVAN'S GENERAL SERVI Subcontra ctor",
+            "amount": 18050.0,
+            "type": "DEBIT",
+            "balance": 348773.03,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 EVAN'S GENERAL SERVI PS Batu 13 Kuching Serian Balance",
+            "amount": 14250.0,
+            "type": "DEBIT",
+            "balance": 501139.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-11-30",
+            "description": "9230 CDB JOMPAY ON-US U22 07 AIR SELANGOR 855567491 3",
+            "amount": 36.0,
+            "type": "DEBIT",
+            "balance": 192470.86,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-12-03",
+            "description": "9124 CDB CS TO IBFTS3 EVAN'S GENERAL SERVI",
+            "amount": 10000.0,
+            "type": "DEBIT",
+            "balance": 160003.99,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-12-31",
+            "description": "9124 CDB CS TO IBFTS3 EVAN'S GENERAL SERVI",
+            "amount": 6350.0,
+            "type": "DEBIT",
+            "balance": 78224.55,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "special"
+          }
+        ],
+        "net_position": -48722.0,
+        "transaction_count": 6
+      },
+      {
+        "counterparty_name": "MULTI CARGO EXPRESS",
+        "total_credits": 0.0,
+        "total_debits": 33229.11,
+        "credit_count": 0,
+        "debit_count": 5,
+        "transactions": [
+          {
+            "date": "2025-11-04",
+            "description": "9124 CDB CS TO IBFTS3 MULTI CARGO EXPRESS Duty Shipment Aliaxis",
+            "amount": 14179.8,
+            "type": "DEBIT",
+            "balance": 378959.06,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-05",
+            "description": "9124 CDB CS TO IBFTS3 MULTI CARGO EXPRESS Duty Shipment Wenzhou",
+            "amount": 2667.85,
+            "type": "DEBIT",
+            "balance": 375183.03,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-06",
+            "description": "9124 CDB CS TO IBFTS3 MULTI CARGO EXPRESS Clearance, Delivery Aliaxis",
+            "amount": 2166.59,
+            "type": "DEBIT",
+            "balance": 345426.44,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 MULTI CARGO EXPRESS Clearance, delivery Shipment Wenzhou",
+            "amount": 1542.57,
+            "type": "DEBIT",
+            "balance": 311583.87,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-03",
+            "description": "9124 CDB CS TO IBFTS3 MULTI CARGO EXPRESS Delivery to PS Kidurong Height",
+            "amount": 12672.3,
+            "type": "DEBIT",
+            "balance": 147331.69,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -33229.11,
+        "transaction_count": 5
+      },
+      {
+        "counterparty_name": "FLUX SOURCE",
+        "total_credits": 0.0,
+        "total_debits": 32000.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-09",
+            "description": "9124 CDB CS TO IBFTS3 FLUX SOURCE SDN BHD Manpower Supply",
+            "amount": 32000.0,
+            "type": "DEBIT",
+            "balance": 238462.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -32000.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "NYLAFLEX",
+        "total_credits": 0.0,
+        "total_debits": 27400.0,
+        "credit_count": 0,
+        "debit_count": 2,
+        "transactions": [
+          {
+            "date": "2025-10-31",
+            "description": "9124 CDB CS TO IBFTS3 NYLAFLEX SDN BHD",
+            "amount": 13700.0,
+            "type": "DEBIT",
+            "balance": 406404.2,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-05",
+            "description": "9124 CDB CS TO IBFTS3 NYLAFLEX SDN BHD",
+            "amount": 13700.0,
+            "type": "DEBIT",
+            "balance": 128331.69,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -27400.0,
+        "transaction_count": 2
+      },
+      {
+        "counterparty_name": "SMALL MEDIUM ENTERPR",
+        "total_credits": 0.0,
+        "total_debits": 23808.0,
+        "credit_count": 0,
+        "debit_count": 3,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 SMALL MEDIUM ENTERPR Rental Unit 12A",
+            "amount": 7500.0,
+            "type": "DEBIT",
+            "balance": 594285.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-12",
+            "description": "9124 CDB CS TO IBFTS3 SMALL MEDIUM ENTERPR Support Letter",
+            "amount": 108.0,
+            "type": "DEBIT",
+            "balance": 298601.72,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-30",
+            "description": "9124 CDB CS TO IBFTS3 SMALL MEDIUM ENTERPR Rental 12A 0925 1025",
+            "amount": 16200.0,
+            "type": "DEBIT",
+            "balance": 176270.86,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -23808.0,
+        "transaction_count": 3
+      },
+      {
+        "counterparty_name": "ROSDZAMAN BIN MOHD Y",
+        "total_credits": 0.0,
+        "total_debits": 15000.0,
+        "credit_count": 0,
+        "debit_count": 2,
+        "transactions": [
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 ROSDZAMAN BIN MOHD Y",
+            "amount": 5000.0,
+            "type": "DEBIT",
+            "balance": 570537.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 ROSDZAMAN BIN MOHD Y",
+            "amount": 10000.0,
+            "type": "DEBIT",
+            "balance": 560537.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -15000.0,
+        "transaction_count": 2
+      },
+      {
+        "counterparty_name": "TEKSER",
+        "total_credits": 0.0,
+        "total_debits": 15000.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-10",
+            "description": "9124 CDB CS TO IBFTS3 TEKSER (M) SDN BHD",
+            "amount": 15000.0,
+            "type": "DEBIT",
+            "balance": 75021.54,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -15000.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "QILLIO",
+        "total_credits": 0.0,
+        "total_debits": 12296.12,
+        "credit_count": 0,
+        "debit_count": 3,
+        "transactions": [
+          {
+            "date": "2025-11-14",
+            "description": "9124 CDB CS TO IBFTS3 QILLIO SDN BHD",
+            "amount": 4500.0,
+            "type": "DEBIT",
+            "balance": 594892.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 QILLIO SDN BHD Reno 12A",
+            "amount": 196.12,
+            "type": "DEBIT",
+            "balance": 436785.51,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-24",
+            "description": "9124 CDB CS TO IBFTS3 QILLIO SDN BHD",
+            "amount": 7600.0,
+            "type": "DEBIT",
+            "balance": 425480.51,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -12296.12,
+        "transaction_count": 3
+      },
+      {
+        "counterparty_name": "OPTIMUS DISTRIBUTOR",
+        "total_credits": 0.0,
+        "total_debits": 11021.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-18",
+            "description": "9124 CDB CS TO IBFTS3 OPTIMUS DISTRIBUTOR Ball Valve",
+            "amount": 11021.0,
+            "type": "DEBIT",
+            "balance": 253063.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -11021.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "TEKAD ENTERPRISE",
+        "total_credits": 0.0,
+        "total_debits": 10500.0,
+        "credit_count": 0,
+        "debit_count": 3,
+        "transactions": [
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 TEKAD ENTERPRISE Dismantle, installation Aircond 12A",
+            "amount": 2250.0,
+            "type": "DEBIT",
+            "balance": 306638.87,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-26",
+            "description": "9124 CDB CS TO IBFTS3 TEKAD ENTERPRISE",
+            "amount": 1950.0,
+            "type": "DEBIT",
+            "balance": 370445.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-03",
+            "description": "9124 CDB CS TO IBFTS3 TEKAD ENTERPRISE AC 2Hp, 4Hp 12A",
+            "amount": 6300.0,
+            "type": "DEBIT",
+            "balance": 170003.99,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -10500.0,
+        "transaction_count": 3
+      },
+      {
+        "counterparty_name": "LUGUAN CONSTRUCTION PS",
+        "total_credits": 0.0,
+        "total_debits": 10000.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 LUGUAN CONSTRUCTION PS Bokara Partial",
+            "amount": 10000.0,
+            "type": "DEBIT",
+            "balance": 515497.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -10000.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "MFAR LINK INSTALLER",
+        "total_credits": 0.0,
+        "total_debits": 8800.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 MFAR LINK INSTALLER balance",
+            "amount": 8800.0,
+            "type": "DEBIT",
+            "balance": 492339.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -8800.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "ANDRIZAL BIN ZAKARIA",
+        "total_credits": 0.0,
+        "total_debits": 7517.52,
+        "credit_count": 0,
+        "debit_count": 8,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA Lalamove, Nitrogen, Bateri triton VBX450",
+            "amount": 835.3,
+            "type": "DEBIT",
+            "balance": 580810.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA",
+            "amount": 700.0,
+            "type": "DEBIT",
+            "balance": 512994.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-31",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA",
+            "amount": 676.6,
+            "type": "DEBIT",
+            "balance": 405727.6,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA Fuel, Nitrogen",
+            "amount": 330.0,
+            "type": "DEBIT",
+            "balance": 314596.44,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-14",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA",
+            "amount": 1303.52,
+            "type": "DEBIT",
+            "balance": 639392.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-24",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA Hardware, Fuel, Bolt Nuts",
+            "amount": 257.6,
+            "type": "DEBIT",
+            "balance": 425022.91,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-25",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA",
+            "amount": 627.72,
+            "type": "DEBIT",
+            "balance": 424395.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-21",
+            "description": "9124 CDB CS TO IBFTS3 ANDRIZAL BIN ZAKARIA",
+            "amount": 2786.78,
+            "type": "DEBIT",
+            "balance": 50846.98,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -7517.52,
+        "transaction_count": 8
+      },
+      {
+        "counterparty_name": "NIK MOHD HAFIZI BIN",
+        "total_credits": 0.0,
+        "total_debits": 7488.0,
+        "credit_count": 0,
+        "debit_count": 7,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 NIK MOHD HAFIZI BIN",
+            "amount": 1480.0,
+            "type": "DEBIT",
+            "balance": 584345.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-31",
+            "description": "9124 CDB CS TO IBFTS3 NIK MOHD HAFIZI BIN",
+            "amount": 840.0,
+            "type": "DEBIT",
+            "balance": 404887.6,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-05",
+            "description": "9124 CDB CS TO IBFTS3 NIK MOHD HAFIZI BIN AR 6D",
+            "amount": 2660.0,
+            "type": "DEBIT",
+            "balance": 371823.03,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 NIK MOHD HAFIZI BIN",
+            "amount": 1470.0,
+            "type": "DEBIT",
+            "balance": 313126.44,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 NIK MOHD HAFIZI BIN",
+            "amount": 430.0,
+            "type": "DEBIT",
+            "balance": 590952.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 NIK MOHD HAFIZI BIN",
+            "amount": 108.0,
+            "type": "DEBIT",
+            "balance": 515389.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-21",
+            "description": "9124 CDB CS TO IBFTS3 NIK MOHD HAFIZI BIN",
+            "amount": 500.0,
+            "type": "DEBIT",
+            "balance": 50346.98,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -7488.0,
+        "transaction_count": 7
+      },
+      {
+        "counterparty_name": "MOHD FAIZOL BIN ABDU",
+        "total_credits": 0.0,
+        "total_debits": 7000.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-18",
+            "description": "9124 CDB CS TO IBFTS3 MOHD FAIZOL BIN ABDU",
+            "amount": 7000.0,
+            "type": "DEBIT",
+            "balance": 246063.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -7000.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "UNION STEEL WORKS",
+        "total_credits": 0.0,
+        "total_debits": 6495.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-18",
+            "description": "9124 CDB CS TO IBFTS3 UNION STEEL WORKS SD Manhole Skirting",
+            "amount": 6495.0,
+            "type": "DEBIT",
+            "balance": 264084.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -6495.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "EZRA REZZA SERVICES",
+        "total_credits": 0.0,
+        "total_debits": 5500.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 EZRA REZZA SERVICES",
+            "amount": 5500.0,
+            "type": "DEBIT",
+            "balance": 525592.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -5500.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "UNIQUE AUTO TRANSMIS",
+        "total_credits": 0.0,
+        "total_debits": 4834.65,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-21",
+            "description": "9124 CDB CS TO IBFTS3 UNIQUE AUTO TRANSMIS Service, Repair",
+            "amount": 4834.65,
+            "type": "DEBIT",
+            "balance": 45252.33,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -4834.65,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "ARMILA GENERAL",
+        "total_credits": 0.0,
+        "total_debits": 4578.0,
+        "credit_count": 0,
+        "debit_count": 3,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 ARMILA GENERAL SDN BHD Triton WC688V",
+            "amount": 2670.0,
+            "type": "DEBIT",
+            "balance": 586615.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-10-31",
+            "description": "9124 CDB CS TO IBFTS3 ARMILA GENERAL SDN BHD",
+            "amount": 728.0,
+            "type": "DEBIT",
+            "balance": 430858.14,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-06",
+            "description": "9124 CDB CS TO IBFTS3 ARMILA GENERAL SDN BHD",
+            "amount": 1180.0,
+            "type": "DEBIT",
+            "balance": 347593.03,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -4578.0,
+        "transaction_count": 3
+      },
+      {
+        "counterparty_name": "SYS AUTOMOBILE",
+        "total_credits": 0.0,
+        "total_debits": 4245.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-27",
+            "description": "9124 CDB CS TO IBFTS3 SYS AUTOMOBILE (HART",
+            "amount": 4245.0,
+            "type": "DEBIT",
+            "balance": 366200.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -4245.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "1583 CA DR ADVICE 14201",
+        "total_credits": 0.0,
+        "total_debits": 4000.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-09-18",
+            "description": "1583 CA DR ADVICE 14201",
+            "amount": 4000.0,
+            "type": "DEBIT",
+            "balance": 70458.85,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/9. BIMB8489 Sept 25.pdf",
+            "extraction_method": "raw"
+          }
+        ],
+        "net_position": -4000.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "E THREE SOLUTIONS",
+        "total_credits": 1000.0,
+        "total_debits": 2250.0,
+        "credit_count": 1,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 E THREE SOLUTIONS SD Rental Portable Gas Detector",
+            "amount": 2250.0,
+            "type": "DEBIT",
+            "balance": 309333.87,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-05",
+            "description": "9895 INW DuitNow Transfer E THREE SOLUTIONS SD Rental GD Deposit",
+            "amount": 1000.0,
+            "type": "CREDIT",
+            "balance": 120240.42,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -1250.0,
+        "transaction_count": 2
+      },
+      {
+        "counterparty_name": "MUHAMMAD THARIQ BIN",
+        "total_credits": 0.0,
+        "total_debits": 3170.16,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMMAD THARIQ BIN",
+            "amount": 3170.16,
+            "type": "DEBIT",
+            "balance": 582714.43,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -3170.16,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "JOHAN FARIDZUL BIN",
+        "total_credits": 0.0,
+        "total_debits": 3080.06,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-14",
+            "description": "9124 CDB CS TO IBFTS3 JOHAN FARIDZUL BIN M",
+            "amount": 3080.06,
+            "type": "DEBIT",
+            "balance": 641195.81,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -3080.06,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "SPINERGY ENTERPRISE",
+        "total_credits": 0.0,
+        "total_debits": 3050.0,
+        "credit_count": 0,
+        "debit_count": 4,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 SPINERGY ENTERPRISE Delivery to PS Pedas Linggi SB",
+            "amount": 700.0,
+            "type": "DEBIT",
+            "balance": 580074.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-05",
+            "description": "9124 CDB CS TO IBFTS3 SPINERGY ENTERPRISE",
+            "amount": 700.0,
+            "type": "DEBIT",
+            "balance": 374483.03,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 SPINERGY ENTERPRISE Transport to PS Pedas Linggi (NB)",
+            "amount": 1200.0,
+            "type": "DEBIT",
+            "balance": 581514.43,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 SPINERGY ENTERPRISE Pedas Linggi to Elmina",
+            "amount": 450.0,
+            "type": "DEBIT",
+            "balance": 348825.89,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -3050.0,
+        "transaction_count": 4
+      },
+      {
+        "counterparty_name": "HAZWAN BIN JASMAN",
+        "total_credits": 0.0,
+        "total_debits": 2354.58,
+        "credit_count": 0,
+        "debit_count": 3,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 HAZWAN BIN JASMAN",
+            "amount": 500.0,
+            "type": "DEBIT",
+            "balance": 586115.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 HAZWAN BIN JASMAN",
+            "amount": 1176.8,
+            "type": "DEBIT",
+            "balance": 580337.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-21",
+            "description": "9124 CDB CS TO IBFTS3 HAZWAN BIN JASMAN",
+            "amount": 677.78,
+            "type": "DEBIT",
+            "balance": 44574.55,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -2354.58,
+        "transaction_count": 3
+      },
+      {
+        "counterparty_name": "MUHAMAD SANI BIN MAN",
+        "total_credits": 0.0,
+        "total_debits": 2123.0,
+        "credit_count": 0,
+        "debit_count": 7,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMAD SANI BIN MAN",
+            "amount": 290.0,
+            "type": "DEBIT",
+            "balance": 585825.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-05",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMAD SANI BIN MAN",
+            "amount": 90.0,
+            "type": "DEBIT",
+            "balance": 377850.88,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMAD SANI BIN MAN",
+            "amount": 450.0,
+            "type": "DEBIT",
+            "balance": 590502.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMAD SANI BIN MAN",
+            "amount": 105.0,
+            "type": "DEBIT",
+            "balance": 531200.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMAD SANI BIN MAN",
+            "amount": 578.0,
+            "type": "DEBIT",
+            "balance": 346159.89,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-21",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMAD SANI BIN MAN",
+            "amount": 260.0,
+            "type": "DEBIT",
+            "balance": 50086.98,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-31",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMAD SANI BIN MAN",
+            "amount": 350.0,
+            "type": "DEBIT",
+            "balance": 77654.55,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -2123.0,
+        "transaction_count": 7
+      },
+      {
+        "counterparty_name": "MOHAMMAD NUR D BIN N",
+        "total_credits": 0.0,
+        "total_debits": 2100.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 MOHAMMAD NUR D BIN N",
+            "amount": 2100.0,
+            "type": "DEBIT",
+            "balance": 587502.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -2100.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "SCS PRIMA",
+        "total_credits": 0.0,
+        "total_debits": 2098.0,
+        "credit_count": 0,
+        "debit_count": 2,
+        "transactions": [
+          {
+            "date": "2025-10-29",
+            "description": "9124 CDB CS TO IBFTS3 SCS PRIMA SDN BHD",
+            "amount": 1049.0,
+            "type": "DEBIT",
+            "balance": 519896.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 SCS PRIMA SDN BHD",
+            "amount": 1049.0,
+            "type": "DEBIT",
+            "balance": 239442.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -2098.0,
+        "transaction_count": 2
+      },
+      {
+        "counterparty_name": "LNM EQUIPMENT SERVIC",
+        "total_credits": 0.0,
+        "total_debits": 1400.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 LNM EQUIPMENT SERVIC Rental Forklift",
+            "amount": 1400.0,
+            "type": "DEBIT",
+            "balance": 582790.99,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -1400.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "TOYOTA CAPITAL",
+        "total_credits": 0.0,
+        "total_debits": 1202.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-29",
+            "description": "9231 CDB JOMPAY OFF-US TOYOTA CAPITAL (M) S CAUPBG8 B",
+            "amount": 1202.0,
+            "type": "DEBIT",
+            "balance": 558172.19,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -1202.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "PGSB BIMB",
+        "total_credits": 1000.0,
+        "total_debits": 0.0,
+        "credit_count": 1,
+        "debit_count": 0,
+        "transactions": [
+          {
+            "date": "2025-08-26",
+            "description": "9895 INW DuitNow Transfer PGSB BIMB",
+            "amount": 1000.0,
+            "type": "CREDIT",
+            "balance": 1000.0,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/8. BIMB8489 Aug 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": 1000.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "NUR FARDLIZA IRZA BI",
+        "total_credits": 950.0,
+        "total_debits": 0.0,
+        "credit_count": 1,
+        "debit_count": 0,
+        "transactions": [
+          {
+            "date": "2025-12-10",
+            "description": "9895 INW DuitNow Transfer NUR FARDLIZA IRZA BI Getah dipping",
+            "amount": 950.0,
+            "type": "CREDIT",
+            "balance": 100647.73,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": 950.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "NORAISHAH BINTI SELA",
+        "total_credits": 0.0,
+        "total_debits": 902.35,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-12",
+            "description": "9124 CDB CS TO IBFTS3 NORAISHAH BINTI SELA",
+            "amount": 902.35,
+            "type": "DEBIT",
+            "balance": 297699.37,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -902.35,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "AIZAT MUZAMMIN BIN A",
+        "total_credits": 0.0,
+        "total_debits": 900.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-18",
+            "description": "9124 CDB CS TO IBFTS3 AIZAT MUZAMMIN BIN A Reno 12A",
+            "amount": 900.0,
+            "type": "DEBIT",
+            "balance": 589602.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -900.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "SV TRANSPORT SERVICE",
+        "total_credits": 0.0,
+        "total_debits": 800.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 SV TRANSPORT SERVICE Delivery to PS Pedas Linggi SB",
+            "amount": 800.0,
+            "type": "DEBIT",
+            "balance": 581645.49,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -800.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "PPS MAJU JAYA ENTERP",
+        "total_credits": 0.0,
+        "total_debits": 800.0,
+        "credit_count": 0,
+        "debit_count": 2,
+        "transactions": [
+          {
+            "date": "2025-11-14",
+            "description": "9124 CDB CS TO IBFTS3 PPS MAJU JAYA ENTERP Sri Coalfields - Leaking",
+            "amount": 500.0,
+            "type": "DEBIT",
+            "balance": 640695.81,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          },
+          {
+            "date": "2025-12-21",
+            "description": "9124 CDB CS TO IBFTS3 PPS MAJU JAYA ENTERP Bndr Sri Coalfield Leaking",
+            "amount": 300.0,
+            "type": "DEBIT",
+            "balance": 53633.76,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -800.0,
+        "transaction_count": 2
+      },
+      {
+        "counterparty_name": "LIM TECK LAI VVP",
+        "total_credits": 0.0,
+        "total_debits": 700.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-28",
+            "description": "9124 CDB CS TO IBFTS3 LIM TECK LAI VVP Floor Hinge",
+            "amount": 700.0,
+            "type": "DEBIT",
+            "balance": 345459.89,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -700.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "MOHD NAZRIN BIN MOHD PM",
+        "total_credits": 0.0,
+        "total_debits": 600.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9124 CDB CS TO IBFTS3 MOHD NAZRIN BIN MOHD PM Pump HOver",
+            "amount": 600.0,
+            "type": "DEBIT",
+            "balance": 601785.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -600.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "ENGKU REZZA HEZREEN",
+        "total_credits": 0.0,
+        "total_debits": 578.4,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-05",
+            "description": "9124 CDB CS TO IBFTS3 ENGKU REZZA HEZREEN",
+            "amount": 578.4,
+            "type": "DEBIT",
+            "balance": 127753.29,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -578.4,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "GOVINDASAMY A/L PARA",
+        "total_credits": 0.0,
+        "total_debits": 561.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-11",
+            "description": "9124 CDB CS TO IBFTS3 GOVINDASAMY A/L PARA",
+            "amount": 561.0,
+            "type": "DEBIT",
+            "balance": 73933.76,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -561.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "MOHD AZMAN BIN BAHAR",
+        "total_credits": 0.0,
+        "total_debits": 445.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-11",
+            "description": "9124 CDB CS TO IBFTS3 MOHD AZMAN BIN BAHAR",
+            "amount": 445.0,
+            "type": "DEBIT",
+            "balance": 308888.87,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -445.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "MALIVE",
+        "total_credits": 0.0,
+        "total_debits": 358.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 MALIVE SDN BHD",
+            "amount": 358.0,
+            "type": "DEBIT",
+            "balance": 436981.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -358.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "TM UNIFI CAPJWFL",
+        "total_credits": 0.0,
+        "total_debits": 345.5,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9231 CDB JOMPAY OFF-US TM UNIFI CAPJWFL 7",
+            "amount": 345.5,
+            "type": "DEBIT",
+            "balance": 582445.49,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -345.5,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "TM UNIFI CBVM1AH",
+        "total_credits": 0.0,
+        "total_debits": 345.5,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-30",
+            "description": "9231 CDB JOMPAY OFF-US TM UNIFI CBVM1AH 2",
+            "amount": 345.5,
+            "type": "DEBIT",
+            "balance": 192506.86,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -345.5,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "YASIN HAMID",
+        "total_credits": 0.0,
+        "total_debits": 300.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-05",
+            "description": "9124 CDB CS TO IBFTS3 YASIN HAMID Lock Clip Tank Sump Cover 30pcs",
+            "amount": 300.0,
+            "type": "DEBIT",
+            "balance": 142031.69,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -300.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "FEDEX CCA8S0K",
+        "total_credits": 0.0,
+        "total_debits": 286.18,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-11",
+            "description": "9231 CDB JOMPAY OFF-US FEDEX CCA8S0K M",
+            "amount": 286.18,
+            "type": "DEBIT",
+            "balance": 74494.76,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -286.18,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "FEDEX",
+        "total_credits": 0.0,
+        "total_debits": 240.6,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-11",
+            "description": "9231 CDB JOMPAY OFF-US FEDEX CCARPH9 X",
+            "amount": 240.6,
+            "type": "DEBIT",
+            "balance": 74780.94,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -240.6,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "MUHAMMAD ISA BIN ROS",
+        "total_credits": 0.0,
+        "total_debits": 220.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-31",
+            "description": "9124 CDB CS TO IBFTS3 MUHAMMAD ISA BIN ROS",
+            "amount": 220.0,
+            "type": "DEBIT",
+            "balance": 420104.2,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -220.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "MOHD IRWAN BIN ISHAK",
+        "total_credits": 0.0,
+        "total_debits": 220.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-12-31",
+            "description": "9124 CDB CS TO IBFTS3 MOHD IRWAN BIN ISHAK",
+            "amount": 220.0,
+            "type": "DEBIT",
+            "balance": 78004.55,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -220.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "AMIRUL FIRDAUS BIN A",
+        "total_credits": 0.0,
+        "total_debits": 205.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 AMIRUL FIRDAUS BIN A",
+            "amount": 205.0,
+            "type": "DEBIT",
+            "balance": 433080.51,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -205.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "KAIROS GLOBAL PARTNE ABTC",
+        "total_credits": 0.0,
+        "total_debits": 200.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-24",
+            "description": "9124 CDB CS TO IBFTS3 KAIROS GLOBAL PARTNE ABTC - PHYSICAL CARD",
+            "amount": 200.0,
+            "type": "DEBIT",
+            "balance": 425280.51,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -200.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "TENAGA NASIONAL BERHAD CAPLL6YF",
+        "total_credits": 0.0,
+        "total_debits": 154.4,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-10-24",
+            "description": "9231 CDB JOMPAY OFF-US TENAGA NASIONAL BERHAD CAPLL6YF",
+            "amount": 154.4,
+            "type": "DEBIT",
+            "balance": 584190.99,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -154.4,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "TENAGA NASIONAL BERHAD CBV2046J",
+        "total_credits": 0.0,
+        "total_debits": 150.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-30",
+            "description": "9231 CDB JOMPAY OFF-US TENAGA NASIONAL BERHAD CBV2046J",
+            "amount": 150.0,
+            "type": "DEBIT",
+            "balance": 237852.36,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -150.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "WAN SHAMEER AZLAN BI",
+        "total_credits": 0.0,
+        "total_debits": 108.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 WAN SHAMEER AZLAN BI",
+            "amount": 108.0,
+            "type": "DEBIT",
+            "balance": 531092.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -108.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "MOHD RAZIF BIN WAHID",
+        "total_credits": 0.0,
+        "total_debits": 95.0,
+        "credit_count": 0,
+        "debit_count": 1,
+        "transactions": [
+          {
+            "date": "2025-11-20",
+            "description": "9124 CDB CS TO IBFTS3 MOHD RAZIF BIN WAHID",
+            "amount": 95.0,
+            "type": "DEBIT",
+            "balance": 525497.63,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "pattern"
+          }
+        ],
+        "net_position": -95.0,
+        "transaction_count": 1
+      },
+      {
+        "counterparty_name": "FD/INTEREST",
+        "total_credits": 73.2,
+        "total_debits": 0.0,
+        "credit_count": 4,
+        "debit_count": 0,
+        "transactions": [
+          {
+            "date": "2025-09-30",
+            "description": "0160 PROFIT PAID",
+            "amount": 3.54,
+            "type": "CREDIT",
+            "balance": 370462.39,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/9. BIMB8489 Sept 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-10-31",
+            "description": "0160 PROFIT PAID",
+            "amount": 30.19,
+            "type": "CREDIT",
+            "balance": 404917.79,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/10. BIMB8489 Oct 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-11-30",
+            "description": "0160 PROFIT PAID",
+            "amount": 33.13,
+            "type": "CREDIT",
+            "balance": 176303.99,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/11. BIMB8489 Nov 25.pdf",
+            "extraction_method": "special"
+          },
+          {
+            "date": "2025-12-31",
+            "description": "0160 PROFIT PAID",
+            "amount": 6.34,
+            "type": "CREDIT",
+            "balance": 62332.79,
+            "bank": "Bank Islam",
+            "account_no": null,
+            "source_file": "Bank-Statement/BankIslam/5/12. BIMB8489 Dec 25.pdf",
+            "extraction_method": "special"
+          }
+        ],
+        "net_position": 73.2,
+        "transaction_count": 4
+      }
+    ]
+  }
+}

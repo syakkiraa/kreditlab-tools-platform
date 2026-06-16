@@ -1,0 +1,11 @@
+{
+  "04. APRIL 2025-MBB.pdf": {
+    "opening_balance": 71307.76,
+    "closing_balance": 43731.74,
+    "gross_debits": 153142.0,
+    "gross_credits": 125565.98,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

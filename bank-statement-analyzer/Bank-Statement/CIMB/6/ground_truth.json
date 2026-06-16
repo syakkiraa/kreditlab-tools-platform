@@ -1,0 +1,56 @@
+{
+  "01Dec25_to_31Dec25 (1).pdf": {
+    "opening_balance": 2014630.84,
+    "closing_balance": 3542799.41,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "01Jan26_to_31Jan26 (1).pdf": {
+    "opening_balance": 3542799.41,
+    "closing_balance": 2053878.82,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "01Nov25_to_30Nov25 (1).pdf": {
+    "opening_balance": 1853899.2,
+    "closing_balance": 2014630.84,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "01Oct25_to_31Oct25 (1).pdf": {
+    "opening_balance": 2284426.19,
+    "closing_balance": 1853899.2,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "01Sep25_to_30Sep25 (1).pdf": {
+    "opening_balance": 3636870.68,
+    "closing_balance": 2284426.19,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "2. FEB (1).pdf": {
+    "opening_balance": 2053878.82,
+    "closing_balance": 2152437.0,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

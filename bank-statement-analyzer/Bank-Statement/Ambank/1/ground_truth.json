@@ -1,0 +1,56 @@
+{
+  "07 BS JUL 8881047786963_31072024.pdf": {
+    "opening_balance": 142.5,
+    "closing_balance": 142.5,
+    "gross_debits": 0.0,
+    "gross_credits": 0.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "08 BS AUG 8881047786963_31082024.pdf": {
+    "opening_balance": 142.5,
+    "closing_balance": 132.5,
+    "gross_debits": 10.0,
+    "gross_credits": 0.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "09 BS SEP 8881047786963_30092024.pdf": {
+    "opening_balance": 132.5,
+    "closing_balance": 2641.3,
+    "gross_debits": 16501.2,
+    "gross_credits": 19010.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "10 BS OCT 8881047786963_31102024.pdf": {
+    "opening_balance": 2641.3,
+    "closing_balance": 100.0,
+    "gross_debits": 32241.3,
+    "gross_credits": 29700.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "11 BS NOV 8881047786963_30112024.pdf": {
+    "opening_balance": 100.0,
+    "closing_balance": 5.0,
+    "gross_debits": 34635.0,
+    "gross_credits": 34540.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "12 BS DEC 8881047786963_31122024.pdf": {
+    "opening_balance": 5.0,
+    "closing_balance": 10.0,
+    "gross_debits": 39330.0,
+    "gross_credits": 39335.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

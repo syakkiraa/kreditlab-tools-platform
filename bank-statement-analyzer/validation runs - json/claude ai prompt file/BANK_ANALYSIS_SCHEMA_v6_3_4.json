@@ -1,0 +1,1777 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "bank-analysis-schema-v6.3.4",
+  "title": "Kredit Lab Statement Intelligence Schema v6.3.4",
+  "description": "v6.3.4 CHANGES (2026-04-23): (1) account_type enum extended — adds 'OD', 'Cash Line', 'Cash Line-i' (was only 'Current', 'Savings', 'OD'); (2) NEW account_type_determination object on accounts[] — captures both CR and OD trail deltas, header signal, locked verdict, confidence — from the parser's determine_account_type() helper; (3) relationship enum extended — adds 'Management Company', 'Sister Company / Management Company', 'Affiliate' for medical/holding-group entities; (4) observations.positive and .concerns maxItems raised 5 -> 8 (KDYN needed more slots); (5) NEW STRUCTURAL value in epf_per_month_ratios.status and socso_per_month_ratios.status enums (was OK/WARNING/CATCH_UP); (6) C26 Trade Income and C27 Trade Expense added to schema_fields references (trade_income_*, trade_expense_* on monthly/consolidated blocks). v6.3.3.2: top_parties expanded from 5 to 10 entries per side (maxItems 10, rank max 10). Generic verb-only counterparties (TRANSFER FR/TO A/C, PAYMENT FR A/C, INTER-BANK PAYMENT INTO A/C with no name attached) MUST be excluded from top_parties \u2014 they are parser dropouts, not real entities. epf_coverage_pct and socso_coverage_pct now bounded [0, 100] and MUST be computed via set intersection: len(paid_months \u2229 salary_months) / len(salary_months) \u00d7 100. This prevents the >100% anomaly when a statutory payment occurs in a month with no salary activity. v6.3.3.1 OD-aware: reconciliation_status, reconciliation_delta, parsing_quality expected_closing, and Flag 15 (Low Closing Balance) now account-type aware \u2014 OD accounts use opening+debits-credits=closing (balance stored as positive debt magnitude). Ambank OD is pre-negated and uses the CR rule. v6.3.3: counterparty_ledger upgraded from passthrough to AI-validated. v6.3.2: C04 removed from net debit exclusion (reporting only). C04 tags ALL related party debits regardless of purpose. C11 vehicle plate detection for hire purchase. Deterministic truncated name resolution. RP8 tightened. loan_transactions.repayments items gain optional exclusion_note field. Base v6.3.1: Added statutory_compliance object to consolidated \u2014 month-by-month coverage tracking for EPF/SOCSO/LHDN/HRDF with per-month ratio checks, missing month lists, and overall compliance status. Fixes regression where aggregate ratio checks masked months with zero statutory payments. Base v6.3.0: Added classification rulebook alignment fields \u2014 own_party_cr_count, own_party_dr_count, related_party_cr_count, related_party_dr_count, loan_repayment_count, inward_return_cr (C16), unclassified transaction tracking. Base v6.2.2: reconciliation, FX tracking, parsing metadata, counterparty trends. pdf_integrity passthrough from upstream parser.",
+  "$comment_fx_classification": "FX CLASSIFICATION GUIDE \u2014 FX means actual foreign currency conversion (non-MYR to/from MYR). A transaction is FX ONLY when a real currency conversion occurs. TRUE FX indicators: (1) 'TT' or 'TELEGRAPHIC TRANSFER' with foreign source/destination and evidence of currency conversion, (2) Explicit 'FOREX', 'FX CONV', or 'FOREIGN EXCHANGE' in the bank description, (3) SWIFT/international wire transfer references with foreign currency amounts, (4) Foreign beneficiary names with international addresses and non-MYR amounts. NOT FX (must be excluded): (a) RENTAS/JANM domestic government remittances \u2014 these are MYR-to-MYR interbank transfers via the RENTAS payment rail, not foreign currency, (b) IBG credits with internal voucher reference codes that contain currency-like prefixes (e.g. GBPV = General/Business Payment Voucher, USDP = internal code, not USD currency), (c) DuitNow/FPX/JomPAY transfers regardless of description content, (d) Any MYR-to-MYR transfer between two Malaysian entities. TRACING METHODOLOGY: Alphabet codes like GBPV, USDP, EURK appearing in reference number fields are almost always internal voucher numbering systems, not currency indicators. To confirm FX, look for: conversion rate mentioned, foreign currency amount stated, 'bought/sold' language, correspondent bank references, or SWIFT codes. DEFAULT RULE: When in doubt, classify as NOT FX. Only tag as FX when there is clear, unambiguous evidence of currency conversion.",
+  "type": "object",
+  "required": [
+    "report_info",
+    "accounts",
+    "monthly_analysis",
+    "consolidated",
+    "top_parties",
+    "large_credits",
+    "own_related_transactions",
+    "loan_transactions",
+    "flags",
+    "observations",
+    "parsing_metadata",
+    "unclassified_transactions"
+  ],
+  "properties": {
+    "report_info": {
+      "type": "object",
+      "description": "Report metadata and company information",
+      "required": [
+        "schema_version",
+        "company_name",
+        "generated_at",
+        "period_start",
+        "period_end",
+        "total_accounts",
+        "total_months",
+        "related_parties"
+      ],
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "6.3.4"
+        },
+        "company_name": {
+          "type": "string",
+          "description": "Full legal name of the company"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "period_start": {
+          "type": "string",
+          "format": "date"
+        },
+        "period_end": {
+          "type": "string",
+          "format": "date"
+        },
+        "total_accounts": {
+          "type": "integer"
+        },
+        "total_months": {
+          "type": "integer"
+        },
+        "related_parties": {
+          "type": "array",
+          "description": "Known related parties provided for analysis",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "relationship"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "relationship": {
+                "type": "string",
+                "enum": [
+                  "Director",
+                  "Shareholder",
+                  "Sister Company",
+                  "Subsidiary",
+                  "Parent Company",
+                  "Family Member",
+                  "Management Company",
+                  "Sister Company / Management Company",
+                  "Affiliate"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "accounts": {
+      "type": "array",
+      "description": "Bank account details \u2014 one entry per account",
+      "items": {
+        "type": "object",
+        "required": [
+          "bank_name",
+          "account_number",
+          "account_holder",
+          "account_type",
+          "is_od",
+          "period_start",
+          "period_end",
+          "opening_balance",
+          "closing_balance",
+          "total_credits",
+          "total_debits",
+          "transaction_count"
+        ],
+        "properties": {
+          "bank_name": {
+            "type": "string"
+          },
+          "account_number": {
+            "type": "string"
+          },
+          "account_holder": {
+            "type": "string"
+          },
+          "account_type": {
+            "type": "string",
+            "enum": [
+              "Current",
+              "Savings",
+              "OD",
+              "Cash Line",
+              "Cash Line-i"
+            ]
+          },
+          "is_od": {
+            "type": "boolean"
+          },
+          "od_limit": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "account_type_determination": {
+            "type": "object",
+            "description": "v6.3.4 NEW. Emitted by the parser's core_utils.determine_account_type() helper. Captures the CR vs OD trail deltas, the header signal, and the locked verdict used for downstream interpretation. Classifier trusts locked_type directly and does NOT re-run the test.",
+            "properties": {
+              "tested_formulas": {
+                "type": "array",
+                "items": {"type": "string", "enum": ["CR", "OD"]}
+              },
+              "row_level_test": {
+                "type": "object",
+                "properties": {
+                  "cr_match_count": {"type": "integer"},
+                  "od_match_count": {"type": "integer"},
+                  "total_checks": {"type": "integer"},
+                  "cr_match_ratio": {"type": "number"},
+                  "od_match_ratio": {"type": "number"}
+                }
+              },
+              "cr_trail": {
+                "type": ["object", "null"],
+                "properties": {
+                  "computed_closing": {"type": "number"},
+                  "actual_closing": {"type": "number"},
+                  "delta": {"type": "number"},
+                  "reconciles": {"type": "boolean"}
+                }
+              },
+              "od_trail": {
+                "type": ["object", "null"],
+                "properties": {
+                  "computed_closing": {"type": "number"},
+                  "actual_closing": {"type": "number"},
+                  "delta": {"type": "number"},
+                  "reconciles": {"type": "boolean"}
+                }
+              },
+              "header_signal": {
+                "type": ["string", "null"],
+                "enum": ["CR", "OD", "CASH_LINE", null]
+              },
+              "negative_balance_rows": {"type": "integer"},
+              "total_rows_with_balance": {"type": "integer"},
+              "negative_ratio": {"type": "number"},
+              "locked_type": {
+                "type": "string",
+                "enum": ["CR", "OD", "CASH_LINE", "UNDETERMINED"]
+              },
+              "confidence": {
+                "type": "string",
+                "enum": ["HIGH", "MEDIUM", "LOW"]
+              },
+              "locked_rationale": {"type": "string"}
+            },
+            "required": ["tested_formulas", "locked_type", "confidence", "locked_rationale"]
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date"
+          },
+          "opening_balance": {
+            "type": "number"
+          },
+          "closing_balance": {
+            "type": "number"
+          },
+          "total_credits": {
+            "type": "number"
+          },
+          "total_debits": {
+            "type": "number"
+          },
+          "transaction_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "monthly_analysis": {
+      "type": "array",
+      "description": "Core monthly cash flow breakdown. One entry per account per month. Allows tracing back to individual bank statements.",
+      "items": {
+        "type": "object",
+        "required": [
+          "month",
+          "account_number",
+          "bank_name",
+          "gross_credits",
+          "gross_debits",
+          "net_credits",
+          "net_debits",
+          "credit_count",
+          "debit_count",
+          "own_party_cr",
+          "own_party_dr",
+          "related_party_cr",
+          "related_party_dr",
+          "reversal_cr",
+          "returned_cheques_inward_count",
+          "returned_cheques_inward_amount",
+          "returned_cheques_outward_count",
+          "returned_cheques_outward_amount",
+          "loan_disbursement_cr",
+          "fd_interest_cr",
+          "round_figure_cr",
+          "high_value_cr",
+          "cash_deposits_count",
+          "cash_deposits_amount",
+          "cash_withdrawals_count",
+          "cash_withdrawals_amount",
+          "cheque_deposits_count",
+          "cheque_deposits_amount",
+          "cheque_issues_count",
+          "cheque_issues_amount",
+          "loan_repayment_dr",
+          "salary_paid",
+          "statutory_epf",
+          "statutory_socso",
+          "statutory_tax",
+          "statutory_hrdf",
+          "eod_lowest",
+          "eod_highest",
+          "eod_average",
+          "opening_balance",
+          "closing_balance",
+          "fx_credit_count",
+          "fx_credit_amount",
+          "fx_debit_count",
+          "fx_debit_amount",
+          "reconciliation_status",
+          "reconciliation_delta",
+          "extraction_gaps",
+          "missing_debit_amount",
+          "missing_credit_amount",
+          "own_party_cr_count",
+          "own_party_dr_count",
+          "related_party_cr_count",
+          "related_party_dr_count",
+          "loan_repayment_count",
+          "inward_return_cr",
+          "unclassified_cr_count",
+          "unclassified_cr_amount",
+          "unclassified_dr_count",
+          "unclassified_dr_amount"
+        ],
+        "properties": {
+          "month": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "description": "Month in YYYY-MM format"
+          },
+          "gross_credits": {
+            "type": "number",
+            "description": "Total credits as per bank statement"
+          },
+          "gross_debits": {
+            "type": "number",
+            "description": "Total debits as per bank statement"
+          },
+          "net_credits": {
+            "type": "number",
+            "description": "Credits AFTER excluding: own_party(C01) + related_party(C03) + reversal(C13) + loan_disbursement(C10) + fd_interest(C12) + inward_return(C16). Formula: gross_credits - own_party_cr - related_party_cr - reversal_cr - loan_disbursement_cr - fd_interest_cr - inward_return_cr"
+          },
+          "net_debits": {
+            "type": "number",
+            "description": "Debits AFTER excluding: own_party ONLY. Formula: gross_debits - own_party_dr. v6.3.2: related_party_dr (C04) NO LONGER excluded \u2014 stays in net debits for conservative credit assessment. C04 is reporting only. Note: returned cheques are NOT excluded as they naturally net off in the statement (debit out + credit back = zero)."
+          },
+          "credit_count": {
+            "type": "integer",
+            "description": "Total number of credit transactions"
+          },
+          "debit_count": {
+            "type": "integer",
+            "description": "Total number of debit transactions"
+          },
+          "own_party_cr": {
+            "type": "number",
+            "description": "Credits from own party / inter-account transfers"
+          },
+          "own_party_dr": {
+            "type": "number",
+            "description": "Debits to own party / inter-account transfers"
+          },
+          "related_party_cr": {
+            "type": "number",
+            "description": "Credits from related parties"
+          },
+          "related_party_dr": {
+            "type": "number",
+            "description": "Debits to related parties"
+          },
+          "reversal_cr": {
+            "type": "number",
+            "description": "Reversal credits"
+          },
+          "returned_cheques_inward_count": {
+            "type": "integer",
+            "description": "Inward returned cheques \u2014 count"
+          },
+          "returned_cheques_inward_amount": {
+            "type": "number",
+            "description": "Inward returned cheques \u2014 total amount"
+          },
+          "returned_cheques_outward_count": {
+            "type": "integer",
+            "description": "Outward returned cheques \u2014 count"
+          },
+          "returned_cheques_outward_amount": {
+            "type": "number",
+            "description": "Outward returned cheques \u2014 total amount"
+          },
+          "loan_disbursement_cr": {
+            "type": "number",
+            "description": "Loan disbursements including trade finance (credit side)"
+          },
+          "fd_interest_cr": {
+            "type": "number",
+            "description": "FD maturities, sweep-ins, and interest/profit credits"
+          },
+          "round_figure_cr": {
+            "type": "number",
+            "description": "Credit amounts that are multiples of RM10,000"
+          },
+          "high_value_cr": {
+            "type": "number",
+            "description": "Credits exceeding 3x average EOD balance for the month"
+          },
+          "cash_deposits_count": {
+            "type": "integer"
+          },
+          "cash_deposits_amount": {
+            "type": "number"
+          },
+          "cash_withdrawals_count": {
+            "type": "integer"
+          },
+          "cash_withdrawals_amount": {
+            "type": "number"
+          },
+          "cheque_deposits_count": {
+            "type": "integer"
+          },
+          "cheque_deposits_amount": {
+            "type": "number"
+          },
+          "cheque_issues_count": {
+            "type": "integer"
+          },
+          "cheque_issues_amount": {
+            "type": "number"
+          },
+          "loan_repayment_dr": {
+            "type": "number",
+            "description": "Loan/financing repayments (debit side)"
+          },
+          "salary_paid": {
+            "type": "number",
+            "description": "Salary/wage payments detected"
+          },
+          "statutory_epf": {
+            "type": "number",
+            "description": "EPF/KWSP payments detected THIS month. Used by statutory_compliance to check coverage: if salary_paid > 0 but statutory_epf = 0, this month is flagged as a compliance gap."
+          },
+          "statutory_socso": {
+            "type": "number",
+            "description": "SOCSO/PERKESO payments detected THIS month. Used by statutory_compliance to check coverage: if salary_paid > 0 but statutory_socso = 0, this month is flagged as a compliance gap."
+          },
+          "statutory_tax": {
+            "type": "number",
+            "description": "LHDN/Tax payments detected THIS month. If zero across all months despite active payroll, flag in statutory_compliance."
+          },
+          "statutory_hrdf": {
+            "type": "number",
+            "description": "HRDF/PSMB payments detected THIS month. Often missing for small companies \u2014 not flagged as hard error but tracked in statutory_compliance."
+          },
+          "eod_lowest": {
+            "type": "number",
+            "description": "Lowest end-of-day balance in the month"
+          },
+          "eod_highest": {
+            "type": "number",
+            "description": "Highest end-of-day balance in the month"
+          },
+          "eod_average": {
+            "type": "number",
+            "description": "Average end-of-day balance in the month"
+          },
+          "opening_balance": {
+            "type": "number",
+            "description": "Balance at the start of the month (first day or carried forward from previous month closing)"
+          },
+          "closing_balance": {
+            "type": "number",
+            "description": "Balance at the end of the month (last day closing balance)"
+          },
+          "fx_credit_count": {
+            "type": "integer",
+            "description": "v6.2.2: Number of true foreign currency credit transactions where actual non-MYR to MYR conversion occurred. Includes inward TT with foreign currency, SWIFT credits, and explicit FX conversion credits. EXCLUDES domestic RENTAS/JANM remittances and IBG with internal voucher codes (e.g. GBPV = payment voucher, not GBP currency)."
+          },
+          "fx_credit_amount": {
+            "type": "number",
+            "description": "v6.2.2: Total MYR-equivalent amount of true FX credit transactions (actual currency conversion only)"
+          },
+          "fx_debit_count": {
+            "type": "integer",
+            "description": "v6.2.2: Number of true foreign currency debit transactions where actual MYR to non-MYR conversion occurred. Includes outward TT to foreign beneficiaries in foreign currency, SWIFT debits, and explicit FX conversion debits. EXCLUDES domestic transfers and internal voucher references."
+          },
+          "fx_debit_amount": {
+            "type": "number",
+            "description": "v6.2.2: Total MYR-equivalent amount of true FX debit transactions (actual currency conversion only)"
+          },
+          "fx_currencies": {
+            "type": "array",
+            "description": "v6.2.2: Distinct foreign currencies involved in true FX transactions for this month. Empty array if no FX detected. Only populated when actual currency conversion evidence exists \u2014 not from voucher reference codes.",
+            "items": {
+              "type": "string",
+              "description": "ISO 4217 currency code (e.g. USD, SGD, EUR, GBP, IDR, THB)"
+            }
+          },
+          "od_limit": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "OD limit if applicable"
+          },
+          "od_utilization_pct": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Average utilization as % of OD limit"
+          },
+          "days_overdrawn": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Number of days account was overdrawn (non-OD accounts)"
+          },
+          "account_number": {
+            "type": "string",
+            "description": "Bank account number for this row"
+          },
+          "bank_name": {
+            "type": "string",
+            "description": "Bank name for this row"
+          },
+          "reconciliation_status": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "FAIL"
+            ],
+            "description": "v6.2.2 / v6.3.3 OD-aware: Balance trail reconciliation result. PASS (CR accounts) = opening_balance + gross_credits - gross_debits matches closing_balance within RM1.00 tolerance AND no extraction gaps detected. PASS (OD accounts, account_type='OD' or is_od=true, excluding Ambank OD which is pre-negated) = opening_balance + gross_debits - gross_credits matches closing_balance within RM1.00. FAIL = extraction gaps found via transaction-by-transaction balance trail analysis. Do NOT report OD convention as FAIL."
+          },
+          "reconciliation_delta": {
+            "type": "number",
+            "description": "v6.2.2 / v6.3.3 OD-aware: For CR accounts: closing_balance - (opening_balance + gross_credits - gross_debits). For OD accounts (account_type='OD', excluding Ambank OD which is pre-negated): closing_balance - (opening_balance + gross_debits - gross_credits). Zero or near-zero means all transactions extracted. CR sign convention: Negative = missing debits, Positive = missing credits. OD sign convention: Negative = missing credits, Positive = missing debits."
+          },
+          "extraction_gaps": {
+            "type": "integer",
+            "description": "v6.2.2: Number of extraction gaps detected in this month via balance trail. Zero if reconciliation_status is PASS."
+          },
+          "missing_debit_amount": {
+            "type": "number",
+            "description": "v6.2.2: Total amount of unextracted debits detected via balance trail gaps. Zero if no gaps."
+          },
+          "missing_credit_amount": {
+            "type": "number",
+            "description": "v6.2.2: Total amount of unextracted credits detected via balance trail gaps. Zero if no gaps."
+          },
+          "data_quality_note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "v6.2.2: Human-readable warning if reconciliation failed. Null if PASS. HTML renderer should display this as a visible warning on the month row."
+          },
+          "own_party_cr_count": {
+            "type": "integer",
+            "description": "v6.3.0: Number of own-party credit transactions (C01). Full company name match only."
+          },
+          "own_party_dr_count": {
+            "type": "integer",
+            "description": "v6.3.0: Number of own-party debit transactions (C02). Full company name match only."
+          },
+          "related_party_cr_count": {
+            "type": "integer",
+            "description": "v6.3.0: Number of related-party credit transactions (C03)."
+          },
+          "related_party_dr_count": {
+            "type": "integer",
+            "description": "v6.3.0: Number of related-party debit transactions (C04)."
+          },
+          "loan_repayment_count": {
+            "type": "integer",
+            "description": "v6.3.0: Number of loan repayment transactions (C11). Includes dual-tagged C02+C11."
+          },
+          "inward_return_cr": {
+            "type": "number",
+            "description": "v6.3.0: IBG/GIRO Inward Return credits (C16). Failed outward transfers returning to account. EXCLUDED from net credits per Classification Rules v3."
+          },
+          "unclassified_cr_count": {
+            "type": "integer",
+            "description": "v6.3.0: Number of credit transactions with descriptions too vague/missing to classify. Stays in net credits \u2014 NOT excluded."
+          },
+          "unclassified_cr_amount": {
+            "type": "number",
+            "description": "v6.3.0: Total amount of unclassified credit transactions. Stays in net credits."
+          },
+          "unclassified_dr_count": {
+            "type": "integer",
+            "description": "v6.3.0: Number of debit transactions with descriptions too vague/missing to classify. Stays in net debits \u2014 NOT excluded."
+          },
+          "unclassified_dr_amount": {
+            "type": "number",
+            "description": "v6.3.0: Total amount of unclassified debit transactions. Stays in net debits."
+          }
+        }
+      }
+    },
+    "consolidated": {
+      "type": "object",
+      "description": "Totals and annualized figures across all months",
+      "required": [
+        "gross_credits",
+        "gross_debits",
+        "net_credits",
+        "net_debits",
+        "annualized_net_credits",
+        "annualized_net_debits",
+        "total_own_party_cr",
+        "total_own_party_dr",
+        "total_related_party_cr",
+        "total_related_party_dr",
+        "total_reversal_cr",
+        "total_returned_cheques_inward",
+        "total_returned_cheques_outward",
+        "total_loan_disbursement_cr",
+        "total_fd_interest_cr",
+        "total_round_figure_cr",
+        "total_high_value_cr",
+        "total_cash_deposits",
+        "total_cash_withdrawals",
+        "total_cheque_deposits",
+        "total_cheque_issues",
+        "total_loan_repayment_dr",
+        "total_salary_paid",
+        "total_statutory_epf",
+        "total_statutory_socso",
+        "total_statutory_tax",
+        "total_statutory_hrdf",
+        "eod_lowest",
+        "eod_highest",
+        "eod_average",
+        "total_fx_credits",
+        "total_fx_debits",
+        "data_completeness",
+        "months_with_gaps",
+        "total_extraction_gaps",
+        "total_missing_debits",
+        "total_missing_credits",
+        "total_inward_return_cr",
+        "total_unclassified_cr",
+        "total_unclassified_dr",
+        "statutory_compliance"
+      ],
+      "properties": {
+        "gross_credits": {
+          "type": "number"
+        },
+        "gross_debits": {
+          "type": "number"
+        },
+        "net_credits": {
+          "type": "number",
+          "description": "Sum of monthly net_credits. Reflects exclusion of C01, C03, C10, C12, C13, C16."
+        },
+        "net_debits": {
+          "type": "number",
+          "description": "Sum of monthly net_debits. v6.3.2: Excludes own_party_dr (C02) only. C04 no longer excluded."
+        },
+        "annualized_net_credits": {
+          "type": "number",
+          "description": "AVERAGE(monthly net_credits) \u00d7 12"
+        },
+        "annualized_net_debits": {
+          "type": "number",
+          "description": "AVERAGE(monthly net_debits) \u00d7 12"
+        },
+        "total_own_party_cr": {
+          "type": "number"
+        },
+        "total_own_party_dr": {
+          "type": "number"
+        },
+        "total_related_party_cr": {
+          "type": "number"
+        },
+        "total_related_party_dr": {
+          "type": "number"
+        },
+        "total_reversal_cr": {
+          "type": "number"
+        },
+        "total_returned_cheques_inward": {
+          "type": "number"
+        },
+        "total_returned_cheques_outward": {
+          "type": "number"
+        },
+        "total_loan_disbursement_cr": {
+          "type": "number"
+        },
+        "total_fd_interest_cr": {
+          "type": "number"
+        },
+        "total_round_figure_cr": {
+          "type": "number"
+        },
+        "total_high_value_cr": {
+          "type": "number"
+        },
+        "total_cash_deposits": {
+          "type": "number"
+        },
+        "total_cash_withdrawals": {
+          "type": "number"
+        },
+        "total_cheque_deposits": {
+          "type": "number"
+        },
+        "total_cheque_issues": {
+          "type": "number"
+        },
+        "total_loan_repayment_dr": {
+          "type": "number"
+        },
+        "total_salary_paid": {
+          "type": "number"
+        },
+        "total_statutory_epf": {
+          "type": "number"
+        },
+        "total_statutory_socso": {
+          "type": "number"
+        },
+        "total_statutory_tax": {
+          "type": "number"
+        },
+        "total_statutory_hrdf": {
+          "type": "number"
+        },
+        "eod_lowest": {
+          "type": "number",
+          "description": "Lowest EOD balance across all months"
+        },
+        "eod_highest": {
+          "type": "number",
+          "description": "Highest EOD balance across all months"
+        },
+        "eod_average": {
+          "type": "number",
+          "description": "Average of monthly EOD averages"
+        },
+        "total_fx_credits": {
+          "type": "number",
+          "description": "v6.2.2: Sum of fx_credit_amount across all months. Only counts true FX where actual foreign currency conversion occurred."
+        },
+        "total_fx_debits": {
+          "type": "number",
+          "description": "v6.2.2: Sum of fx_debit_amount across all months. Only counts true FX where actual foreign currency conversion occurred."
+        },
+        "fx_credit_pct": {
+          "type": "number",
+          "description": "v6.2.2: total_fx_credits as % of gross_credits. Cross-sell signal for trade/FX services. Zero if no true FX transactions exist."
+        },
+        "fx_debit_pct": {
+          "type": "number",
+          "description": "v6.2.2: total_fx_debits as % of gross_debits. Zero if no true FX transactions exist."
+        },
+        "fx_currencies_all": {
+          "type": "array",
+          "description": "v6.2.2: Distinct foreign currencies involved in true FX transactions across the entire period. Empty if no FX detected.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "data_completeness": {
+          "type": "string",
+          "enum": [
+            "COMPLETE",
+            "INCOMPLETE"
+          ],
+          "description": "v6.2.2: COMPLETE if all months pass balance trail reconciliation. INCOMPLETE if any month has extraction gaps. When INCOMPLETE, HTML renderer must show a top-of-report warning banner."
+        },
+        "months_with_gaps": {
+          "type": "integer",
+          "description": "v6.2.2: Number of months where extraction gaps were detected. Zero if data_completeness is COMPLETE."
+        },
+        "total_extraction_gaps": {
+          "type": "integer",
+          "description": "v6.2.2: Total number of individual extraction gaps across all months."
+        },
+        "total_missing_debits": {
+          "type": "number",
+          "description": "v6.2.2: Sum of all missing_debit_amount across months. When > 0, gross_debits and net_debits are understated by at least this amount."
+        },
+        "total_missing_credits": {
+          "type": "number",
+          "description": "v6.2.2: Sum of all missing_credit_amount across months. When > 0, gross_credits and net_credits are understated by at least this amount."
+        },
+        "data_quality_warning": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "v6.2.2: Human-readable warning for HTML top-of-report banner. Null if COMPLETE. Must state which figures are affected and by how much."
+        },
+        "total_inward_return_cr": {
+          "type": "number",
+          "description": "v6.3.0: Sum of inward_return_cr (C16) across all months."
+        },
+        "total_unclassified_cr": {
+          "type": "number",
+          "description": "v6.3.0: Sum of unclassified_cr_amount across all months."
+        },
+        "total_unclassified_dr": {
+          "type": "number",
+          "description": "v6.3.0: Sum of unclassified_dr_amount across all months."
+        },
+        "statutory_compliance": {
+          "type": "object",
+          "description": "v6.3.1: Statutory payment coverage analysis. Compares months with active payroll (salary_paid > 0) against months with each statutory payment. Detects gaps that aggregate ratio checks miss. Downstream HTML renderer uses this for statutory compliance dashboard.",
+          "required": [
+            "salary_months_active",
+            "salary_months_list",
+            "epf_months_paid",
+            "epf_months_list",
+            "epf_months_missing",
+            "epf_coverage_pct",
+            "socso_months_paid",
+            "socso_months_list",
+            "socso_months_missing",
+            "socso_coverage_pct",
+            "lhdn_months_paid",
+            "lhdn_detected",
+            "hrdf_months_paid",
+            "hrdf_detected",
+            "epf_per_month_ratios",
+            "socso_per_month_ratios",
+            "overall_status"
+          ],
+          "properties": {
+            "salary_months_active": {
+              "type": "integer",
+              "description": "Number of months where salary_paid > 0"
+            },
+            "salary_months_list": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              "description": "List of months (YYYY-MM) with salary payments"
+            },
+            "epf_months_paid": {
+              "type": "integer",
+              "description": "Number of months where statutory_epf > 0"
+            },
+            "epf_months_list": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              "description": "List of months (YYYY-MM) with EPF payments"
+            },
+            "epf_months_missing": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              "description": "Months with salary but no EPF \u2014 compliance gaps"
+            },
+            "epf_coverage_pct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "v6.3.3.2: len(epf_months_list \u2229 salary_months_list) / len(salary_months_list) \u00d7 100. Intersect the sets before dividing \u2014 EPF paid in a month with no salary activity does NOT count as coverage. 100% = fully compliant. MUST be bounded to [0, 100]."
+            },
+            "socso_months_paid": {
+              "type": "integer",
+              "description": "Number of months where statutory_socso > 0"
+            },
+            "socso_months_list": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              "description": "List of months (YYYY-MM) with SOCSO payments"
+            },
+            "socso_months_missing": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              "description": "Months with salary but no SOCSO \u2014 compliance gaps"
+            },
+            "socso_coverage_pct": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 100,
+              "description": "v6.3.3.2: len(socso_months_list \u2229 salary_months_list) / len(salary_months_list) \u00d7 100. Intersect the sets before dividing \u2014 SOCSO paid in a month with no salary activity does NOT count as coverage. 100% = fully compliant. MUST be bounded to [0, 100]."
+            },
+            "lhdn_months_paid": {
+              "type": "integer",
+              "description": "Number of months where statutory_tax > 0"
+            },
+            "lhdn_detected": {
+              "type": "boolean",
+              "description": "True if any LHDN payment detected in any month"
+            },
+            "hrdf_months_paid": {
+              "type": "integer",
+              "description": "Number of months where statutory_hrdf > 0"
+            },
+            "hrdf_detected": {
+              "type": "boolean",
+              "description": "True if any HRDF payment detected in any month"
+            },
+            "epf_per_month_ratios": {
+              "type": "array",
+              "description": "Per-month EPF/Salary ratio for months where BOTH exist. Enables detection of lump-sum catch-ups (inflated single-month ratio indicating prior gaps).",
+              "items": {
+                "type": "object",
+                "required": [
+                  "month",
+                  "epf_amount",
+                  "salary_amount",
+                  "ratio_pct",
+                  "status"
+                ],
+                "properties": {
+                  "month": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}$"
+                  },
+                  "epf_amount": {
+                    "type": "number"
+                  },
+                  "salary_amount": {
+                    "type": "number"
+                  },
+                  "ratio_pct": {
+                    "type": "number",
+                    "description": "EPF / Salary \u00d7 100"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "OK",
+                      "WARNING",
+                      "CATCH_UP",
+                      "STRUCTURAL"
+                    ],
+                    "description": "v6.3.4: dual-band. OK = within EITHER employer-only (11-15%) OR combined employer+employee (20-26%) band. WARNING = below expected. CATCH_UP = single-month ratio above band with lump-sum pattern (late payment). STRUCTURAL = ratio above band for >=4 consecutive months; signals denominator mis-count or non-standard policy; requires analyst confirmation with entity. STRUCTURAL alone does NOT downgrade COMPLIANT -> GAPS_DETECTED."
+                  }
+                }
+              }
+            },
+            "socso_per_month_ratios": {
+              "type": "array",
+              "description": "Per-month SOCSO/Salary ratio for months where BOTH exist.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "month",
+                  "socso_amount",
+                  "salary_amount",
+                  "ratio_pct",
+                  "status"
+                ],
+                "properties": {
+                  "month": {
+                    "type": "string",
+                    "pattern": "^\\d{4}-\\d{2}$"
+                  },
+                  "socso_amount": {
+                    "type": "number"
+                  },
+                  "salary_amount": {
+                    "type": "number"
+                  },
+                  "ratio_pct": {
+                    "type": "number",
+                    "description": "SOCSO / Salary \u00d7 100"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "OK",
+                      "WARNING",
+                      "CATCH_UP",
+                      "STRUCTURAL"
+                    ],
+                    "description": "v6.3.4: OK = 1-5%. WARNING = outside range. CATCH_UP = single-month ratio above band suggesting lump-sum payment. STRUCTURAL = >=4 consecutive months above band; requires analyst confirmation."
+                  }
+                }
+              }
+            },
+            "overall_status": {
+              "type": "string",
+              "enum": [
+                "COMPLIANT",
+                "GAPS_DETECTED",
+                "CRITICAL"
+              ],
+              "description": "COMPLIANT = all statutory payments present in all payroll months. GAPS_DETECTED = some months missing. CRITICAL = majority of months missing or no statutory payments at all despite active payroll."
+            }
+          }
+        }
+      }
+    },
+    "top_parties": {
+      "type": "object",
+      "description": "v6.3.3.2: Top 10 payers and top 10 payees by total amount, with month-over-month trends. Generic verb-only entries (TRANSFER FR A/C, TRANSFER TO A/C, PAYMENT FR A/C, INTER-BANK PAYMENT INTO A/C with no counterparty name attached) MUST be excluded from ranking \u2014 they are parser dropouts, not real counterparties. Cheque patterns (HSE CHQ DEPOSIT, CDM CASH DEPOSIT, 2D LOCAL CHQ, CASH CHQ DR) MAY appear only if the analyst explicitly wants unidentified buckets surfaced; default is to exclude. Was top 5 before v6.3.3.2.",
+      "required": [
+        "top_payers",
+        "top_payees"
+      ],
+      "properties": {
+        "top_payers": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/party"
+          }
+        },
+        "top_payees": {
+          "type": "array",
+          "maxItems": 10,
+          "items": {
+            "$ref": "#/$defs/party"
+          }
+        }
+      }
+    },
+    "large_credits": {
+      "type": "array",
+      "description": "All credit transactions >= RM100,000",
+      "items": {
+        "$ref": "#/$defs/transaction_entry"
+      }
+    },
+    "own_related_transactions": {
+      "type": "object",
+      "description": "All own-party and related-party transactions listed",
+      "required": [
+        "summary",
+        "transactions"
+      ],
+      "properties": {
+        "summary": {
+          "type": "object",
+          "required": [
+            "own_party_cr",
+            "own_party_dr",
+            "related_party_cr",
+            "related_party_dr"
+          ],
+          "properties": {
+            "own_party_cr": {
+              "type": "number"
+            },
+            "own_party_dr": {
+              "type": "number"
+            },
+            "related_party_cr": {
+              "type": "number"
+            },
+            "related_party_dr": {
+              "type": "number"
+            },
+            "own_party_cr_pct": {
+              "type": "number",
+              "description": "% of gross credits"
+            },
+            "own_party_dr_pct": {
+              "type": "number",
+              "description": "% of gross debits"
+            },
+            "related_party_cr_pct": {
+              "type": "number",
+              "description": "% of gross credits"
+            },
+            "related_party_dr_pct": {
+              "type": "number",
+              "description": "% of gross debits"
+            }
+          }
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "date",
+              "description",
+              "amount",
+              "type",
+              "party_type"
+            ],
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "description": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "CREDIT",
+                  "DEBIT"
+                ]
+              },
+              "party_type": {
+                "type": "string",
+                "enum": [
+                  "OWN",
+                  "RELATED"
+                ]
+              },
+              "party_name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "loan_transactions": {
+      "type": "object",
+      "description": "Loan disbursements and repayments",
+      "required": [
+        "disbursements",
+        "repayments"
+      ],
+      "properties": {
+        "disbursements": {
+          "type": "array",
+          "description": "Loan/trade finance disbursements (credits)",
+          "items": {
+            "$ref": "#/$defs/transaction_entry"
+          }
+        },
+        "repayments": {
+          "type": "array",
+          "description": "Loan/financing repayments (debits)",
+          "items": {
+            "$ref": "#/$defs/transaction_entry"
+          }
+        }
+      }
+    },
+    "flags": {
+      "type": "object",
+      "description": "Risk signals \u2014 EXACTLY 16 flags, fixed list, fixed order. The canonical flag list is defined in CLASSIFICATION_RULES canonical_flags section. The downstream HTML renderer dynamically loops over flags.indicators[] \u2014 it does NOT hardcode flag names or count. Therefore the JSON output is the single source of truth. Output MUST contain all 16 every time, in order, with matching id/name. Never add, remove, rename, or reorder flags without updating all three project files (schema, classification rules, system prompt). v6.3.1: Statutory flags (6/7/8) MUST use month-by-month coverage logic from statutory_compliance, not aggregate totals. Remarks MUST cite specific missing months and per-month ratios.",
+      "required": [
+        "indicators"
+      ],
+      "properties": {
+        "indicators": {
+          "type": "array",
+          "minItems": 16,
+          "maxItems": 16,
+          "description": "CANONICAL FLAG LIST \u2014 16 flags, fixed IDs and names. The renderer dynamically loops over this array (does NOT hardcode names or count), so the JSON is the single source of truth. All 16 must be present every run. Detection logic: (1) Returned Cheques (Inward): detected if returned_cheques_inward_count > 0. (2) Returned Cheques (Outward): detected if returned_cheques_outward_count > 0. (3) Round Figure Credits (AML): detected if round_figure_cr > 0. (4) High Value Credits (>3x EOD): detected if high_value_cr > 0; skip if EOD unreliable. (5) Cash Deposits (AML): detected if cash_deposits_count > 0; report count, amount, % of gross credits. (6) EPF Compliance: detected if epf_coverage_pct < 100; remarks MUST list missing months and per-month ratios from statutory_compliance. (7) SOCSO Compliance: detected if socso_coverage_pct < 100; same month-by-month logic as flag 6. (8) LHDN Tax Payments: detected if lhdn_detected=false AND salary_months_active > 0. (9) Large Credits (>=RM100K): detected if large_credits array is non-empty. (10) Own Party Transactions: detected if own_party_cr > 0 OR own_party_dr > 0; report amounts and % of gross. (11) Related Party Transactions: detected if related_party_cr > 0 OR related_party_dr > 0; report amounts, %, and party names. v6.3.2: C04 is reporting only \u2014 related party debits stay in net debits for conservative credit assessment. (12) Loan Activity: detected if loan_disbursement_cr > 0 OR loan_repayment_dr > 0. (13) Data Quality: detected if data_completeness = INCOMPLETE; report gaps. (14) FX Transactions: detected if total_fx_credits > 0 OR total_fx_debits > 0. (15) Low Closing Balance: CR accounts: detected if any month closing_balance < RM1,000; list affected months. OD accounts (account_type='OD'): this flag is inverted — low closing_balance on OD means near-zero debt (favourable), so do NOT raise Flag 15 on OD accounts. Instead, raise Flag 15 on OD accounts if closing_balance approaches or exceeds od_limit (high utilisation = liquidity risk). (16) HRDF Payments: detected if hrdf_detected=false AND salary_months_active > 0.",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "name",
+              "detected",
+              "remarks"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 16,
+                "description": "Fixed flag ID (1-16). Must match canonical list."
+              },
+              "name": {
+                "type": "string",
+                "enum": [
+                  "Returned Cheques (Inward)",
+                  "Returned Cheques (Outward)",
+                  "Round Figure Credits (AML)",
+                  "High Value Credits (>3x EOD)",
+                  "Cash Deposits (AML)",
+                  "EPF Compliance",
+                  "SOCSO Compliance",
+                  "LHDN Tax Payments",
+                  "Large Credits (>=RM100K)",
+                  "Own Party Transactions",
+                  "Related Party Transactions",
+                  "Loan Activity",
+                  "Data Quality",
+                  "FX Transactions",
+                  "Low Closing Balance",
+                  "HRDF Payments"
+                ],
+                "description": "Fixed flag name. Must match canonical list exactly \u2014 downstream renderer matches on this string."
+              },
+              "detected": {
+                "type": "boolean"
+              },
+              "remarks": {
+                "type": "string",
+                "description": "Human-readable explanation. When detected=true, must include specific data (amounts, months, percentages). When detected=false, state what was checked and that it was clean."
+              }
+            }
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "object",
+      "description": "Brief plain-language observations \u2014 max 8 each (v6.3.4: raised from 5; KDYN showed more legitimate items than 5 slots accommodated).",
+      "required": [
+        "positive",
+        "concerns"
+      ],
+      "properties": {
+        "positive": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string"
+          }
+        },
+        "concerns": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parsing_metadata": {
+      "type": "object",
+      "description": "v6.2.2: Parsing quality metrics. Provides proof of extraction accuracy via balance reconciliation and transaction counts. Alliance Bank KPI: \u226595% transactions parsed & normalized.",
+      "required": [
+        "overall_success_rate",
+        "total_transactions_extracted",
+        "total_balance_checks",
+        "total_balance_checks_passed",
+        "account_month_checks"
+      ],
+      "properties": {
+        "overall_success_rate": {
+          "type": "number",
+          "description": "Overall parsing quality score as percentage (0-100). Computed as: (total_balance_checks_passed / total_balance_checks) \u00d7 100. A balance check passes when the account-type-aware reconciliation delta is within tolerance (RM1.00). For CR accounts: abs(opening_balance + gross_credits - gross_debits - closing_balance) <= 1.00. For OD accounts (account_type='OD', excluding Ambank OD which is pre-negated): abs(opening_balance + gross_debits - gross_credits - closing_balance) <= 1.00."
+        },
+        "total_transactions_extracted": {
+          "type": "integer",
+          "description": "Total number of transactions successfully extracted across all accounts and months"
+        },
+        "total_balance_checks": {
+          "type": "integer",
+          "description": "Total number of account-month combinations checked"
+        },
+        "total_balance_checks_passed": {
+          "type": "integer",
+          "description": "Number of account-month combinations where balance reconciliation passed"
+        },
+        "account_month_checks": {
+          "type": "array",
+          "description": "Per account-month reconciliation detail. One entry per account per month \u2014 mirrors monthly_analysis granularity.",
+          "items": {
+            "type": "object",
+            "required": [
+              "month",
+              "account_number",
+              "bank_name",
+              "opening_balance",
+              "closing_balance",
+              "gross_credits",
+              "gross_debits",
+              "expected_closing",
+              "reconciliation_delta",
+              "passed",
+              "transactions_extracted"
+            ],
+            "properties": {
+              "month": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              "account_number": {
+                "type": "string"
+              },
+              "bank_name": {
+                "type": "string"
+              },
+              "opening_balance": {
+                "type": "number",
+                "description": "Opening balance for this account-month"
+              },
+              "closing_balance": {
+                "type": "number",
+                "description": "Actual closing balance from the statement"
+              },
+              "gross_credits": {
+                "type": "number",
+                "description": "Sum of all extracted credit transactions"
+              },
+              "gross_debits": {
+                "type": "number",
+                "description": "Sum of all extracted debit transactions"
+              },
+              "expected_closing": {
+                "type": "number",
+                "description": "Computed closing. CR accounts: opening_balance + gross_credits - gross_debits. OD accounts (account_type='OD', excluding Ambank OD which is pre-negated): opening_balance + gross_debits - gross_credits."
+              },
+              "reconciliation_delta": {
+                "type": "number",
+                "description": "closing_balance - expected_closing. Zero or near-zero means parsing is complete. CR accounts: Positive = missed debits or extra credits, Negative = missed credits or extra debits. OD accounts: Positive = missed credits or extra debits, Negative = missed debits or extra credits."
+              },
+              "passed": {
+                "type": "boolean",
+                "description": "True if abs(reconciliation_delta) <= tolerance (RM1.00)"
+              },
+              "transactions_extracted": {
+                "type": "integer",
+                "description": "Number of transactions extracted for this account-month"
+              },
+              "notes": {
+                "type": "string",
+                "description": "Optional explanation if reconciliation failed (e.g., 'Opening balance unavailable \u2014 first month of statement', 'Interest charge not in transaction list')"
+              }
+            }
+          }
+        },
+        "extraction_gaps": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "description": "v6.2.2: Detailed list of every extraction gap detected via balance trail. Null if no gaps. Each gap includes exact location (date, page, source PDF), the last good transaction, the next transaction after the gap, and the missing amount. Used by HTML renderer to show gap detail panels.",
+          "items": {
+            "type": "object",
+            "required": [
+              "month",
+              "date",
+              "page",
+              "missing_type",
+              "missing_amount",
+              "balance_before_gap",
+              "balance_after_gap"
+            ],
+            "properties": {
+              "month": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$"
+              },
+              "date": {
+                "type": "string",
+                "format": "date",
+                "description": "Date of the transaction immediately after the gap"
+              },
+              "page": {
+                "type": "integer",
+                "description": "PDF page number where the gap occurs"
+              },
+              "source_file": {
+                "type": "string",
+                "description": "Source PDF filename"
+              },
+              "missing_type": {
+                "type": "string",
+                "enum": [
+                  "DEBIT",
+                  "CREDIT"
+                ],
+                "description": "Whether the missing transactions are debits or credits"
+              },
+              "missing_amount": {
+                "type": "number",
+                "description": "Total amount of missing transactions at this gap point"
+              },
+              "balance_before_gap": {
+                "type": "number",
+                "description": "Statement balance of the last successfully extracted transaction before the gap"
+              },
+              "balance_after_gap": {
+                "type": "number",
+                "description": "Statement balance of the first transaction after the gap"
+              },
+              "prev_description": {
+                "type": "string",
+                "description": "Description of last good transaction before gap"
+              },
+              "next_description": {
+                "type": "string",
+                "description": "Description of first transaction after gap"
+              }
+            }
+          }
+        }
+      }
+    },
+    "unclassified_transactions": {
+      "type": "array",
+      "description": "v6.3.0: Individual unclassified transactions listed when single transaction exceeds threshold (default RM10,000, user-configurable). Stays in net credits/debits \u2014 NOT excluded. Empty array if none exceed threshold.",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "description",
+          "amount",
+          "type",
+          "account_number"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": {
+            "type": "string",
+            "description": "Raw transaction description as extracted from bank statement"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "CREDIT",
+              "DEBIT"
+            ]
+          },
+          "account_number": {
+            "type": "string"
+          },
+          "bank_name": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why this transaction is unclassified (e.g. \"No description\", \"Description too vague\")"
+          }
+        }
+      }
+    },
+    "classification_config": {
+      "type": "object",
+      "description": "v6.3.0: Runtime classification parameters. Documents thresholds and entity lists used for this analysis run.",
+      "properties": {
+        "rulebook_version": {
+          "type": "string",
+          "description": "Classification rules version used (e.g. \"3.0.0\")"
+        },
+        "large_credit_threshold": {
+          "type": "number",
+          "description": "Threshold for C23 large credit listing. Default 100000."
+        },
+        "unclassified_listing_threshold": {
+          "type": "number",
+          "description": "Threshold for individual unclassified transaction listing. Default 10000."
+        },
+        "known_factoring_entities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Factoring companies used for C10 classification."
+        },
+        "execution_mode": {
+          "type": "string",
+          "enum": [
+            "FULL_AI",
+            "OPTIMISED_AI",
+            "FULL_CODE"
+          ],
+          "description": "Which execution mode was used for this analysis run."
+        }
+      }
+    },
+    "pdf_integrity": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "v6.3.0: PDF fraud detection results passed through from upstream parser. Contains per-file integrity checks across 5 layers: fonts consistency, visual page hashes, bank profile matching, structural analysis, arithmetic verification. Keyed by source PDF filename. Optional \u2014 null if parser did not run fraud checks. NOT produced by the classifier \u2014 passed through unchanged from parser input.",
+      "additionalProperties": {
+        "type": "object",
+        "description": "Integrity check results for a single PDF file",
+        "required": [
+          "overall_risk",
+          "finding_count",
+          "high_count",
+          "medium_count",
+          "low_count",
+          "findings"
+        ],
+        "properties": {
+          "overall_risk": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ],
+            "description": "Aggregate risk level for this PDF. LOW = all checks clean. MEDIUM = some anomalies. HIGH = strong tampering indicators."
+          },
+          "finding_count": {
+            "type": "integer",
+            "description": "Total number of checks performed on this PDF"
+          },
+          "high_count": {
+            "type": "integer",
+            "description": "Number of HIGH severity findings"
+          },
+          "medium_count": {
+            "type": "integer",
+            "description": "Number of MEDIUM severity findings"
+          },
+          "low_count": {
+            "type": "integer",
+            "description": "Number of LOW severity findings (clean passes)"
+          },
+          "findings": {
+            "type": "array",
+            "description": "Individual check results across 5 detection layers",
+            "items": {
+              "type": "object",
+              "required": [
+                "layer",
+                "severity",
+                "message"
+              ],
+              "properties": {
+                "layer": {
+                  "type": "string",
+                  "enum": [
+                    "fonts",
+                    "visual",
+                    "bank_profile",
+                    "structural",
+                    "arithmetic"
+                  ],
+                  "description": "Detection layer. fonts = monetary amount font consistency check. visual = page render hash computation for cross-document comparison. bank_profile = match against known bank PDF profiles (creator, producer, fonts). structural = PDF version and metadata check. arithmetic = beginning + credits - debits = ending balance verification."
+                },
+                "severity": {
+                  "type": "string",
+                  "enum": [
+                    "LOW",
+                    "MEDIUM",
+                    "HIGH"
+                  ],
+                  "description": "LOW = check passed clean. MEDIUM = anomaly detected, may be benign. HIGH = strong indicator of tampering."
+                },
+                "message": {
+                  "type": "string",
+                  "description": "Human-readable finding summary"
+                },
+                "detail": {
+                  "type": "object",
+                  "description": "Layer-specific detail. Structure varies by layer.",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "counterparty_ledger": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "v6.3.3: Per-counterparty transaction groupings. The upstream parser builds the initial ledger using deterministic pattern extraction (~80% accuracy). The AI classifier then validates and cleans the ledger \u2014 stripping purpose text from counterparty names, merging truncated name variants using TR1-TR4 rules, and cross-referencing against the resolved related_parties[] list. The downstream HTML renderer uses this for the Counterparty Ledger tab. Optional \u2014 null if parser did not produce counterparty groupings. v6.3.2: Was passthrough from parser. v6.3.3: Now AI-validated and cleaned.",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Counterparty ledger format version"
+        },
+        "total_counterparties": {
+          "type": "integer",
+          "description": "Number of distinct counterparties extracted"
+        },
+        "extraction_stats": {
+          "type": "object",
+          "description": "Parser extraction quality stats",
+          "properties": {
+            "pattern_matched": {
+              "type": "integer",
+              "description": "Transactions where counterparty was extracted via bank format pattern"
+            },
+            "raw_fallback": {
+              "type": "integer",
+              "description": "Transactions where full description was used as fallback"
+            },
+            "total_transactions": {
+              "type": "integer",
+              "description": "Total transactions processed"
+            }
+          }
+        },
+        "counterparties": {
+          "type": "array",
+          "description": "Per-counterparty grouped data, sorted by total value descending",
+          "items": {
+            "type": "object",
+            "required": [
+              "counterparty_name",
+              "total_credits",
+              "total_debits",
+              "net_position",
+              "credit_count",
+              "debit_count",
+              "transaction_count",
+              "transactions"
+            ],
+            "properties": {
+              "counterparty_name": {
+                "type": "string",
+                "description": "Normalised counterparty display name"
+              },
+              "total_credits": {
+                "type": "number"
+              },
+              "total_debits": {
+                "type": "number"
+              },
+              "net_position": {
+                "type": "number",
+                "description": "total_credits - total_debits"
+              },
+              "credit_count": {
+                "type": "integer"
+              },
+              "debit_count": {
+                "type": "integer"
+              },
+              "transaction_count": {
+                "type": "integer"
+              },
+              "transactions": {
+                "type": "array",
+                "description": "Individual transactions for this counterparty, sorted by date",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "date",
+                    "description",
+                    "amount",
+                    "type"
+                  ],
+                  "properties": {
+                    "date": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Raw transaction description from bank statement"
+                    },
+                    "amount": {
+                      "type": "number"
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "CREDIT",
+                        "DEBIT"
+                      ]
+                    },
+                    "balance": {
+                      "type": "number",
+                      "description": "Running balance after this transaction"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ledger_cleaning_status": {
+          "type": "string",
+          "enum": [
+            "CLEANED",
+            "VALIDATION_FAILED",
+            "SKIPPED"
+          ],
+          "description": "v6.3.3: Status of AI ledger cleaning. CLEANED = AI successfully validated and merged counterparty variants; totals verified. VALIDATION_FAILED = AI cleaning broke totals integrity; original parser ledger output unchanged as fallback. SKIPPED = no cleaning performed (e.g. ledger was null or empty)."
+        },
+        "cleaning_stats": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "v6.3.3: Statistics from the AI ledger cleaning pass. Null if cleaning was not performed.",
+          "properties": {
+            "original_counterparties": {
+              "type": "integer",
+              "description": "Number of counterparties in the parser's original output before cleaning"
+            },
+            "cleaned_counterparties": {
+              "type": "integer",
+              "description": "Number of counterparties after AI merge/clean pass"
+            },
+            "merges_performed": {
+              "type": "integer",
+              "description": "Number of counterparty groups that were merged into other groups"
+            },
+            "purpose_strips": {
+              "type": "integer",
+              "description": "Number of counterparty names where purpose text was stripped"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "description": "v6.2.2: Added monthly_breakdown for month-over-month trend visibility per counterparty",
+      "required": [
+        "rank",
+        "party_name",
+        "total_amount",
+        "transaction_count",
+        "is_related_party",
+        "monthly_breakdown"
+      ],
+      "properties": {
+        "rank": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "party_name": {
+          "type": "string"
+        },
+        "total_amount": {
+          "type": "number"
+        },
+        "transaction_count": {
+          "type": "integer"
+        },
+        "is_related_party": {
+          "type": "boolean"
+        },
+        "monthly_breakdown": {
+          "type": "array",
+          "description": "v6.2.2: Per-month transaction volume for this counterparty. Enables MoM trend analysis \u2014 spot growing/declining customers/suppliers, seasonal patterns, and concentration risk over time.",
+          "items": {
+            "type": "object",
+            "required": [
+              "month",
+              "amount",
+              "count"
+            ],
+            "properties": {
+              "month": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}$",
+                "description": "Month in YYYY-MM format"
+              },
+              "amount": {
+                "type": "number",
+                "description": "Total transaction amount with this counterparty for the month"
+              },
+              "count": {
+                "type": "integer",
+                "description": "Number of transactions with this counterparty for the month"
+              }
+            }
+          }
+        }
+      }
+    },
+    "transaction_entry": {
+      "type": "object",
+      "required": [
+        "date",
+        "description",
+        "amount"
+      ],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "description": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "category": {
+          "type": "string"
+        },
+        "balance": {
+          "type": "number"
+        },
+        "exclusion_note": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "v6.3.2: Optional note for loan repayments that are dual-tagged C02+C11. Explains that the amount is excluded from net debits via own-party transfer (C02) and analyst should request the corresponding bank statement. Null or absent for non-dual-tagged entries."
+        }
+      }
+    }
+  }
+}

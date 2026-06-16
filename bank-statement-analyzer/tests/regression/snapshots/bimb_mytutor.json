@@ -1,0 +1,85 @@
+{
+  "account_type": "Current",
+  "classification": {
+    "by_category": {
+      "C01": 30,
+      "C02": 39,
+      "C12": 6,
+      "C26": 32,
+      "UNCLASSIFIED": 7939
+    },
+    "classified": 107,
+    "rate_pct": 1.33,
+    "total": 8046,
+    "unclassified": 7939
+  },
+  "consolidated": {
+    "net_credits": 967157.44,
+    "net_debits": 1188528.48
+  },
+  "convention": "CR",
+  "counterparty_ledger": {
+    "pattern_matched": 6786,
+    "raw_fallback": 886,
+    "special_bucket": 374,
+    "total": 3453
+  },
+  "deduped_rows": 8046,
+  "label": "bimb_mytutor",
+  "parsed_rows": 8046,
+  "reconciliation": {
+    "months_passed": 6,
+    "months_total": 6
+  },
+  "rp_scan": {
+    "auto_confirmed": 1,
+    "high": 1,
+    "low": 1,
+    "medium": 0,
+    "total": 2
+  },
+  "top_payees": [
+    {
+      "amount": 827927.76,
+      "count": 153,
+      "name": "UNNAMED BANK ISLAM TRANSFER (DR)"
+    },
+    {
+      "amount": 342321.72,
+      "count": 39,
+      "name": "MYTUTOR ACADEMY (OWN-PARTY)"
+    },
+    {
+      "amount": 22537.0,
+      "count": 4,
+      "name": "FEES"
+    }
+  ],
+  "top_payers": [
+    {
+      "amount": 25286.0,
+      "count": 178,
+      "name": "UNNAMED BANK ISLAM TRANSFER (CR)"
+    },
+    {
+      "amount": 5830.0,
+      "count": 5,
+      "name": "KAMARULHAYATI BINTI OTHMA"
+    },
+    {
+      "amount": 5736.0,
+      "count": 15,
+      "name": "HALIMI BIN IBRAHIM"
+    },
+    {
+      "amount": 5694.0,
+      "count": 29,
+      "name": "MDM NORAIDA NASPI"
+    },
+    {
+      "amount": 5056.0,
+      "count": 27,
+      "name": "NORASHEIKIN BINTI ZAINI"
+    }
+  ]
+}

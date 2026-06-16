@@ -1,0 +1,14 @@
+streamlit
+pandas
+openpyxl
+# Pinned: weasyprint 69 renders the vendored COLR/SVG color emoji font correctly
+# (verified). Newer versions are unverified against the Railway font path.
+weasyprint==69.0
+fastapi
+uvicorn[standard]
+python-multipart
+anthropic
+ftfy
+tensorlake
+pypdf
+requests

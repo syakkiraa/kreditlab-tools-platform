@@ -1,0 +1,56 @@
+{
+  "Statement OCBC - April.pdf": {
+    "opening_balance": 2.0,
+    "closing_balance": null,
+    "gross_debits": 0.0,
+    "gross_credits": 0.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Statement OCBC - Feb.pdf": {
+    "opening_balance": 0.0,
+    "closing_balance": null,
+    "gross_debits": 0.0,
+    "gross_credits": 502.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Statement OCBC - July.pdf": {
+    "opening_balance": 500.04,
+    "closing_balance": null,
+    "gross_debits": 211170.4,
+    "gross_credits": 276620.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Statement OCBC - June.pdf": {
+    "opening_balance": 10782.54,
+    "closing_balance": null,
+    "gross_debits": 54682.5,
+    "gross_credits": 44400.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Statement OCBC - March.pdf": {
+    "opening_balance": 502.0,
+    "closing_balance": null,
+    "gross_debits": 500.0,
+    "gross_credits": 0.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Statement OCBC - May.pdf": {
+    "opening_balance": 2.0,
+    "closing_balance": null,
+    "gross_debits": 209170.46,
+    "gross_credits": 219951.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

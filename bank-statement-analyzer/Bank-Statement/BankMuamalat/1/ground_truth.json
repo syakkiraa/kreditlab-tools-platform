@@ -1,0 +1,56 @@
+{
+  "02 - MUAMALAT FEB 2024.pdf": {
+    "opening_balance": null,
+    "closing_balance": 5063163.14,
+    "gross_debits": 3275127.2,
+    "gross_credits": 3557351.45,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "03 - MUAMALAT MAR 2024.pdf": {
+    "opening_balance": null,
+    "closing_balance": 4687132.19,
+    "gross_debits": 2942257.63,
+    "gross_credits": 2566226.68,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "04 - MUAMALAT APR 2024.pdf": {
+    "opening_balance": null,
+    "closing_balance": 3912485.11,
+    "gross_debits": 800781.9,
+    "gross_credits": 26134.82,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "05 - MUAMALAT MAY 2024.pdf": {
+    "opening_balance": null,
+    "closing_balance": 3751285.15,
+    "gross_debits": 2942666.54,
+    "gross_credits": 2781466.58,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "06 - MUAMALAT JUN 2024.pdf": {
+    "opening_balance": null,
+    "closing_balance": 3108037.82,
+    "gross_debits": 650178.84,
+    "gross_credits": 6931.51,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "07 - MUAMALAT JUL 2024.pdf": {
+    "opening_balance": null,
+    "closing_balance": 307524.35,
+    "gross_debits": 2855247.58,
+    "gross_credits": 54734.11,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

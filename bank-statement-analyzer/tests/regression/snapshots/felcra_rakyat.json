@@ -1,0 +1,99 @@
+{
+  "account_type": "Current",
+  "classification": {
+    "by_category": {
+      "C01": 33,
+      "C02": 1,
+      "C03": 14,
+      "C04": 37,
+      "C12": 6,
+      "C16": 7,
+      "C17": 1,
+      "C24": 2482,
+      "UNCLASSIFIED": 1792
+    },
+    "classified": 2581,
+    "rate_pct": 59.02,
+    "total": 4373,
+    "unclassified": 1792
+  },
+  "consolidated": {
+    "net_credits": 2483692.98,
+    "net_debits": 179451.22
+  },
+  "convention": "CR",
+  "counterparty_ledger": {
+    "pattern_matched": 1854,
+    "raw_fallback": 0,
+    "special_bucket": 2519,
+    "total": 1383
+  },
+  "deduped_rows": 4373,
+  "label": "felcra_rakyat",
+  "parsed_rows": 4373,
+  "reconciliation": {
+    "months_passed": 6,
+    "months_total": 6
+  },
+  "rp_scan": {
+    "auto_confirmed": 2,
+    "high": 2,
+    "low": 34,
+    "medium": 3,
+    "total": 39
+  },
+  "top_payees": [
+    {
+      "amount": 57961.96,
+      "count": 20,
+      "name": "AMIRULLAHBINMADDESA"
+    },
+    {
+      "amount": 55647.45,
+      "count": 3,
+      "name": "AMIRBINPAIMAN"
+    },
+    {
+      "amount": 55028.68,
+      "count": 9,
+      "name": "NORMALABTYAAKUB"
+    },
+    {
+      "amount": 51645.82,
+      "count": 6,
+      "name": "MOHDHANAFIB MOHDYUSOF"
+    },
+    {
+      "amount": 51000.0,
+      "count": 15,
+      "name": "UNNAMED BANK RAKYAT TRANSFER (DR)"
+    }
+  ],
+  "top_payers": [
+    {
+      "amount": 2259310.03,
+      "count": 31,
+      "name": "KOPERASIKAKITANGANFELCRA BERHAD"
+    },
+    {
+      "amount": 127330.0,
+      "count": 1,
+      "name": "KOPERASIKAKITANGAN"
+    },
+    {
+      "amount": 40460.62,
+      "count": 13,
+      "name": "UNNAMED BANK RAKYAT TRANSFER (CR)"
+    },
+    {
+      "amount": 29710.15,
+      "count": 8,
+      "name": "FELCRABEKALAN&PERKHIDMATANSDN"
+    },
+    {
+      "amount": 21451.98,
+      "count": 6,
+      "name": "DIVERSATECH"
+    }
+  ]
+}

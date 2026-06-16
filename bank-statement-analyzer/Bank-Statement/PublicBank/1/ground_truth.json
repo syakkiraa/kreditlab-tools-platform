@@ -1,0 +1,56 @@
+{
+  "02. FEB 2025-PBB.pdf": {
+    "opening_balance": null,
+    "closing_balance": 64365.11,
+    "gross_debits": 378818.3,
+    "gross_credits": 13277.84,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "03. MAR 2025-PBB.pdf": {
+    "opening_balance": null,
+    "closing_balance": 25990.89,
+    "gross_debits": 690731.44,
+    "gross_credits": 652357.22,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "04. APR 2025-PBB.pdf": {
+    "opening_balance": null,
+    "closing_balance": 62609.43,
+    "gross_debits": 341346.16,
+    "gross_credits": 377964.7,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "05.MAY 2025-PBB.pdf": {
+    "opening_balance": null,
+    "closing_balance": 220185.42,
+    "gross_debits": 1423877.57,
+    "gross_credits": 1581453.56,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "06. JUNE 2025-PBB.pdf": {
+    "opening_balance": null,
+    "closing_balance": 33933.53,
+    "gross_debits": 1312904.97,
+    "gross_credits": 1126653.08,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "3189302120_2025-July.pdf": {
+    "opening_balance": null,
+    "closing_balance": 7621.14,
+    "gross_debits": 349192.2,
+    "gross_credits": 322879.81,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

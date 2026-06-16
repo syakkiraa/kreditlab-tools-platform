@@ -1,0 +1,47 @@
+{
+  "1749970869757_59.Detik HLB May'25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 4461.99,
+    "gross_debits": 5318.89,
+    "gross_credits": 5563.99,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "60.Detik HLB June'25 (1).pdf": {
+    "opening_balance": null,
+    "closing_balance": 1153.93,
+    "gross_debits": 7035.17,
+    "gross_credits": 3727.11,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "62.Detik HLB Aug'25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 4253.14,
+    "gross_debits": 3983.46,
+    "gross_credits": 3922.86,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "7.Detik HLB July'25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 4313.74,
+    "gross_debits": 5587.99,
+    "gross_credits": 8747.8,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "8.Detik HLB Sept25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 1235.73,
+    "gross_debits": 77344.41,
+    "gross_credits": 74327.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

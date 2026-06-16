@@ -1,0 +1,96 @@
+{
+  "account_type": "Current",
+  "classification": {
+    "by_category": {
+      "C01": 1,
+      "C03": 7,
+      "C04": 19,
+      "C12": 6,
+      "C24": 43,
+      "UNCLASSIFIED": 116
+    },
+    "classified": 76,
+    "rate_pct": 39.58,
+    "total": 192,
+    "unclassified": 116
+  },
+  "consolidated": {
+    "net_credits": 816232.05,
+    "net_debits": 589466.19
+  },
+  "convention": "CR",
+  "counterparty_ledger": {
+    "pattern_matched": 78,
+    "raw_fallback": 25,
+    "special_bucket": 89,
+    "total": 33
+  },
+  "deduped_rows": 192,
+  "label": "bimb_kmz",
+  "parsed_rows": 192,
+  "reconciliation": {
+    "months_passed": 6,
+    "months_total": 6
+  },
+  "rp_scan": {
+    "auto_confirmed": 1,
+    "high": 1,
+    "low": 1,
+    "medium": 1,
+    "total": 3
+  },
+  "top_payees": [
+    {
+      "amount": 638472.46,
+      "count": 40,
+      "name": "UNNAMED BANK ISLAM TRANSFER (DR)"
+    },
+    {
+      "amount": 45606.68,
+      "count": 19,
+      "name": "MD MAZMI BIN MD HADZ"
+    },
+    {
+      "amount": 39613.0,
+      "count": 30,
+      "name": "ROSMILA BINTI MAT AJ"
+    },
+    {
+      "amount": 15177.0,
+      "count": 2,
+      "name": "1600 CA CASH CHQ WDWL 761106025430 0145351 145351"
+    },
+    {
+      "amount": 15000.0,
+      "count": 1,
+      "name": "1600 CA CASH CHQ WDWL 680223025283 0134725 134725"
+    }
+  ],
+  "top_payers": [
+    {
+      "amount": 295418.13,
+      "count": 1,
+      "name": "MAJLIS SUKAN NEGARA MALAYSIA"
+    },
+    {
+      "amount": 222000.0,
+      "count": 7,
+      "name": "MD MAZMI BIN MD HADZ"
+    },
+    {
+      "amount": 100000.0,
+      "count": 3,
+      "name": "MOHD HAMZAN BIN MAMAT"
+    },
+    {
+      "amount": 50000.0,
+      "count": 1,
+      "name": "9012 MB SA TRF CA 3RD CAPITAL ZURIDA BINTI DIN EFO"
+    },
+    {
+      "amount": 50000.0,
+      "count": 1,
+      "name": "9012 MB SA TRF CA 3RD CAPITAL ZURIDA BINTI DIN EFO"
+    }
+  ]
+}

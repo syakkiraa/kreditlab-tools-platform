@@ -1,0 +1,47 @@
+{
+  "IESB - AGRO 1005521000044819-Jul-2025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 3843.0,
+    "gross_debits": 1941312.51,
+    "gross_credits": 1775181.51,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "IESB - AGRO 1005521000044819-Jun-2025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 169974.0,
+    "gross_debits": 1384725.68,
+    "gross_credits": 1553245.76,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "IESB AGRO - 1005521000044819-Aug-2025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 1707.19,
+    "gross_debits": 2055624.71,
+    "gross_credits": 2053488.9,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "IESB AGRO - 1005521000044819-Oct-2025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 531506.44,
+    "gross_debits": 83847.37,
+    "gross_credits": 586337.09,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "IESB AGRO - 1005521000044819-Sep-2025.pdf": {
+    "opening_balance": null,
+    "closing_balance": 29016.72,
+    "gross_debits": 234693.02,
+    "gross_credits": 262002.55,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

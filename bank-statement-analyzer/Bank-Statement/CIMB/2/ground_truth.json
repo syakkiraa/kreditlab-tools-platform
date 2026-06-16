@@ -1,0 +1,56 @@
+{
+  "4. BOSE - CIMB BIS APR 2024.pdf": {
+    "opening_balance": 56.79,
+    "closing_balance": 51.79,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "5. BOSE - CIMB BIS MAY 2024.pdf": {
+    "opening_balance": 51.79,
+    "closing_balance": 11.79,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "6. BOSE - CIMB BIS JUN 2024.pdf": {
+    "opening_balance": 11.79,
+    "closing_balance": 42.2,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "7. BOSE - CIMB BIS JUL 2024.pdf": {
+    "opening_balance": 42.2,
+    "closing_balance": 684.96,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "8. BOSE - CIMB BIS AUG 2024.pdf": {
+    "opening_balance": 684.96,
+    "closing_balance": 50.0,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "9. BOSE - CIMB BIS SEPT 2024.pdf": {
+    "opening_balance": 50.0,
+    "closing_balance": 0.0,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "01Aug24_to_31Aug24 (1).pdf": {
+    "opening_balance": 82612.52,
+    "closing_balance": 229625.47,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "01Jan25_to_31Jan25.pdf": {
+    "opening_balance": 1589273.06,
+    "closing_balance": 1216562.3,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "01Jul24_to_31Jul24 2.pdf": {
+    "opening_balance": 241767.38,
+    "closing_balance": 82612.52,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "JUN 24.pdf": {
+    "opening_balance": 213309.69,
+    "closing_balance": 241767.38,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "MAY 24.pdf": {
+    "opening_balance": 185339.1,
+    "closing_balance": 213309.69,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

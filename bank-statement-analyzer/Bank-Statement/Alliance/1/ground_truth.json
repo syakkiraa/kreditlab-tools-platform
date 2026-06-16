@@ -1,0 +1,38 @@
+{
+  "_README": "Ground truth for Alliance Bank sample PDFs. Keyed by PDF filename. Fill numbers from the statement's TOTAL DEBIT/CREDIT line. is_dr_balance=true for BIZ REF PROG CA / overdraft accounts where all balances carry a 'DR' suffix. Leave fields as null if not yet verified.",
+
+  "AB - NOV'25.pdf": {
+    "account_number": "140460010093441",
+    "account_type": "BIZ REF PROG CA",
+    "is_dr_balance": true,
+    "opening_balance": null,
+    "closing_balance": null,
+    "gross_credits": null,
+    "gross_debits": null,
+    "transaction_count": null,
+    "known_counterparties": [
+      "KIM HENG ELECTRICAL",
+      "CORDON POWER ELECTRICAL",
+      "BESTLITE ELECTRICAL"
+    ],
+    "notes": "Placeholder — replace nulls with values from the PDF's TOTAL line. This file is the TEMPLATE; copy+edit per sample."
+  },
+
+  "AB - OCT'25.pdf": {
+    "account_number": "140460010093441",
+    "account_type": "BIZ REF PROG CA",
+    "is_dr_balance": true,
+    "opening_balance": 1772795.42,
+    "closing_balance": 1731895.75,
+    "gross_credits": 4902141.48,
+    "gross_debits": 4861241.81,
+    "transaction_count": 215,
+    "known_counterparties": [
+      "KIM HENG ELECTRICAL",
+      "CORDON POWER ELECTRICAL",
+      "TEMASEK KEKAL",
+      "EVERCOM ENGINEERING"
+    ],
+    "notes": "Totals verified from PDF TOTAL DEBIT/CREDIT line (page 11). transaction_count is approximate — adjust after first audit run confirms exact count."
+  }
+}

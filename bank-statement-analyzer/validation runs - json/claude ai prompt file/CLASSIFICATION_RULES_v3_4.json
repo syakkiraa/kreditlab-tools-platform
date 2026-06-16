@@ -1,0 +1,2687 @@
+{
+  "$id": "kredit-lab-classification-rules-v3.4",
+  "version": "3.4.0",
+  "description": "Kredit Lab Bank Statement Classification Rulebook v3.4.0. Machine-readable rules for 27 transaction categories (C01-C27). Serves three execution modes from ONE document: Full AI, Optimised AI, Full Code. Company-agnostic AND bank-agnostic — uses variables (company_name, related_parties[], known_factoring_entities[]) and pattern rules that work across CIMB, Maybank/Maybank Islamic, Alliance, RHB, Public Bank, Bank Islam, Bank Rakyat, Hong Leong, Ambank, Affin, Agro, Muamalat, OCBC, UOB. v3.4 CHANGES (2026-04-23): (1) NEW C26 Trade Income / C27 Trade Expense — third-party company CR/DR previously falling to Unclassified now bucketed as trade activity (fixes Muhafiz RM 11.8M blind spot); (2) statutory_bucket trust — when parser emits transaction-level statutory_bucket field, classifier routes C06-C09 off that directly (no re-regex); (3) truncated_forms[] added to statutory keyword lists to handle FPX 20-char truncation (KUMPULAN WANG SIMPAN, PERTUBUHAN KESELAMAT, LEMBAGA HASIL DAL, PEMBANGUNAN SUMBER MANU); (4) C10 disambiguation — forbidden_preceded_by list blocks BA/TL/TF/FD/CT short forms when the token follows BIN/BINTI/A/L/A/P/BT/BTE (patronymic guard); (5) stop_words_drop_as_counterparty expanded; (6) EPF dual-band 11-15% OR 20-26% (Malaysia combined-remittance is standard); (7) STRUCTURAL ratio status added (≥4 consecutive months outside band). v3.3.1 CHANGES (2026-04-21): C05 commission default regular expense, C06-C09 statutory side-gate, Top 10 parties, CN6 ghost-verb suppression, Coverage % intersection + cap [0,100], effective_match_rate. v3.3 CHANGE: C04 removed from net debit exclusion.",
+  "generated_from": "Classification_Rules_v3_2.xlsx",
+  "schema_version": "6.3.4",
+  "global_rules": {
+    "classification_order": [
+      "C25",
+      "C01",
+      "C02",
+      "C05",
+      "C03",
+      "C04",
+      "C06",
+      "C07",
+      "C08",
+      "C09",
+      "C10",
+      "C11",
+      "C12",
+      "C13",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+      "C18",
+      "C19",
+      "C20",
+      "C24",
+      "C26",
+      "C27",
+      "C21",
+      "C22",
+      "C23"
+    ],
+    "classification_order_note": "C25 filters balance rows FIRST. Then own-party (C01/C02), salary (C05), related party (C03/C04), statutory (C06-C09), loan (C10-C11), FD/reversal (C12-C13), returned cheques (C14-C16), cash/cheque (C17-C20), bank fees (C24). C21-C23 are monitoring flags applied after classification. Remainder = income (CR) or expense (DR).",
+    "no_unknown_bucket": "If no exclusion matches, transaction is income (credit side) or expense (debit side). It stays in net credits/debits. No 'unknown' or 'unclassified' exclusion category.",
+    "dual_tagging": {
+      "allowed": true,
+      "description": "A single transaction can carry two category tags (e.g. C02 + C11). Excluded from net debits only ONCE via C02. C11 tracked separately for reporting.",
+      "example": "TR IBG MUHAFIZ SECURITY SDN Term loan = C02 (own party debit) + C11 (loan repayment)"
+    },
+    "jompay_rule": {
+      "description": "JomPAY is a payment channel, NOT a payee. Never classify based on JomPAY biller code alone. Classify ONLY when entity name is visible in description. If description is just 'JOMPAY xxxx:xxxxx' with no entity name → leave as regular expense.",
+      "applies_to": [
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C11"
+      ]
+    },
+    "fx_default": {
+      "description": "Default to NOT FX unless clear conversion evidence exists. TT CREDIT = transfer method, NOT currency indicator. RENTAS/JANM = domestic MYR. Alphabet codes (GBPV, USDP) in reference fields = internal voucher codes, NOT currencies.",
+      "true_fx_indicators": [
+        "TT or TELEGRAPHIC TRANSFER with foreign source/destination AND conversion evidence",
+        "Explicit FOREX, FX CONV, or FOREIGN EXCHANGE in description",
+        "SWIFT/international wire with foreign currency amounts",
+        "Foreign beneficiary with international address and non-MYR amounts"
+      ],
+      "not_fx": [
+        "RENTAS/JANM domestic remittances (MYR-to-MYR)",
+        "IBG with voucher codes (GBPV, USDP = voucher codes, not currencies)",
+        "DuitNow/FPX/JomPAY transfers",
+        "Any MYR-to-MYR transfer between Malaysian entities"
+      ]
+    },
+    "name_normalisation": {
+      "strip_suffixes": [
+        "SDN",
+        "BHD",
+        "SDN.",
+        "BHD.",
+        "& CO",
+        "(M)",
+        "PTY",
+        "LTD"
+      ],
+      "operations": [
+        "Remove punctuation (dots, commas)",
+        "Remove extra spaces",
+        "Convert to uppercase"
+      ],
+      "matching_tiers": [
+        {
+          "tier": 1,
+          "method": "Exact match on normalised name",
+          "confidence": "HIGH"
+        },
+        {
+          "tier": 2,
+          "method": "Starts-with match (minimum 10 characters)",
+          "confidence": "MEDIUM"
+        },
+        {
+          "tier": 3,
+          "method": "Token containment (skip BIN/BINTI/BT tokens)",
+          "confidence": "LOW"
+        }
+      ]
+    },
+    "execution_modes": {
+      "FULL_CODE": "Works in all three modes. Deterministic keyword/regex/math rules.",
+      "AI_ASSIST": "Needs AI in Full AI and Optimised AI modes. Exhaustive rules needed for Full Code mode.",
+      "HUMAN_REVIEW": "Requires human analyst review. Cannot be fully automated."
+    },
+    "unclassified_handling": {
+      "description": "Transactions with descriptions too vague or missing to determine type. Stays in net credits/debits — NOT excluded.",
+      "monthly_fields": [
+        "unclassified_cr_count",
+        "unclassified_cr_amount",
+        "unclassified_dr_count",
+        "unclassified_dr_amount"
+      ],
+      "individual_listing_threshold": 10000,
+      "individual_listing_threshold_configurable": true,
+      "individual_listing_note": "List individual unclassified transactions in separate array when single transaction exceeds threshold."
+    },
+    "deterministic_eod": {
+      "description": "v3.2: EOD balance computed deterministically. Walk transactions in statement order, group by date, EOD = last transaction's running balance per date. Only dates with actual transactions count — no carry-forward for weekends/holidays.",
+      "metrics": {
+        "eod_lowest": "MIN(all daily EOD balances in the month)",
+        "eod_highest": "MAX(all daily EOD balances in the month)",
+        "eod_average": "SUM(all daily EOD balances) / COUNT(distinct dates with transactions)"
+      },
+      "rules": [
+        "Only dates with transactions count — weekends/holidays with no activity are NOT included",
+        "Opening balance date: if belongs to previous month, do NOT include in current month's EOD",
+        "Closing balance is implicit — equals EOD of last transaction date. Do not double-count.",
+        "Opening balance on 1st with no other transactions that day = EOD for that date"
+      ]
+    },
+    "statutory_bucket_trust_v3_4": {
+      "description": "v3.4 NEW. Parser may emit transaction-level `statutory_bucket` field (KWSP/SOCSO/LHDN/HRDF/null). When present, classifier MUST trust it and route C06-C09 directly — do NOT re-regex the raw description. Eliminates FPX 20-char truncation bugs.",
+      "routing": "if tx.statutory_bucket == 'KWSP' → C06; == 'SOCSO' → C07; == 'LHDN' → C08; == 'HRDF' → C09 (all subject to side==DR AND NOT match_own_party gate).",
+      "fallback": "If statutory_bucket absent, fall back to the keyword + truncated_forms regex list under each C06-C09 category."
+    },
+    "statutory_truncated_forms": {
+      "description": "v3.4 NEW. FPX rails truncate descriptions at ~20 chars; these prefix matches are sufficient signals when the full form is cut off. Use in addition to the full phrase — match either form.",
+      "KWSP": ["KUMPULAN WANG SIMPAN", "KUMPULAN WANG SIMPA", "KUMPULAN WANG SIMP"],
+      "SOCSO": ["PERTUBUHAN KESELAMAT", "PERTUBUHAN KESELAMA"],
+      "LHDN": ["LEMBAGA HASIL DALAM", "LEMBAGA HASIL DAL"],
+      "HRDF": ["PEMBANGUNAN SUMBER MANU", "PEMBANGUNAN SUMBER MA"]
+    },
+    "patronymic_guard_v3_4": {
+      "description": "v3.4 NEW. Parser emits `_patronymic_ambiguous_tokens: ['BA']` (or TL/TF/FD/CT) when the 2-letter token follows BIN/BINTI/A/L/A/P/BT/BTE/S/O/D/O — it is a name fragment, not a banking acronym. SKIP short-form rules on that row.",
+      "skip_when_token_is": {
+        "BA": ["C10 Banker's Acceptance \\bBA\\b match"],
+        "TL": ["C11 Term Loan \\bTL\\b match"],
+        "TF": ["C10 Trade Finance \\bTF\\b match"],
+        "FD": ["C12 Fixed Deposit \\bFD\\b match"],
+        "CT": ["C?? Current Transfer \\bCT\\b match"]
+      },
+      "note": "Full-phrase forms (BANKERS ACCEPTANCE, TERM LOAN, FIXED DEPOSIT) still fire normally. Only the 2-letter short-form rules are gated by this guard.",
+      "forbidden_standalone": ["BA", "TL", "TF", "FD", "CT"],
+      "forbidden_preceded_by": ["BIN", "BINTI", "BT", "BTE", "A/L", "A/P", "S/O", "D/O"]
+    },
+    "stop_words_drop_as_counterparty": {
+      "description": "v3.4 NEW. Extended cross-bank list. If a cleaned counterparty_name after CN1-CN7 / TR1-TR4 / M1-M7 normalisation is equal to ANY of these tokens or all tokens are members of these lists, drop the counterparty (treat as parser dropout; not emitted in top_parties).",
+      "months": ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "SEPT", "OCT", "NOV", "DEC"],
+      "compound_month_fragments": ["JAN FEB", "FEB MAR", "MAR APR", "APR MAY", "MAY JUN", "JUN JUL", "JUL AUG", "AUG SEP", "SEP OCT", "OCT NOV", "NOV DEC"],
+      "purpose_stop_tokens": [
+        "BULK", "BULK SALARY", "SALARY",
+        "PAYMENT", "TRANSFER", "FUND", "FUND TRANSFER", "SETTLEMENT",
+        "LOAN", "LOAN REPAYMENT", "REPAYMENT", "ADVANCE",
+        "IBG", "IBG TRANSACTION", "CR ADVICE", "HUB", "HUB CA MISC DR",
+        "ADVICE", "CREDIT", "DEBIT", "ACCOUNT", "TO ACCOUNT",
+        "DUITNOW", "INSTANT TRANSFER", "FPX",
+        "TRANSACTION", "TRANSACTIONS", "TRANS",
+        "CASH", "DEPOSIT", "WITHDRAWAL",
+        "INWARD", "OUTWARD"
+      ]
+    }
+  },
+  "net_formulas": {
+    "net_credits": {
+      "formula": "gross_credits - own_party_cr(C01) - related_party_cr(C03) - reversal_cr(C13) - loan_disbursement_cr(C10) - fd_interest_cr(C12) - inward_return_cr(C16)",
+      "exclusion_categories": [
+        "C01",
+        "C03",
+        "C10",
+        "C12",
+        "C13",
+        "C16"
+      ],
+      "validation": "BLOCKING — must equal exactly"
+    },
+    "net_debits": {
+      "formula": "gross_debits - own_party_dr(C02)",
+      "exclusion_categories": [
+        "C02"
+      ],
+      "validation": "BLOCKING — must equal exactly",
+      "v3_3_change": "C04 (related_party_dr) removed from exclusion. Related party debits stay in net debits for conservative credit assessment. C04 is reporting only — tagged and listed but not excluded."
+    },
+    "validation_checks": [
+      {
+        "id": "V1",
+        "check": "Net Credits formula: gross - exclusions = net (exact)",
+        "severity": "BLOCKING",
+        "status": "CONFIRMED"
+      },
+      {
+        "id": "V2",
+        "check": "Net Debits formula: gross_debits - own_party_dr(C02) = net_debits (exact). v3.3: C04 no longer in exclusion.",
+        "severity": "BLOCKING",
+        "status": "UPDATED v3.3"
+      },
+      {
+        "id": "V3",
+        "check": "EPF / Salary should be 11-13% PER MONTH (where BOTH exist). WARNING if outside 8-16%. CATCH_UP if > 16%. NEVER use aggregate ratio.",
+        "range": [
+          0.08,
+          0.16
+        ],
+        "severity": "WARNING",
+        "status": "UPDATED v3.1"
+      },
+      {
+        "id": "V4",
+        "check": "SOCSO / Salary should be 2-3% PER MONTH (where BOTH exist). WARNING if outside 1-5%. CATCH_UP if > 5%. NEVER use aggregate ratio.",
+        "range": [
+          0.01,
+          0.05
+        ],
+        "severity": "WARNING",
+        "status": "UPDATED v3.1"
+      },
+      {
+        "id": "V5",
+        "check": "C02+C11 dual-tag excludes from net debits ONCE via C02",
+        "severity": "BLOCKING",
+        "status": "CONFIRMED"
+      },
+      {
+        "id": "V6",
+        "check": "Sum of monthly net_credits = consolidated net_credits",
+        "severity": "BLOCKING",
+        "status": "CONFIRMED"
+      },
+      {
+        "id": "V7",
+        "check": "EPF coverage (v3.3.1 UPDATED, cross-bank): every month with salary_paid > 0 should have statutory_epf > 0. Coverage formula MUST use set intersection, bounded [0,100]: covered = epf_months_list \u2229 salary_months_list; epf_coverage_pct = min(len(covered)/len(salary_months_list)*100, 100) if salary_months_list else 0. Do NOT use raw epf_months_paid/salary_months_active \u2014 produces >100% when EPF pays in a non-payroll month (MYTUTOR LHDN 120% bug).",
+        "severity": "WARNING",
+        "status": "UPDATED v3.3.1"
+      },
+      {
+        "id": "V8",
+        "check": "SOCSO coverage (v3.3.1 UPDATED, cross-bank): every month with salary_paid > 0 should have statutory_socso > 0. Same intersection formula as V7: covered = socso_months_list \u2229 salary_months_list; socso_coverage_pct = min(len(covered)/len(salary_months_list)*100, 100).",
+        "severity": "WARNING",
+        "status": "UPDATED v3.3.1"
+      },
+      {
+        "id": "V9",
+        "check": "LHDN presence (v3.3.1 REFRAMED, DECOUPLED FROM SALARY): LHDN bucket captures multiple unrelated payment types \u2014 PCB/MTD salary withholding, CP204 corporate income tax instalments, SST, stamp duty, RPGT. Only PCB is strictly payroll-driven. Do NOT compute a coverage ratio against salary_months_active \u2014 the comparison mixes unrelated payment types and produced the >100% anomaly (MYTUTOR LHDN 6/5 = 120%). Instead, track lhdn_months_paid + total amount as an INFORMATIONAL presence check. Surface in observations if the company has active payroll (salary_months_active > 0) AND zero LHDN payments across the period \u2014 that's a potential PCB non-remittance concern. Otherwise report count and amount without a ratio.",
+        "severity": "INFORMATIONAL",
+        "status": "REFRAMED v3.3.1"
+      },
+      {
+        "id": "V9b",
+        "check": "HRDF presence (v3.3.1 REFRAMED, DECOUPLED FROM SALARY): HRDF (PSMB) is exempt for employers under certain headcount/industry thresholds (typically <10 employees in many covered industries). A missing HRDF is NOT necessarily non-compliance. Do NOT compute a coverage ratio against salary_months_active. Track hrdf_months_paid + total amount as informational presence only. Large companies (salary_months_active > 0 AND estimated headcount high AND zero HRDF) may be flagged informationally but never as a hard failure.",
+        "severity": "INFORMATIONAL",
+        "status": "NEW v3.3.1"
+      },
+      {
+        "id": "V10",
+        "check": "Statutory payment gap summary (v3.3.1 UPDATED): aggregate V7 (EPF coverage), V8 (SOCSO coverage), V9 (LHDN presence), V9b (HRDF presence) into consolidated.statutory_compliance. Overall status: COMPLIANT / GAPS_DETECTED / CRITICAL. COMPLIANT = EPF and SOCSO coverage 100% (regardless of LHDN/HRDF). GAPS_DETECTED = EPF or SOCSO coverage < 100%. CRITICAL = EPF or SOCSO coverage = 0% despite active payroll. LHDN and HRDF absence alone never triggers a degradation from COMPLIANT (they are informational only in v3.3.1).",
+        "severity": "INFORMATIONAL",
+        "status": "UPDATED v3.3.1"
+      },
+      {
+        "id": "V11",
+        "check": "EOD computation: eod_lowest <= eod_average <= eod_highest for every month. Verify eod_average = SUM(daily EOD balances) / COUNT(distinct transaction dates). Deterministic method. OD-aware interpretation (account_type='OD'): eod_lowest numerically = LOWEST debt magnitude (BEST liquidity); eod_highest numerically = HIGHEST debt magnitude (WORST liquidity). Downstream credit-assessment flags should interpret OD EOD metrics accordingly — do not treat OD eod_lowest as a liquidity risk.",
+        "severity": "BLOCKING",
+        "status": "NEW v3.2"
+      },
+      {
+        "id": "V12",
+        "check": "Related parties completeness: RP2 root-name scan must find ALL entities sharing company root. Report: company root word(s), number of entities found, their names. Auto-detected parties (RP7, RP8) must appear in report_info.related_parties[].",
+        "severity": "WARNING",
+        "status": "NEW v3.2"
+      },
+      {
+        "id": "V13",
+        "check": "Loan repayment scope: C11 transactions must NOT include related party personal loans or bank transfer fees. Cross-check: every C11 transaction should have company_name in description OR be standalone facility repayment. Personal loan payments = C04 only. OTHER TRANSFER FEE = C24 only.",
+        "severity": "BLOCKING",
+        "status": "NEW v3.2"
+      },
+      {
+        "id": "V14",
+        "check": "Statutory side-gate (C06-C09) \u2014 keyword match MUST be gated on side==DR AND NOT match_own_party(desc). Any CR-side statutory keyword (e.g. 'DUITNOW TO ACCOUNT EPF PAYMENT <company_name>') is an inter-account funding transfer (C01), NOT a statutory payment. Applies to all banks equally \u2014 own_party match uses FULL COMPANY NAME after normalisation, not bank-specific prefixes. Test: if side=='CR' or match_own_party(desc) returns true, statutory categories MUST NOT fire.",
+        "severity": "BLOCKING",
+        "status": "NEW v3.3.1"
+      },
+      {
+        "id": "V15",
+        "check": "Ghost-verb suppression from top_parties (cross-bank): top_payers and top_payees MUST NOT contain counterparty names that are only a payment-rail prefix with no entity name attached. See counterparty_extraction_rules.normalisation_rules_v3_2.CN6 for the pattern-based rule and the prefix table covering all 14 supported Malaysian banks. Suppressed entries must be noted in observations.concerns with count + total amount + prefix.",
+        "severity": "BLOCKING",
+        "status": "NEW v3.3.1"
+      },
+      {
+        "id": "V16",
+        "check": "Top parties size: top_payers and top_payees arrays MUST contain up to 10 entries (was 5 before v3.3.1). Schema enforces maxItems=10 and rank max=10. HTML renderer heading is 'Top 10 Payers (Income)' and 'Top 10 Payees (Outflow)'. Producing only 5 entries while >5 distinct counterparties exist is a compliance failure.",
+        "severity": "WARNING",
+        "status": "NEW v3.3.1"
+      },
+      {
+        "id": "V17",
+        "check": "Parser quality grade driver (v3.3.1): use effective_match_rate = (pattern_matched + special_bucket) / total, NOT pattern_match_rate. special_bucket entries (AUTOPAY CHARGES, OTHER TRANSFER FEE, CASH CHQ DR, HSE CHQ DEPOSIT, HOUSE CHQ DR, CLRG CHQ DR, CDM CASH DEPOSIT) are correct handling \u2014 they legitimately have no counterparty beyond the bucket label. Grade A \u2265 95% effective, B \u2265 80%, C \u2265 60%, D \u2265 40%, F otherwise or any balance-trail FAIL.",
+        "severity": "INFORMATIONAL",
+        "status": "NEW v3.3.1"
+      }
+    ]
+  },
+  "categories": {
+    "C01": {
+      "name": "Own Party Credit",
+      "schema_fields": [
+        "own_party_cr",
+        "own_party_cr_count"
+      ],
+      "side": "CR",
+      "priority": "P1",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "EXCLUDED from Net Credits",
+      "description": "Credits from the SAME legal entity — inter-account transfers between the company's own bank accounts.",
+      "matching_rule": "FULL COMPANY NAME MATCH after normalisation. NOT short root. Short root matching (MUHAFIZ, DMC) is used ONLY for related party detection (RP2 → C03/C04), NOT for own party (C01/C02).",
+      "matching_examples": [
+        {
+          "input": "MUHAFIZ SECURITY",
+          "company": "MUHAFIZ SECURITY",
+          "match": true,
+          "result": "C01"
+        },
+        {
+          "input": "MUHAFIZ TECHNOLOGY",
+          "company": "MUHAFIZ SECURITY",
+          "match": false,
+          "result": "check C03"
+        },
+        {
+          "input": "DMC TRAVEL",
+          "company": "DMC TRAVEL AND TOURS",
+          "match": true,
+          "result": "C01 (truncation tolerance)"
+        },
+        {
+          "input": "DMC CONSTRUCTION",
+          "company": "DMC TRAVEL AND TOURS",
+          "match": false,
+          "result": "check C03"
+        }
+      ],
+      "bank_patterns": {
+        "CIMB": [
+          "IBG CREDIT + [company_name]",
+          "DUITNOW TO ACCOUNT + [company_name]",
+          "I-FUNDS TR FROM SA + [account_holder]"
+        ],
+        "Maybank": [
+          "TRANSFER TO A/C + [company_name]"
+        ]
+      },
+      "regex": "(IBG CREDIT|DUITNOW TO ACCOUNT|TRANSFER TO A/C|I-FUNDS TR FROM).*{company_name_normalised}",
+      "exclusions": [
+        "Sender is a DIFFERENT entity (even with similar name prefix)",
+        "Already classified as C03 (related party)",
+        "Do NOT rely only on transfer keywords — counterparty name is the classifier"
+      ],
+      "fallback": "If no match → leave as 3rd party income (stays in net credits)",
+      "cross_ref": "Cannot also be C03. C01 takes priority over C03 if company name matches.",
+      "status": "LOCKED"
+    },
+    "C02": {
+      "name": "Own Party Debit",
+      "schema_fields": [
+        "own_party_dr",
+        "own_party_dr_count"
+      ],
+      "side": "DR",
+      "priority": "P1",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "EXCLUDED from Net Debits",
+      "description": "Debits transferring money TO the same company's other bank accounts. Mirror C01 logic for debit side. FULL COMPANY NAME MATCH.",
+      "matching_rule": "FULL COMPANY NAME MATCH after normalisation. NOT short root.",
+      "bank_patterns": {
+        "CIMB": [
+          "TR IBG + [company_name]",
+          "TR TO C/A + [company_name]"
+        ],
+        "Maybank": [
+          "TRANSFER FR A/C + [company_name]"
+        ]
+      },
+      "regex": "(TR IBG|TR TO C/A|TRANSFER FR A/C).*{company_name_normalised}",
+      "dual_tag_with": "C11",
+      "dual_tag_keywords": [
+        "Term loan",
+        "Monthly Instalment",
+        "Instalment"
+      ],
+      "dual_tag_note": "When own-party debit contains loan keyword → tag C02 + C11. Excluded from net debits ONCE via C02.",
+      "exclusions": [
+        "Recipient is a DIFFERENT entity (related party)"
+      ],
+      "fallback": "If no match → check related party (C04)",
+      "cross_ref": "Can co-exist with C11. Own-party exclusion from net debits already covers it.",
+      "status": "LOCKED"
+    },
+    "C03": {
+      "name": "Related Party Credit",
+      "schema_fields": [
+        "related_party_cr",
+        "related_party_cr_count"
+      ],
+      "side": "CR",
+      "priority": "P2",
+      "execution_mode": "AI_ASSIST",
+      "confidence": "MEDIUM",
+      "impact": "EXCLUDED from Net Credits",
+      "description": "Credits from related entities — directors, shareholders, sister companies, family members. Purpose keyword is the tiebreaker: same person can be both related party AND customer.",
+      "matching_rule": "Match incoming credit sender name against related_parties[] list.",
+      "trigger_keywords_from_related_party": [
+        "Advance",
+        "Advance [company]",
+        "Return",
+        "Refund"
+      ],
+      "trigger_note": "When sender is a confirmed related party AND purpose contains trigger keyword → C03.",
+      "exclusions": [
+        "Own-party (C01 takes priority)",
+        "Purpose indicates customer payment (e.g. 'Umrah payment' from director = customer, not C03)",
+        "Planworth AUTOPAY CR without F ADVANCE/ADVANCE keyword = NOT C03 (stays in net credits)"
+      ],
+      "fallback": "If uncertain customer vs related party → classify as 3rd party income, flag for review",
+      "cross_ref": "Must not overlap with C01. C01 checked first.",
+      "status": "LOCKED"
+    },
+    "C04": {
+      "name": "Related Party Debit",
+      "schema_fields": [
+        "related_party_dr",
+        "related_party_dr_count"
+      ],
+      "side": "DR",
+      "priority": "P2",
+      "execution_mode": "AI_ASSIST",
+      "confidence": "MEDIUM",
+      "impact": "NOT excluded from Net Debits (reported separately). v3.3: C04 is a reporting/tagging category only — like C11. Transactions are identified, listed in own_related_transactions, and flagged in Flag 11, but remain in net debits for conservative credit assessment.",
+      "description": "Debits paid TO related entities — directors, sister companies, family members.",
+      "matching_rule": "Match outgoing debit recipient against related_parties[] list. Rule order: C02 → C05 → C04.",
+      "exclusions": [
+        "Own-party (C02 takes priority)",
+        "Salary keyword present (C05 takes priority)",
+        "Statutory payments",
+        "MUHAMMAD SIDDIQ BIN operational expenses (visa, tickets) = regular expense per Q8"
+      ],
+      "purpose_disambiguation": {
+        "description": "Purpose keyword after * disambiguates same person across categories.",
+        "examples": [
+          {
+            "purpose": "Salary",
+            "result": "C05"
+          },
+          {
+            "purpose": "Repayment / Instalment / Housing Loan / Petty Cash / Credit Card",
+            "result": "C04"
+          },
+          {
+            "purpose": "Visa / Tickets / Trains / Claims (operational)",
+            "result": "Regular expense (for behavioural RP3 parties)"
+          }
+        ]
+      },
+      "fallback": "If related party name found but purpose unclear → classify as C04 (conservative)",
+      "cross_ref": "Must not overlap with C02 or C05. Check C02 first, then C05, then C04.",
+      "status": "UPDATED v3.3",
+      "v3_3_change": "C04 no longer excluded from net debits. Rationale: credit assessment should be conservative — understate income, overstate costs. Excluding related party debits flatters the borrower's cash flow by hiding director withdrawals, personal loans, and intercompany transfers. The analyst should see the full cost picture. C04 tagging, listing, and Flag 11 reporting all remain unchanged."
+    },
+    "C05": {
+      "name": "Salary / Payroll",
+      "schema_fields": [
+        "salary_paid"
+      ],
+      "side": "DR",
+      "priority": "P3",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Debits (reported separately)",
+      "description": "Salary and wage payments to employees.",
+      "salary_keywords": [
+        "SALARY",
+        "SALARIES",
+        "GAJI BULANAN",
+        "GAJI BLN",
+        "BAYARAN GAJI",
+        "PEMBAYARAN GAJI",
+        "GAJI JAN", "GAJI FEB", "GAJI MAR", "GAJI MAC",
+        "GAJI APR", "GAJI MAY", "GAJI MEI", "GAJI JUN",
+        "GAJI JUL", "GAJI AUG", "GAJI OGOS", "GAJI SEP",
+        "GAJI SEPT", "GAJI OCT", "GAJI OKT", "GAJI NOV",
+        "GAJI DEC", "GAJI DIS",
+        "STAFF SALARY",
+        "STAFF INCENTIVE",
+        "STAFF OVERTIME",
+        "STAFF BONUS",
+        "STAFF ADVANCE",
+        "EXTRA SALARY",
+        "GUARD SALARY",
+        "PMT SLRY",
+        "SLRY",
+        "PAYROLL",
+        "AUTOPAY DR"
+      ],
+      "salary_regex_note": "GAJI must be matched with word boundary (\\bGAJI\\b) to avoid MENGAJI/NGAJI (Malay: teaching) substring collisions on tuition/education business statements.",
+      "bank_patterns": {
+        "CIMB": {
+          "bulk_salary": {
+            "pattern": "AUTOPAY DR U\\d{4}",
+            "note": "Always salary. No keyword needed.",
+            "execution_mode": "FULL_CODE"
+          },
+          "individual": {
+            "pattern": "TR TO SAVINGS + [name] + salary_keyword",
+            "note": "NOT auto-salary. Extract name → check C04 → check salary keyword → if match = C05 → else regular expense.",
+            "execution_mode": "AI_ASSIST"
+          }
+        },
+        "Maybank": {
+          "individual": {
+            "pattern": "TRANSFER FR A/C [name]* [purpose]",
+            "note": "Salary keyword in purpose after * required.",
+            "execution_mode": "FULL_CODE"
+          }
+        }
+      },
+      "exclusions": [
+        "AUTOPAY CHARGES (bank fee → C24)",
+        "AUTOPAY CR (incoming credit, not salary)",
+        "Commission payments to individuals (Comm, Commission, Komisen, Habuan) — see commission_policy_v3_3_1 below"
+      ],
+      "inclusions_note": "STAFF INCENTIVE, STAFF OVERTIME, STAFF BONUS, STAFF ADVANCE, EXTRA SALARY = all C05 per Q10 decision.",
+      "commission_policy_v3_3_1": {
+        "description": "v3.3.1 NEW: recurring commission-style payments to individuals are NOT C05 by default. Commission agents are typically independent contractors, not employees. This applies to all banks and all business models (tuition academies, MLM, insurance agencies, real-estate agencies, freelance platforms, etc.). Driven by MYTUTOR ACADEMY validation run where 1,852 'Comm' tutor payments distorted EPF ratio to 46.91%.",
+        "commission_keywords": ["COMM", "COMMS", "COMMISSION", "COMMISION", "PT COMM", "PT COMMS", "KOMISEN", "KOMISYEN", "HABUAN"],
+        "default_classification": "Regular expense (NOT excluded from net debits)",
+        "override": "If user confirms (via pre-analysis gate Step 5) that agents are on company payroll as employees → reclassify as C05. User confirmation is REQUIRED — do not assume based on keyword alone.",
+        "trigger_signal": "When commission_keyword count > 20% of individual-transfer DR volume at the pre-analysis gate, pause and ask the user to confirm employment model before proceeding.",
+        "impact_expectation": "For pure commission businesses, salary_paid will be near-zero → salary_months_list empty → statutory coverage % is N/A (not 0%). Flag 6/7 should reflect 'no payroll to cover' rather than 'gaps detected'. Business model should be called out in observations.concerns."
+      },
+      "fallback": "If TRANSFER FR A/C [name]* without salary keyword → NOT salary",
+      "cross_ref": "Salary takes priority over C04 if salary keyword present. Directors can receive both salary AND other payments. Commission payments never take C05 without explicit user confirmation (v3.3.1).",
+      "status": "UPDATED v3.3.1"
+    },
+    "C06": {
+      "name": "Statutory - EPF",
+      "schema_fields": [
+        "statutory_epf"
+      ],
+      "side": "DR",
+      "priority": "P3",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Debits (reported separately)",
+      "description": "Employees Provident Fund (KWSP / Kumpulan Wang Simpanan Pekerja). v3.1 adds MONTH-BY-MONTH coverage check. v3.3.1 adds MANDATORY side-gate (see side_gate_v3_3_1 below) to prevent CR-side / own-party transfers being mis-tagged as EPF.",
+      "side_gate_v3_3_1": {
+        "description": "MANDATORY pre-check before keyword match. Applies to ALL banks. Driven by MUHAFIZ Feb 2026 bug where RM 600K DUITNOW TO ACCOUNT EPF PAYMENT <company_name> (CR side) was mis-tagged C06.",
+        "rule": "if side == 'CR': NOT C06 (check C01/C03/other). if match_own_party(desc): C01/C02 (own-party earmarked funding transfer), NOT C06. Only after BOTH gates pass may the keyword match fire.",
+        "own_party_check": "Uses FULL COMPANY NAME match after normalisation (strip SDN/BHD/& CO/(M)/PTY/LTD, collapse whitespace, uppercase). Bank-agnostic.",
+        "applies_to": ["C06", "C07", "C08", "C09"]
+      },
+      "keywords": [
+        "KUMPULAN WANG SIMPANAN PEKERJA",
+        "KUMPULAN WANG SIMPAN",
+        "EPF DPE",
+        "EPF PAYMENT",
+        "EPF",
+        "KWSP PAYMENT",
+        "KWSP CONTRIBUTION",
+        "TRANSFER FUNDS KWSP",
+        "KWSP JAN", "KWSP FEB", "KWSP MAR", "KWSP APR",
+        "KWSP MAY", "KWSP JUN", "KWSP JUL", "KWSP AUG",
+        "KWSP SEP", "KWSP OCT", "KWSP NOV", "KWSP DEC"
+      ],
+      "regex": "(?:KUMPULAN WANG SIMPAN(?:AN PEKERJA)?|EPF DPE|\\bEPF\\b|\\bKWSP(?=\\s|[/\\-]|$))",
+      "keyword_priority": "Search full Malay name FIRST, then abbreviations.",
+      "exclusions": [
+        "Own-party transfers mentioning EPF (inter-account transfer to fund EPF → C01, not C06)",
+        "JomPAY without entity name visible",
+        "CR-side transactions mentioning KWSP/EPF — C06 is DR-only by definition (employer paying OUT to KWSP). Inbound credits with KWSP references are NOT EPF contributions.",
+        "Reference-number patterns like KWSP<digits> (e.g. KWSP0559246) embedded in transaction refs — these are KWSP Account 2 medical claim IDs disbursed by TPAs (PM CARE SDN BHD, MiCARE, Health Connect, etc.) to medical providers, NOT EPF employer contributions. Classify as normal revenue/income."
+      ],
+      "validation": {
+        "coverage_check_primary": "For each month: if salary_paid > 0 but statutory_epf = 0 → GAP. Report: epf_months_paid / salary_months_active × 100. List all missing months explicitly.",
+        "ratio_check_secondary": "EPF ÷ Salary per month: 8-16% = OK, outside = WARNING, > 16% = CATCH_UP. NEVER compute aggregate ratio across all months.",
+        "ratio_to_salary": [
+          0.11,
+          0.13
+        ],
+        "warning_range": [
+          0.08,
+          0.16
+        ]
+      },
+      "fallback": "If not detected but salary exists in ANY month → flag WARNING with list of missing months. Do NOT silently pass because aggregate ratio looks acceptable.",
+      "status": "LOCKED"
+    },
+    "C07": {
+      "name": "Statutory - SOCSO",
+      "schema_fields": [
+        "statutory_socso"
+      ],
+      "side": "DR",
+      "priority": "P3",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Debits (reported separately)",
+      "description": "Social Security (PERKESO / Pertubuhan Keselamatan Sosial). v3.1: SOCSO is mandatory regardless of salary quantum — previous 'salary > RM50K' threshold removed. v3.3.1: inherits MANDATORY side-gate from C06.side_gate_v3_3_1 (side==DR AND NOT match_own_party) — applies equally to all banks.",
+      "side_gate_v3_3_1_ref": "See C06.side_gate_v3_3_1. Applies identically.",
+      "keywords": [
+        "PERTUBUHAN KESELAMATAN SOSIAL",
+        "PERTUBUHAN KESELAMAT",
+        "SOCSO",
+        "PERKESO"
+      ],
+      "regex": "(?:PERTUBUHAN KESELAMATAN|\\bSOCSO\\b|\\bPERKESO\\b)",
+      "truncation_note": "Maybank truncates to 'PERTUBUHAN KESELAMAT' (~20 chars). Match partial.",
+      "exclusions": [
+        "JomPAY without entity name visible",
+        "CR-side transactions mentioning SOCSO/PERKESO — C07 is DR-only by definition (employer paying OUT to PERKESO). Inbound credits referencing SOCSO/PERKESO are refunds, claim disbursements, or welfare-fund payments (e.g. TABUNG PRIHATIN PROTEK PERKESO), NOT statutory contributions. Classify as revenue/other income."
+      ],
+      "validation": {
+        "coverage_check_primary": "For each month: if salary_paid > 0 but statutory_socso = 0 → GAP. Report: socso_months_paid / salary_months_active × 100. List all missing months explicitly.",
+        "ratio_check_secondary": "SOCSO ÷ Salary per month: 1-5% = OK, outside = WARNING, > 5% = CATCH_UP. NEVER compute aggregate ratio across all months.",
+        "ratio_to_salary": [
+          0.02,
+          0.03
+        ],
+        "warning_range": [
+          0.01,
+          0.05
+        ]
+      },
+      "fallback": "If not detected but salary exists in ANY month → flag WARNING with list of missing months.",
+      "status": "LOCKED"
+    },
+    "C08": {
+      "name": "Statutory - Tax (LHDN)",
+      "schema_fields": [
+        "statutory_tax"
+      ],
+      "side": "DR",
+      "priority": "P3",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Debits (reported separately)",
+      "description": "Income tax (LHDN / Lembaga Hasil Dalam Negeri). v3.3.1: inherits MANDATORY side-gate from C06.side_gate_v3_3_1 (side==DR AND NOT match_own_party) — applies equally to all banks.",
+      "side_gate_v3_3_1_ref": "See C06.side_gate_v3_3_1. Applies identically.",
+      "keywords": [
+        "LEMBAGA HASIL DALAM NEGERI",
+        "LEMBAGA HASIL",
+        "LHDN"
+      ],
+      "regex": "LEMBAGA HASIL(?:\\s+DALAM NEGERI)?|\\bLHDN\\b",
+      "critical_exclusions": [
+        "SERVICE TAX 8% SST (bank SST → C24, not income tax)",
+        "Person names containing 'HASIL' (e.g. HASILA BINTI HASHIM = customer, NOT LHDN)",
+        "JomPAY without entity name visible"
+      ],
+      "matching_note": "Must match full phrase 'LEMBAGA HASIL DALAM NEGERI' or abbreviation 'LHDN'. Do NOT match partial 'HASIL'.",
+      "fallback": "If LHDN not detected across entire period but salary exists → flag WARNING. May legitimately be paid from different account.",
+      "status": "LOCKED"
+    },
+    "C09": {
+      "name": "Statutory - HRDF",
+      "schema_fields": [
+        "statutory_hrdf"
+      ],
+      "side": "DR",
+      "priority": "P3",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Debits (reported separately)",
+      "description": "Human Resources Development Fund (PSMB / Pembangunan Sumber Manusia Berhad). v3.3.1: inherits MANDATORY side-gate from C06.side_gate_v3_3_1 (side==DR AND NOT match_own_party) — applies equally to all banks.",
+      "side_gate_v3_3_1_ref": "See C06.side_gate_v3_3_1. Applies identically.",
+      "keywords": [
+        "PEMBANGUNAN SUMBER MANUSIA",
+        "PEMBANGUNAN SUMBER M",
+        "PSMB",
+        "HRDF"
+      ],
+      "regex": "(?:PEMBANGUNAN SUMBER M(?:ANUSIA)?|\\bPSMB\\b|\\bHRDF\\b)",
+      "exclusions": [
+        "JomPAY without entity name visible"
+      ],
+      "fallback": "Often missing for small companies — not flagged as error",
+      "status": "LOCKED"
+    },
+    "C10": {
+      "name": "Loan Disbursement / Factoring",
+      "schema_fields": [
+        "loan_disbursement_cr"
+      ],
+      "side": "CR",
+      "priority": "P2",
+      "execution_mode": "AI_ASSIST",
+      "confidence": "MEDIUM",
+      "impact": "EXCLUDED from Net Credits",
+      "description": "Loan proceeds and factoring/invoice financing advances credited to account.",
+      "two_tier_approach": {
+        "tier_1": {
+          "execution_mode": "FULL_CODE",
+          "keywords": [
+            "LOAN DISB",
+            "LOAN DISBURS",
+            "FINANCING DISB",
+            "FINANCING DISBURS",
+            "TRADE FINANCE CR",
+            "TRADE FIN",
+            "SCF TRADE",
+            "FACTORING",
+            "INVOICE FIN",
+            "INVOICE DISCOUNT",
+            "BILL PURCHAS",
+            "BILL DISCOUNT",
+            "BANKERS ACCEPTANCE",
+            "FACILITY DRAWDOWN"
+          ],
+          "factoring_rule": "F ADVANCE or ADVANCE + entity in known_factoring_entities[]"
+        },
+        "tier_2": {
+          "execution_mode": "AI_ASSIST",
+          "rule": "ADVANCE from unrecognised entity → flag for review"
+        }
+      },
+      "planworth_rule": "Only classify as C10 when description contains 'F ADVANCE' or 'ADVANCE'. AUTOPAY CR from factoring company WITHOUT advance keyword = potential surplus refund, stays in net credits.",
+      "bank_entity_rule": "Credit from bank ≠ automatic C10. Description keyword determines: FINANCING DISB = C10, REFUND = not C10, PROFIT PAYMENT = C12.",
+      "exclusions": [
+        "Customer advance payments (one-off, small)",
+        "Staff advances returned (e.g. 'Advance DMC' from staff → check C03)",
+        "Factoring AUTOPAY CR without F ADVANCE/ADVANCE keyword"
+      ],
+      "fallback": "If ADVANCE keyword but entity unknown → flag for review",
+      "status": "LOCKED"
+    },
+    "C11": {
+      "name": "Loan Repayment",
+      "schema_fields": [
+        "loan_repayment_dr",
+        "loan_repayment_count"
+      ],
+      "side": "DR",
+      "priority": "P3",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT additionally excluded (C02 handles it)",
+      "description": "Loan/financing repayments. Dual-tag with C02 allowed. C11 is for REPORTING. v3.2 SCOPE: C11 is for the COMPANY's own loan facilities ONLY.",
+      "keywords": [
+        "TERM LOAN",
+        "LOAN REPAY",
+        "FINANCING REPAY",
+        "MONTHLY INSTALMENT",
+        "IB2G DR CA CR LN",
+        "TRANSFER TO LOAN",
+        "DD CASA PYMT",
+        "FINPAL ISSUER REPAYM"
+      ],
+      "regex": "\\bTERM LOAN\\b|\\bLOAN REPAY|\\bFINANCING REPAY|\\bMONTHLY INSTALMENT\\b|\\bIB2G\\s+DR\\s+CA\\s+CR\\s+LN\\b|\\bTRANSFER TO LOAN\\b|\\bDD CASA PYMT\\b|\\bFINPAL ISSUER REPAYM",
+      "keyword_notes": {
+        "IB2G DR CA CR LN": "Alliance Bank internal book transfer: Debit Current Account, Credit Loan account. Unambiguous loan repayment signal.",
+        "TRANSFER TO LOAN": "Alliance Bank explicit wording; loan account number typically suffixed with 'L'.",
+        "DD CASA PYMT": "Direct debit from CASA (current/savings) to external loan issuer. Narrow to 'DD CASA PYMT <BANK/LENDER>' if false positives emerge from non-loan direct debits.",
+        "FINPAL ISSUER REPAYM": "FinPal (fintech issuer) loan repayment — specific string, no false-positive risk."
+      },
+      "scope_clarification_v3_2": {
+        "companys_own_loan": "company_name + loan keyword → C02 + C11 dual-tag. The company is repaying its own financing facility.",
+        "directors_personal_loan": "related_party_name + instalment/loan keyword → C04 ONLY (not C11). The company is paying someone's personal loan on their behalf.",
+        "test": "If the entity name in the description is a RELATED PARTY (not the company itself), it CANNOT be C11. C04 wins.",
+        "examples": [
+          {
+            "description": "TR IBG MUHAFIZ SECURITY SDN Term loan",
+            "result": "C02 + C11 (company's own loan)"
+          },
+          {
+            "description": "TR IBG SAMSI BIN IBRAHIM Monthly Instalment",
+            "result": "C04 only (family member's personal loan)"
+          },
+          {
+            "description": "TR IBG SHAHARUDDIN BIN SAMS Instalment",
+            "result": "C04 only (director's personal loan)"
+          },
+          {
+            "description": "IB2G DR CA CR LN AOBFTR123456",
+            "result": "C11 (Alliance internal book transfer to own loan account)"
+          },
+          {
+            "description": "TRANSFER TO LOAN 12345678L",
+            "result": "C11 (Alliance direct transfer to loan facility)"
+          },
+          {
+            "description": "DD CASA PYMT BOOST BANK BERHAD 123456 BESTLITE ELECTRI",
+            "result": "C11 (direct debit repayment to Boost Bank loan)"
+          },
+          {
+            "description": "NBPS IBG DR CA AOBJOM... FINPAL ISSUER REPAYM",
+            "result": "C11 (FinPal fintech loan repayment)"
+          }
+        ]
+      },
+      "other_transfer_fee_exclusion": "OTHER TRANSFER FEE entries (typically RM0.10) are ALWAYS C24 regardless of purpose text. 'OTHER TRANSFER FEE Term loan' = C24, not C11.",
+      "dual_tag_rule": "Company's own loan: company_name + loan keyword → C02 + C11. Director's personal loan: related_party_name + instalment → C04 only. Account-number-only transfer (no entity name in description, e.g. 'TRANSFER TO LOAN 0000140820052291232L') → C11 standalone, NOT C02+C11 — the own-party match requires a full company name, and an account number alone doesn't satisfy it. These still flow through net debits as real cash outflow (the conservative treatment).",
+      "account_number_only_rule_v3_5_3": {
+        "description": "Cross-bank: transfer verbs + pure account-number/ID, no counterparty name. Classify as C11 standalone.",
+        "examples": [
+          "TRANSFER TO LOAN 0000140820052291232L (Alliance)",
+          "IBG DR TO LOAN 12345678 (RHB)",
+          "DD CASA PYMT 1234567L (Hong Leong)",
+          "NBPS IBG DR CA AOBJOM... FINPAL ISSUER REPAYM (Alliance/FinPal)"
+        ],
+        "rationale": "The account IS the company's own (facility is in company's name), but description carries only a numeric ID so the FULL COMPANY NAME match for C02 cannot succeed. Keep in net debits as conservative; still count in loan_repayment_dr and Flag 12. If parallel transactions for the same facility carry the company name, tag them C02+C11 per-transaction."
+      },
+      "jompay_note": "Recurring same biller code monthly = likely loan repayment, but only if clearly defined or entity name visible.",
+      "exclusions": [
+        "TR IBG [related party] Instalment → C04 (director's personal loan), NOT C11",
+        "OTHER TRANSFER FEE [any keyword] → C24 (bank fee), NOT C11. Amount typically RM0.10",
+        "Personal loans of directors/family members paid by company → C04 only, never C11"
+      ],
+      "fallback": "If JomPAY biller code unknown → leave as regular expense",
+      "status": "LOCKED"
+    },
+    "C12": {
+      "name": "FD / Interest Income",
+      "schema_fields": [
+        "fd_interest_cr"
+      ],
+      "side": "CR",
+      "priority": "P2",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "EXCLUDED from Net Credits",
+      "description": "Fixed deposit maturities, sweep-in, interest/profit credits. Credit side only.",
+      "keywords": [
+        "FD MATURITY",
+        "FD MATUR",
+        "FIXED DEPOSIT",
+        "FD UPLIFT",
+        "INTEREST CREDIT",
+        "PROFIT CREDIT",
+        "SWEEP IN",
+        "HIBAH",
+        "DIVIDEND PAID"
+      ],
+      "regex": "(?:FD MATUR|FIXED DEPOSIT|FD UPLIFT|INTEREST CREDIT|PROFIT CREDIT|SWEEP IN|\\bHIBAH\\b|DIVIDEND PAID)",
+      "note": "Same keywords on DEBIT side = C11 (loan repayment), NOT C12. Islamic banks use PROFIT/HIBAH instead of INTEREST.",
+      "fallback": "Default to 0",
+      "status": "LOCKED"
+    },
+    "C13": {
+      "name": "Reversal Credit",
+      "schema_fields": [
+        "reversal_cr"
+      ],
+      "side": "CR",
+      "priority": "P2",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "EXCLUDED from Net Credits",
+      "description": "Bank reversals — credits reversing a previous erroneous debit.",
+      "keywords": [
+        "REVERSAL",
+        "REVERSED",
+        "REV CR",
+        "CREDIT REVERSAL"
+      ],
+      "regex": "(?:REVERSAL|REVERSED|REV CR|CREDIT REVERSAL)",
+      "exclusions": [
+        "IBG INWARD RETURN → C16",
+        "GIRO INWARD RETURN → C16"
+      ],
+      "fallback": "Default to 0",
+      "status": "LOCKED"
+    },
+    "C14": {
+      "name": "Returned Cheques Inward",
+      "schema_fields": [
+        "returned_cheques_inward_count",
+        "returned_cheques_inward_amount"
+      ],
+      "side": "DR",
+      "priority": "P4",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded (nets off naturally)",
+      "description": "Cheques deposited that bounced. Bank debits to reverse the earlier credit.",
+      "keywords": [
+        "RETURN CHQ",
+        "RETURNED CHEQUE",
+        "CHQ RETURN",
+        "DISHONOURED"
+      ],
+      "regex": "(?:RETURN(?:ED)? CHQ|CHQ RETURN|DISHONOUR)",
+      "fallback": "Default to 0",
+      "status": "LOCKED"
+    },
+    "C15": {
+      "name": "Returned Cheques Outward",
+      "schema_fields": [
+        "returned_cheques_outward_count",
+        "returned_cheques_outward_amount"
+      ],
+      "side": "CR",
+      "priority": "P4",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded (nets off)",
+      "description": "Company's own cheques bounced. Major red flag if detected.",
+      "keywords": "Same as C14 but CREDIT side",
+      "fallback": "Default to 0",
+      "status": "LOCKED"
+    },
+    "C16": {
+      "name": "IBG/GIRO Inward Return",
+      "schema_fields": [
+        "inward_return_cr"
+      ],
+      "side": "CR",
+      "priority": "P4",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "EXCLUDED from Net Credits",
+      "description": "Failed outward transfers returning money to account. Money never actually left.",
+      "keywords": [
+        "IBG INWARD RETURN",
+        "GIRO INWARD RETURN"
+      ],
+      "regex": "(?:IBG INWARD RETURN|GIRO INWARD RETURN)",
+      "note": "Separate from C13 (true bank reversals). Both excluded from net credits. Decision per Q1 (Meesha).",
+      "fallback": "Default to 0",
+      "status": "LOCKED"
+    },
+    "C17": {
+      "name": "Cash Deposit",
+      "schema_fields": [
+        "cash_deposits_count",
+        "cash_deposits_amount"
+      ],
+      "side": "CR",
+      "priority": "P4",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Credits",
+      "description": "Physical cash deposits. AML monitoring — track frequency.",
+      "keywords": [
+        "CDM CASH DEPOSIT",
+        "CASH DEPOSIT"
+      ],
+      "regex": "(?:CDM )?CASH DEPOSIT",
+      "exclusions": [
+        "CASH CHQ DR (withdrawal → C18)"
+      ],
+      "aml_note": "Count frequency for AML monitoring tools.",
+      "status": "LOCKED"
+    },
+    "C18": {
+      "name": "Cash Withdrawal",
+      "schema_fields": [
+        "cash_withdrawals_count",
+        "cash_withdrawals_amount"
+      ],
+      "side": "DR",
+      "priority": "P4",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Debits",
+      "description": "Physical cash withdrawn via cash cheque.",
+      "keywords": [
+        "CASH CHQ DR",
+        "CASH CHQ DR WD"
+      ],
+      "regex": "CASH CHQ DR",
+      "distinction": "CASH CHQ DR = C18 (cash withdrawal). HOUSE CHQ DR / CLRG CHQ DR = C20 (cheque issue). Prefix before 'CHQ DR' distinguishes.",
+      "status": "LOCKED"
+    },
+    "C19": {
+      "name": "Cheque Deposit",
+      "schema_fields": [
+        "cheque_deposits_count",
+        "cheque_deposits_amount"
+      ],
+      "side": "CR",
+      "priority": "P4",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Credits",
+      "description": "Cheques deposited by the company.",
+      "keywords": [
+        "HSE CHQ DEPOSIT",
+        "2D LOCAL CHQ",
+        "CHQ DEPOSIT",
+        "CHEQUE DEPOSIT"
+      ],
+      "regex": "(?:HSE CHQ DEPOSIT|2D LOCAL CHQ|CHQ DEPOSIT|CHEQUE DEPOSIT)",
+      "counterparty_rule": "Counterparty = 'Unidentified (Cheque)'. NEVER use cheque labels as top party name.",
+      "status": "LOCKED"
+    },
+    "C20": {
+      "name": "Cheque Issue",
+      "schema_fields": [
+        "cheque_issues_count",
+        "cheque_issues_amount"
+      ],
+      "side": "DR",
+      "priority": "P4",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded from Net Debits",
+      "description": "Company's cheques that cleared.",
+      "keywords": [
+        "HOUSE CHQ DR",
+        "CLRG CHQ DR",
+        "INWARD CLEARING CHQ DEBIT"
+      ],
+      "regex": "(?:HOUSE CHQ DR|CLRG CHQ DR|INWARD CLEARING CHQ DEBIT)",
+      "exclusions": [
+        "CASH CHQ DR → C18",
+        "CHQ PROCESSING FEE → C24"
+      ],
+      "status": "LOCKED"
+    },
+    "C21": {
+      "name": "Round Figure Credit",
+      "schema_fields": [
+        "round_figure_cr"
+      ],
+      "side": "CR",
+      "priority": "P5",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "Monitoring flag only",
+      "description": "Credits that are exact multiples of RM10,000. Structuring/AML indicator.",
+      "rule": "amount >= 10000 AND amount % 10000 == 0",
+      "note": "Pure math — no keyword matching. Applied AFTER classification.",
+      "status": "LOCKED"
+    },
+    "C22": {
+      "name": "High Value Credit",
+      "schema_fields": [
+        "high_value_cr"
+      ],
+      "side": "CR",
+      "priority": "P5",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "Monitoring flag only",
+      "description": "Credits > 3× monthly average EOD balance. Relative threshold — changes monthly.",
+      "rule": "credit > 3 * monthly_eod_avg",
+      "fallback": "If EOD average unavailable or unreliable (reconciliation FAIL) → SKIP C22 entirely. No proxy values.",
+      "distinction": "C22 = relative (3× EOD, system-calculated). C23 = absolute fixed threshold.",
+      "status": "LOCKED"
+    },
+    "C23": {
+      "name": "Large Credit",
+      "schema_fields": [
+        "large_credits"
+      ],
+      "side": "CR",
+      "priority": "P5",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "Listed for review",
+      "description": "Credits >= threshold (default RM100,000). User-configurable.",
+      "rule": "credit >= large_credit_threshold",
+      "default_threshold": 100000,
+      "configurable": true,
+      "distinction": "C23 = absolute fixed threshold. C22 = relative (3× EOD).",
+      "status": "LOCKED"
+    },
+    "C24": {
+      "name": "Bank Fees & Charges",
+      "schema_fields": null,
+      "side": "DR",
+      "priority": "P5",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "NOT excluded (real cost)",
+      "description": "Service charges, processing fees, SST. Valid operating costs.",
+      "keywords": [
+        "AUTOPAY CHARGES",
+        "OTHER TRANSFER FEE",
+        "CHQ PROCESSING FEE",
+        "CHEQUE PROCESSING FEE",
+        "CHQ PROCESS FEE",
+        "3RD PARTY CHEQUE ENCASHMENT",
+        "ACCOUNT STATUS CONFIRMATION",
+        "SERVICE TAX",
+        "STAMP DUTY",
+        "CABLE CHARGE",
+        "NOSTRO CHARGE",
+        "MAS SERVICE CHARGE",
+        "AGENT CHARGES",
+        "CMS - DR CORP CHG",
+        "HANDLING CHRG",
+        "CHEQ STAMP FEE"
+      ],
+      "regex": "(?:AUTOPAY CHARGES|OTHER TRANSFER FEE|CH(?:Q|EQUE)\\s+PROCESS(?:ING)?\\s+FEE|3RD PARTY CHEQUE|ACCOUNT STATUS CONFIRM|SERVICE TAX \\d+%|STAMP DUTY|CABLE CHARGE|NOSTRO CHARGE|MAS SERVICE CHARGE|AGENT CHARGES|CMS - DR CORP CHG|HANDLING\\s+CHRG|CHEQ(?:UE)?\\s+STAMP\\s+FEE)",
+      "other_transfer_fee_rule_v3_2": "OTHER TRANSFER FEE entries (typically RM0.10) are ALWAYS C24 regardless of what purpose text follows. If amount <= RM1.00 and description starts with 'OTHER TRANSFER FEE' → C24, full stop.",
+      "note": "Small amounts. Must not be misclassified as salary, statutory, or any exclusion category.",
+      "status": "LOCKED"
+    },
+    "C25": {
+      "name": "Balance Row (Exclude)",
+      "schema_fields": null,
+      "side": "BOTH",
+      "priority": "P0",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "impact": "EXCLUDED from everything",
+      "description": "Statement balance markers. Filter FIRST before any classification.",
+      "keywords": [
+        "CLOSING BALANCE",
+        "BAKI PENUTUP",
+        "OPENING BALANCE",
+        "BAKI PEMBUKAAN"
+      ],
+      "regex": "(?:CLOSING BALANCE|BAKI PENUTUP|OPENING BALANCE|BAKI PEMBUKAAN)",
+      "dual_purpose": {
+        "banks_with_header": "C25 rows are duplicates — extract balances from header, remove C25 rows.",
+        "banks_without_header": "C25 rows ARE the source of opening/closing balance — extract amounts FIRST then remove from transaction list.",
+        "fallback": "If no header AND no C25 rows → opening/closing balance unavailable, reconciliation cannot run."
+      },
+      "status": "LOCKED"
+    },
+    "C26": {
+      "name": "Trade Income",
+      "schema_fields": [
+        "trade_income_count",
+        "trade_income_amount"
+      ],
+      "side": "CR",
+      "priority": "P5",
+      "execution_mode": "FULL_AI",
+      "confidence": "MEDIUM",
+      "impact": "NOT excluded from Net Credits",
+      "description": "v3.4 NEW. CR from a third-party company (customer payment for goods/services). Eliminates the 'RM millions unclassified CR' blind spot for operating businesses.",
+      "triggers": [
+        "side == 'CR'",
+        "counterparty contains SDN BHD / BHD / BERHAD / ENTERPRISE / TRADING / CORPORATION / GROUP / HOLDINGS / INDUSTRIES",
+        "NOT match_own_party(counterparty)",
+        "NOT in_related_party_list(counterparty)",
+        "NOT match_factoring_entity(counterparty)",
+        "NOT statutory_bucket set",
+        "NOT FD/interest/reversal/inward-return keywords"
+      ],
+      "examples": [
+        "PIASAU GAS SDN BHD (Muhafiz client receipt)",
+        "PERTAMA FERROALLOYS (Muhafiz client receipt)",
+        "SCHENKER LOGISTICS (M) SDN. BHD. (Muhafiz client receipt)",
+        "SOUTHERN CABLE SDN B (Muhafiz client receipt)"
+      ],
+      "note": "Natural-person counterparties (BIN/BINTI/A/L/A/P names) do NOT fire C26 — they are not trade partners by default. Such rows remain unclassified unless C03/C04/C05/C11 fires.",
+      "status": "LOCKED"
+    },
+    "C27": {
+      "name": "Trade Expense",
+      "schema_fields": [
+        "trade_expense_count",
+        "trade_expense_amount"
+      ],
+      "side": "DR",
+      "priority": "P5",
+      "execution_mode": "FULL_AI",
+      "confidence": "MEDIUM",
+      "impact": "NOT excluded from Net Debits",
+      "description": "v3.4 NEW. DR to a third-party company (vendor payment for goods/services). Symmetrical to C26 Trade Income.",
+      "triggers": [
+        "side == 'DR'",
+        "counterparty contains SDN BHD / BHD / BERHAD / ENTERPRISE / TRADING / CORPORATION / GROUP / HOLDINGS / INDUSTRIES",
+        "NOT match_own_party(counterparty)",
+        "NOT in_related_party_list(counterparty)",
+        "NOT statutory_bucket set",
+        "NOT bank-fee markers (C24)",
+        "NOT loan-repayment markers (C11)"
+      ],
+      "note": "Natural-person counterparties do NOT fire C27. Such rows remain unclassified unless another DR category (C02/C04/C05/C10/C11/C18/C19/C20/C24) fires.",
+      "status": "LOCKED"
+    }
+  },
+  "related_party_rules": {
+    "RP1": {
+      "name": "User Override",
+      "description": "If user provides related_parties[] list, use as PRIMARY source. Highest authority.",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "status": "LOCKED"
+    },
+    "RP2": {
+      "name": "Root Name Match",
+      "description": "Extract distinctive/unique word(s) from company_name. Other entities sharing root → Sister Company CANDIDATE. Root = distinctive word regardless of length. Short but unique (DMC) = sufficient. Short but generic (GLOBAL, PRIME) = needs more words.",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "note": "Root match = CANDIDATE only. Validate by transaction frequency/pattern. Used for C03/C04 related party detection, NOT for C01/C02 own party matching.",
+      "status": "LOCKED"
+    },
+    "RP3": {
+      "name": "Account Holder as Payee",
+      "description": "Person names in recurring debits with personal keywords → Director. Two-way financial behaviour = potential related party for analyst review.",
+      "execution_mode": "AI_ASSIST",
+      "confidence": "MEDIUM",
+      "purpose_tiebreaker": true,
+      "status": "LOCKED"
+    },
+    "RP4": {
+      "name": "Recurring Personal Payee",
+      "description": "Individual names in 3+ debits with personal keywords (PETTY CASH, CREDIT CARD, HOUSING LOAN). Frequency alone ≠ related party. Frequency + personal keywords = strong signal.",
+      "execution_mode": "AI_ASSIST",
+      "confidence": "MEDIUM",
+      "status": "LOCKED"
+    },
+    "RP5": {
+      "name": "Fuzzy Name Match",
+      "description": "Same person with different name formats → resolve to one entity. 3-tier deterministic matching.",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "matching_tiers": "Same as global name_normalisation matching_tiers.",
+      "status": "LOCKED"
+    },
+    "RP6": {
+      "name": "Exclusion List",
+      "description": "Never auto-detect as related parties: govt (JANM/LHDN/KWSP/PERKESO/PSMB), banks, utilities, known suppliers, factoring companies.",
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "examples": [
+        "PLANWORTH GLOBAL = factoring, NOT related",
+        "HALA GATEWAYS = supplier (17 txns, RM516K), NOT related"
+      ],
+      "status": "LOCKED"
+    },
+    "RP7": {
+      "name": "Transaction Purpose Detection",
+      "description": "v3.2 NEW: Entities receiving debits with purposes SHARE CAPITAL, SHARE CAP, OPENING CA, MTSB SHARE CAP → Sister Company (confirmed). These are equity/investment transactions that definitively indicate corporate relationships.",
+      "keywords": [
+        "SHARE CAPITAL",
+        "SHARE CAP",
+        "OPENING CA",
+        "MTSB SHARE CAP"
+      ],
+      "execution_mode": "FULL_CODE",
+      "confidence": "HIGH",
+      "note": "Overrides RP6 exclusion list only for SHARE CAPITAL keywords. These are definitively related party indicators.",
+      "status": "NEW v3.2"
+    },
+    "RP8": {
+      "name": "Surname-Based Family Detection",
+      "description": "v3.2 NEW: Extract surname (last token) from each known director name. Search all transaction counterparties for OTHER person names containing this surname AND having personal-purpose transactions (INSTALMENT, MONTHLY INSTALMENT, loan references) → Family Member.",
+      "execution_mode": "FULL_CODE",
+      "confidence": "MEDIUM",
+      "requirements": [
+        "Surname must be distinctive (not common names like BIN, BINTI, AHMAD alone)",
+        "Counterparty must have personal-purpose keywords, not just surname match"
+      ],
+      "example": "Director = SHAHARUDDIN BIN SAMSI → surname 'SAMSI' → find SAMSI BIN IBRAHIM with Monthly Instalment → Family Member",
+      "status": "NEW v3.2"
+    }
+  },
+  "confirmed_related_parties": {
+    "MUHAFIZ": [
+      {
+        "name": "MUHAFIZ TECHNOLOGY",
+        "relationship": "Sister Company",
+        "source": "RP2 root name match",
+        "status": "LOCKED"
+      },
+      {
+        "name": "MUHAFIZ PRIMA",
+        "relationship": "Sister Company",
+        "source": "RP2 root name match",
+        "status": "LOCKED"
+      },
+      {
+        "name": "SHAHARUDDIN BIN SAMSI",
+        "relationship": "Director",
+        "source": "Known",
+        "status": "LOCKED"
+      },
+      {
+        "name": "SAMSI BIN IBRAHIM",
+        "relationship": "Family Member (father of director)",
+        "source": "Transaction pattern",
+        "status": "LOCKED"
+      },
+      {
+        "name": "DAYANG SITI RAUDZAH",
+        "relationship": "Family Member (wife of director)",
+        "source": "Q6 — Luqman confirmed. 33 txns RM179,632",
+        "status": "LOCKED"
+      },
+      {
+        "name": "SHAUFIAH NUR ASHIKIN",
+        "relationship": "Family Member (mother of director)",
+        "source": "Q5 — Luqman confirmed. 6 txns RM19,284",
+        "status": "LOCKED"
+      }
+    ],
+    "DMC": [
+      {
+        "name": "NUR THAHIRAH NAZIHA",
+        "relationship": "Director/Shareholder",
+        "source": "Q7 — Luqman confirmed. CR RM98,342 (C03) + DR RM144,803 (C04)",
+        "status": "LOCKED"
+      },
+      {
+        "name": "MUHAMMAD SIDDIQ BIN",
+        "relationship": "Related Party (RP3 behavioural)",
+        "source": "Q8 — split: Salary=C05, operational=expense, Advance=C03",
+        "status": "LOCKED"
+      }
+    ]
+  },
+  "counterparty_extraction_rules": {
+    "credit_patterns": {
+      "CP1": {
+        "pattern": "IBG CREDIT",
+        "bank": "CIMB",
+        "method": "Skip 'IBG CREDIT', skip ref codes (<8 chars alphanumeric), take remaining words as entity name.",
+        "regex": "IBG CREDIT\\s+\\S+\\s+\\S+\\s+(.*?)(?:\\s+\\d|$)",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      },
+      "CP2": {
+        "pattern": "IBG CREDIT F ADVANCE",
+        "bank": "CIMB",
+        "method": "Factoring advance. Extract company name after 'F ADVANCE'. Normalise FAC → FACTORING.",
+        "regex": "F ADVANCE.*?([\\w\\s]+(?:SDN|BHD|FAC))",
+        "execution_mode": "FULL_CODE",
+        "status": "LOCKED"
+      },
+      "CP3": {
+        "pattern": "DUITNOW TO ACCOUNT",
+        "bank": "CIMB",
+        "method": "Skip 'DUITNOW TO ACCOUNT', skip purpose words (ONLINE TRANSFER, CASH, PAYMENT), extract entity name.",
+        "regex": "DUITNOW TO ACCOUNT\\s+(.*?)(?:\\s+MBB|$)",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      },
+      "CP4": {
+        "pattern": "AUTOPAY CR",
+        "bank": "CIMB",
+        "method": "Skip 'AUTOPAY CR', skip batch ref (duplicated), take entity name.",
+        "regex": "AUTOPAY CR\\s+\\S+\\s+\\S+\\s+(.*)",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      },
+      "CP5": {
+        "pattern": "REMITTANCE CR + JANM",
+        "bank": "CIMB",
+        "method": "Always JANM CAWANGAN [location]. NOT FX.",
+        "regex": "JANM CAWANGAN\\s+(\\w+)",
+        "execution_mode": "FULL_CODE",
+        "status": "LOCKED"
+      },
+      "CP7": {
+        "pattern": "TRANSFER TO A/C",
+        "bank": "Maybank",
+        "method": "Skip 'TRANSFER TO A/C', take name before *, purpose after *. Truncation handled by RP5.",
+        "regex": "TRANSFER TO A/C\\s+(.*?)\\*\\s*(.*)",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      }
+    },
+    "debit_patterns": {
+      "CP6": {
+        "pattern": "TR TO C/A / TR IBG",
+        "bank": "CIMB",
+        "method": "Skip prefix, extract entity/person name. Use stop rules (numbers, MBB, CT) not fixed word count.",
+        "regex": "(?:TR TO C/A|TR IBG)\\s+(.*?)(?:\\s+\\d|MBB|$)",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      },
+      "CP8": {
+        "pattern": "TRANSFER FR A/C",
+        "bank": "Maybank",
+        "method": "Skip 'TRANSFER FR A/C', take name before *, purpose after *.",
+        "regex": "TRANSFER FR A/C\\s+(.*?)\\*\\s*(.*)",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      },
+      "CP9": {
+        "pattern": "PAYMENT FR A/C",
+        "bank": "Maybank",
+        "method": "Skip 'PAYMENT FR A/C', skip card/account number, extract entity after *. Check statutory (C06/C07) first.",
+        "regex": "PAYMENT FR A/C.*?\\*\\s*(.*?)(?:\\s+\\d{10}|$)",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      }
+    },
+    "utility_rules": {
+      "CP10": {
+        "pattern": "Cheque patterns",
+        "method": "Cannot extract counterparty. Tag as 'Unidentified (Cheque)'. NEVER use as top party name.",
+        "execution_mode": "FULL_CODE",
+        "status": "LOCKED"
+      },
+      "CP11": {
+        "pattern": "Normalisation",
+        "method": "Simple cleanup (punctuation, uppercase, SDN/BHD) can be coded. Merging truncated names needs AI. Only normalise when confident. Wrong normalisation worse than duplicates.",
+        "execution_mode": "AI_ASSIST",
+        "status": "LOCKED"
+      }
+    },
+    "normalisation_rules_v3_2": {
+      "CN1": {
+        "name": "Factoring Entity Consolidation",
+        "description": "Merge all PLANWORTH GLOBAL variants (PLANWORTH GLOBAL FAC, PLANWORTH GLOBAL FACTORING) → 'PLANWORTH GLOBAL'. Do NOT list 'FAC' as a separate entity.",
+        "execution_mode": "FULL_CODE",
+        "status": "NEW v3.2"
+      },
+      "CN2": {
+        "name": "Fragment Suppression",
+        "description": "If an extracted name is clearly a suffix/fragment of a known longer entity name, merge it with the parent.",
+        "execution_mode": "FULL_CODE",
+        "status": "NEW v3.2"
+      },
+      "CN3": {
+        "name": "JANM Consolidation",
+        "description": "All 'JANM CAWANGAN [location]' variants → merge to 'JANM' for top party ranking. Individual branches tracked in transaction detail only.",
+        "execution_mode": "FULL_CODE",
+        "status": "NEW v3.2"
+      },
+      "CN4": {
+        "name": "Same Entity Different Purposes",
+        "description": "When same entity appears with different payment descriptions, merge by entity name. Strip purpose suffix for top party display.",
+        "execution_mode": "AI_ASSIST",
+        "status": "NEW v3.2"
+      },
+      "CN5": {
+        "name": "Related Parties in Top Payees",
+        "description": "Related parties appearing in top payees MUST show canonical name from related_parties[] and be marked is_related_party=true.",
+        "execution_mode": "FULL_CODE",
+        "status": "NEW v3.2"
+      },
+      "CN6": {
+        "name": "Ghost-Verb Suppression (cross-bank)",
+        "description": "v3.3.1 MANDATORY: counterparty entries that are ONLY a payment-rail prefix with no entity name attached are parser dropouts. They MUST be EXCLUDED from top_parties.top_payers and top_parties.top_payees. This is a cross-bank rule — applies to ALL 14 supported banks and to any new bank added later.",
+        "rule_pattern": "A counterparty name is a ghost verb if, after normalisation (strip SDN/BHD/& CO/(M)/PTY/LTD, collapse whitespace, uppercase), the entire normalised string matches one of the bank-specific prefixes below AND has no additional alphabetic token of ≥3 letters other than those in the stopword set.",
+        "ghost_verb_prefixes_by_bank": {
+          "Maybank": ["TRANSFER FR A/C", "TRANSFER TO A/C", "PAYMENT FR A/C", "INTER-BANK PAYMENT INTO A/C", "ELECTRONIC REMITTANCE", "ELECTRONIC REMITTANCE - GIR"],
+          "Maybank Islamic": ["TRANSFER FR A/C", "TRANSFER TO A/C", "PAYMENT FR A/C", "INTER-BANK PAYMENT INTO A/C"],
+          "CIMB": ["TR TO C/A", "TR IBG", "IBG CREDIT", "DUITNOW TO ACCOUNT", "AUTOPAY CR", "AUTOPAY DR", "I-FUNDS TR FROM SA", "I-PAYMENT FPXPAY", "I-PYMT TO CCARD", "REMITTANCE CR"],
+          "Alliance": ["Instant Transfer", "CR ADVICE - IBG", "DuitNow CR Trf", "NBPS IBG Dr", "NBPS IBG CR", "IB2G", "IB2G BLKTRF", "RENTAS CA CREDIT", "CA IMPORT DR", "FPX"],
+          "RHB": ["IBG IN", "IBG OUT", "DUITNOW IN", "DUITNOW OUT", "IBFT"],
+          "Public Bank": ["IBG CR", "IBG DR", "DUITNOW CR", "DUITNOW DR", "PBB IBK"],
+          "Bank Islam": ["DEBIT ONLINE", "CREDIT ONLINE", "IBG CR", "IBG DR"],
+          "Bank Rakyat": ["IBG CR", "IBG DR", "DUITNOW CR", "DUITNOW DR"],
+          "Hong Leong": ["IBG OUTW", "IBG INW", "DUITNOW IN", "DUITNOW OUT", "HLB IBG"],
+          "Ambank": ["AMBANK IBG", "IBG-OUTWARD", "IBG-INWARD"],
+          "Affin": ["IBG OUT", "IBG IN", "DUITNOW"],
+          "Agro": ["IBG", "DUITNOW"],
+          "Bank Muamalat": ["IBG OUT", "IBG IN", "DUITNOW"],
+          "OCBC": ["IBG-OUT", "IBG-IN", "FAST"],
+          "UOB": ["IBG OUT", "IBG IN", "DUITNOW"]
+        },
+        "generic_fallback": "For any bank not listed above, or any new bank added later: if the counterparty name has no alphabetic token of ≥3 letters OTHER than the stopword set [TRANSFER, PAYMENT, IBG, IB2G, IBFT, IBK, CR, DR, CREDIT, DEBIT, TO, FR, FROM, A/C, C/A, ACCOUNT, ACCT, INTER, BANK, BANKING, INTO, ONLINE, DUITNOW, DUIT, NOW, FPX, RENTAS, REMITTANCE, ELECTRONIC, AUTOPAY, INSTANT, FAST, OUTWARD, INWARD, OUTW, INW, OUT, IN, ADVICE, TRF, BLKTRF, NBPS, TR, PYMT, PAY, THE, AND, OF, FOR, WITH, SA, CA, CCARD, CARD, CHQ, CHEQUE, CASH, DEPOSIT, WITHDRAWAL, HSE, HOUSE, CLRG, CDM, 2D, LOCAL, GIR, GIRO, HLB, MBB, RHB, ABB, PBB, BIMB, AMB, AMBANK, PBE, CIMB, OCBC, UOB, BSN, PMT, SLRY] — it is a ghost verb. This is the canonical cross-bank stopword set; renderer and classifier MUST use the same list. Do NOT add to stopwords: HONG, LEONG, PUBLIC, ALLIANCE, RAKYAT, ISLAM, ISLAMIC, BERHAD, NEGARA, AGRO, AFFIN, MAYBANK, MUAMALAT \u2014 these can appear inside real entity names and must remain classifiable.",
+        "cheque_patterns_note": "Cheque patterns (HSE CHQ DEPOSIT, CDM CASH DEPOSIT, 2D LOCAL CHQ, CASH CHQ DR, HOUSE CHQ DR, CLRG CHQ DR) are aggregated into C17/C18/C19/C20 — they must NOT appear as named counterparties in top_parties either. Same suppression rule applies.",
+        "reporting": "When any counterparty is suppressed by CN6, add a note to observations.concerns stating count + total amount + prefix affected. Example: '206 debit transactions totalling RM 44,224.48 under TRANSFER FR A/C could not be attributed to a counterparty (parser dropped the name) — excluded from top payees ranking.'",
+        "execution_mode": "FULL_CODE",
+        "status": "NEW v3.3.1"
+      }
+    }
+  },
+  "bank_specific_patterns": {
+    "MUHAFIZ_CIMB": [
+      {
+        "pattern_prefix": "AUTOPAY DR",
+        "count": 67,
+        "side": "DR",
+        "total_rm": 11843817.86,
+        "category": "Salary (C05)",
+        "cat_code": "C05",
+        "regex": "AUTOPAY DR U\\d{4}",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "AUTOPAY DR U2025090301479 RTB25090303004...",
+        "sample_2": "AUTOPAY DR U2025090401455 RTB25090403006...",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "IBG CREDIT [various]",
+        "count": 159,
+        "side": "CR",
+        "total_rm": 5462437.45,
+        "category": "Multiple — sub-classify",
+        "cat_code": "C01/C03/C10/Other",
+        "regex": "See sub-rules",
+        "execution_mode": "AI ASSIST",
+        "confidence": "MEDIUM",
+        "sample_1": "IBG CREDIT PW0825353 PERBENA EMAS SDN. BH",
+        "sample_2": "IBG CREDIT F ADVANCE PLANWORTH GLOBAL FAC",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "DUITNOW TO ACCOUNT",
+        "count": 146,
+        "side": "CR",
+        "total_rm": 4015646.27,
+        "category": "Multiple — sub-classify",
+        "cat_code": "C01/C03/Other",
+        "regex": "See sub-rules",
+        "execution_mode": "AI ASSIST",
+        "confidence": "MEDIUM",
+        "sample_1": "DUITNOW TO ACCOUNT 06/052 STUTONG TIARRA",
+        "sample_2": "DUITNOW TO ACCOUNT CASH MUHAFIZ SECURITY",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "REMITTANCE CR ... JANM",
+        "count": 31,
+        "side": "CR",
+        "total_rm": 4539578.6,
+        "category": "3rd Party (Govt — NOT FX)",
+        "cat_code": "Other",
+        "regex": "REMITTANCE CR.*JANM",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "REMITTANCE CR 20251030... JANM CAWANGAN KUCHING",
+        "sample_2": "All 31 are JANM domestic remittances",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "AUTOPAY CR",
+        "count": 68,
+        "side": "CR",
+        "total_rm": 2433224.48,
+        "category": "Multiple — factoring + 3rd party",
+        "cat_code": "C10/Other",
+        "regex": "See sub-rules",
+        "execution_mode": "AI ASSIST",
+        "confidence": "MEDIUM",
+        "sample_1": "AUTOPAY CR BM250822 PIASAU GAS SDN BHD",
+        "sample_2": "AUTOPAY CR ... F ADVANCE ... PLANWORTH GLOBAL",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "2D LOCAL CHQ",
+        "count": 17,
+        "side": "CR",
+        "total_rm": 2256838.23,
+        "category": "Cheque Deposit (C19)",
+        "cat_code": "C19",
+        "regex": "2D LOCAL CHQ",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "2D LOCAL CHQ",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TR IBG MUHAFIZ",
+        "count": 57,
+        "side": "DR",
+        "total_rm": 1772136,
+        "category": "Own Party Debit (C02)",
+        "cat_code": "C02",
+        "regex": "TR IBG MUHAFIZ SECURITY",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "TR IBG MUHAFIZ SECURITY SDN TRANSFER BACK TO MBB",
+        "sample_2": "TR IBG MUHAFIZ SECURITY SDN Term loan",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "I-PAYMENT FPXPAY KUMPULAN WANG",
+        "count": 50,
+        "side": "DR",
+        "total_rm": 1728034,
+        "category": "EPF (C06)",
+        "cat_code": "C06",
+        "regex": "KUMPULAN WANG SIMPANAN PEKERJA",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "I-PAYMENT FPXPAY KUMPULAN WANG SIMPANAN PEKERJA",
+        "sample_2": "50 txns across 6 months",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TR TO C/A [various]",
+        "count": 30,
+        "side": "DR",
+        "total_rm": 1599422.76,
+        "category": "Multiple — own/related",
+        "cat_code": "C02/C04",
+        "regex": "Check name after 'TR TO C/A'",
+        "execution_mode": "AI ASSIST",
+        "confidence": "MEDIUM",
+        "sample_1": "TR TO C/A MUHAFIZ TECHNOLOGY SHAHARUDDIN B SAMSI",
+        "sample_2": "TR TO C/A SHAHARUDDIN BIN SAM PETTY CASH",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TR IBG SUPREME LANDMOBILE",
+        "count": 2,
+        "side": "DR",
+        "total_rm": 1385977.2,
+        "category": "3rd Party Supplier",
+        "cat_code": "Other",
+        "regex": "TR IBG SUPREME",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "TR IBG SUPREME LANDMOBILE & PAID INVOICE",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "HSE CHQ DEPOSIT",
+        "count": 6,
+        "side": "CR",
+        "total_rm": 1078408,
+        "category": "Cheque Deposit (C19)",
+        "cat_code": "C19",
+        "regex": "HSE CHQ DEPOSIT",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "HSE CHQ DEPOSIT",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "I-PAYMENT FPXPAY JABATAN KASTAM",
+        "count": 3,
+        "side": "DR",
+        "total_rm": 458611.23,
+        "category": "3rd Party (Customs)",
+        "cat_code": "Other",
+        "regex": "JABATAN KASTAM",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "I-PAYMENT FPXPAY JABATAN KASTAM DIRAJA MALAYSIA",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TR TO SAVINGS [various]",
+        "count": 91,
+        "side": "DR",
+        "total_rm": 316174.96,
+        "category": "Multiple — per Q3 decision",
+        "cat_code": "C04/C05/Other",
+        "regex": "Check name + purpose keyword",
+        "execution_mode": "AI ASSIST",
+        "confidence": "LOW",
+        "sample_1": "TR TO SAVINGS DAYANG SITI RAUDZAH PETTY CASH",
+        "sample_2": "TR TO SAVINGS FATHIN SYAIRAH NAJL Payment",
+        "review_status": "LOCKED — per Q3: not auto-salary"
+      },
+      {
+        "pattern_prefix": "I-PAYMENT FPXPAY LEMBAGA HASIL",
+        "count": 13,
+        "side": "DR",
+        "total_rm": 274484.94,
+        "category": "Tax (C08)",
+        "cat_code": "C08",
+        "regex": "LEMBAGA HASIL DALAM NEGERI",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "I-PAYMENT FPXPAY LEMBAGA HASIL DALAM NEGERI MAL",
+        "sample_2": "13 txns incl RM221K lump sum",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "I-PAYMENT FPXPAY PERTUBUHAN KESELAMATAN",
+        "count": 22,
+        "side": "DR",
+        "total_rm": 261074.1,
+        "category": "SOCSO (C07)",
+        "cat_code": "C07",
+        "regex": "PERTUBUHAN KESELAMATAN",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "I-PAYMENT FPXPAY PERTUBUHAN KESELAMATAN SOSIAL",
+        "sample_2": "22 txns across 6 months",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "CASH CHQ DR",
+        "count": 7,
+        "side": "DR",
+        "total_rm": 103700,
+        "category": "Cash Withdrawal (C18)",
+        "cat_code": "C18",
+        "regex": "CASH CHQ DR",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "CASH CHQ DR",
+        "sample_2": "CASH CHQ DR WD",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "I-PYMT TO CCARD SHAHARUDDIN",
+        "count": 4,
+        "side": "DR",
+        "total_rm": 79053.37,
+        "category": "Related Party (C04)",
+        "cat_code": "C04",
+        "regex": "I-PYMT TO CCARD.*SHAHARUDDIN",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "I-PYMT TO CCARD SHAHARUDDIN SAMSI CIMB CC",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TR IBG SHAHARUDDIN",
+        "count": 18,
+        "side": "DR",
+        "total_rm": 47537.28,
+        "category": "Related Party (C04)",
+        "cat_code": "C04",
+        "regex": "TR IBG SHAHARUDDIN",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "TR IBG SHAHARUDDIN BIN SAMS VEV2625",
+        "sample_2": "TR IBG SHAHARUDDIN BIN SAMS Instalment",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "JOMPAY 1115:3000104301501",
+        "count": 6,
+        "side": "DR",
+        "total_rm": 45565,
+        "category": "Loan Repayment (C11)",
+        "cat_code": "C11",
+        "regex": "JOMPAY 1115:3000104301501",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "JOMPAY 1115:3000104301501 C98QYM94",
+        "sample_2": "~RM7,553/month recurring",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TR IBG DAYANG SITI RAUDZAH",
+        "count": 33,
+        "side": "DR",
+        "total_rm": 179632,
+        "category": "Related Party (C04) — Family",
+        "cat_code": "C04",
+        "regex": "TR IBG DAYANG|TR TO SAVINGS DAYANG",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "TR IBG DAYANG SITI RAUDZAH MDM661",
+        "sample_2": "TR TO SAVINGS DAYANG SITI RAUDZAH PETTY CASH",
+        "review_status": "LOCKED — per Q6: wife of director, 33 txns RM179K"
+      },
+      {
+        "pattern_prefix": "TR IBG SAMSI BIN IBRAHIM",
+        "count": 12,
+        "side": "DR",
+        "total_rm": 38586,
+        "category": "Related Party (C04)",
+        "cat_code": "C04",
+        "regex": "TR IBG SAMSI",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "TR IBG SAMSI BIN IBRAHIM RQ8957",
+        "sample_2": "TR IBG SAMSI BIN IBRAHIM Monthly Instalment",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "IBG INWARD RETURN",
+        "count": 9,
+        "side": "CR",
+        "total_rm": 18621.56,
+        "category": "Failed Transfer Return (C16)",
+        "cat_code": "C16",
+        "regex": "IBG INWARD RETURN",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "IBG INWARD RETURN G8957 IBG RETURN : R23",
+        "sample_2": "9 txns",
+        "review_status": "LOCKED — excluded from net credits"
+      },
+      {
+        "pattern_prefix": "TR IBG SHAUFIAH NUR ASHIKIN",
+        "count": 6,
+        "side": "DR",
+        "total_rm": 19284,
+        "category": "Related Party (C04) — Family",
+        "cat_code": "C04",
+        "regex": "TR IBG SHAUFIAH",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "TR IBG SHAUFIAH NUR ASHIKIN VMK8957",
+        "review_status": "LOCKED — per Q5: mother of director"
+      },
+      {
+        "pattern_prefix": "I-PAYMENT FPXPAY PERSATUAN INDUSTRI",
+        "count": 5,
+        "side": "DR",
+        "total_rm": 14432.45,
+        "category": "3rd Party (Association)",
+        "cat_code": "Other",
+        "regex": "PERSATUAN INDUSTRI",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "I-PAYMENT FPXPAY PERSATUAN INDUSTRI KESELAMATAN",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "I-PAYMENT FPXPAY PEMBANGUNAN SUMBER",
+        "count": 1,
+        "side": "DR",
+        "total_rm": 10835.02,
+        "category": "HRDF (C09)",
+        "cat_code": "C09",
+        "regex": "PEMBANGUNAN SUMBER MANUSIA",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "I-PAYMENT FPXPAY PEMBANGUNAN SUMBER MANUSIA BER",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "AUTOPAY CHARGES",
+        "count": 136,
+        "side": "DR",
+        "total_rm": 981.6,
+        "category": "Bank Fees (C24)",
+        "cat_code": "C24",
+        "regex": "AUTOPAY CHARGES",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "AUTOPAY CHARGES",
+        "sample_2": "RM0.10-RM45 per batch",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "OTHER TRANSFER FEE",
+        "count": 126,
+        "side": "DR",
+        "total_rm": 12.6,
+        "category": "Bank Fees (C24)",
+        "cat_code": "C24",
+        "regex": "OTHER TRANSFER FEE",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "OTHER TRANSFER FEE TRANSFER BACK TO MBB",
+        "sample_2": "RM0.10 each",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "CREDIT ADV",
+        "count": 1,
+        "side": "CR",
+        "total_rm": 4504.22,
+        "category": "Unclassified (per Q2)",
+        "cat_code": "Unclassified",
+        "regex": "CREDIT ADV",
+        "execution_mode": "HUMAN REVIEW",
+        "confidence": "LOW",
+        "sample_1": "CREDIT ADV",
+        "sample_2": "No description — stays in net credits",
+        "review_status": "LOCKED — per Q2: stays in net, tracked as unclassified"
+      },
+      {
+        "pattern_prefix": "CLOSING BALANCE / BAKI PENUTUP",
+        "count": 6,
+        "side": "—",
+        "total_rm": 0,
+        "category": "Exclude (C25)",
+        "cat_code": "C25",
+        "regex": "CLOSING BALANCE|BAKI PENUTUP",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "CLOSING BALANCE / BAKI PENUTUP",
+        "review_status": "LOCKED"
+      }
+    ],
+    "DMC_Maybank": [
+      {
+        "pattern_prefix": "TRANSFER FR A/C [various]",
+        "count": 368,
+        "side": "DR",
+        "total_rm": 1855897.46,
+        "category": "Multiple — sub-classify",
+        "cat_code": "C02/C04/C05/Other",
+        "regex": "Name before * + purpose after *",
+        "execution_mode": "AI ASSIST",
+        "confidence": "MEDIUM",
+        "sample_1": "TRANSFER FR A/C HALA GATEWAYS ENTER* INV00608",
+        "sample_2": "TRANSFER FR A/C MUHAMMAD SIDDIQ BIN* Aug Salary",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TRANSFER TO A/C [various]",
+        "count": 281,
+        "side": "CR",
+        "total_rm": 1707373.81,
+        "category": "Multiple — sub-classify",
+        "cat_code": "C01/C03/Other",
+        "regex": "Name before * + purpose after *",
+        "execution_mode": "AI ASSIST",
+        "confidence": "MEDIUM",
+        "sample_1": "TRANSFER TO A/C NUR ATIKAH BINTI ZA* Umrah",
+        "sample_2": "TRANSFER TO A/C DMC TRAVEL AND TOUR* Visa",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "PAYMENT FR A/C [various]",
+        "count": 53,
+        "side": "DR",
+        "total_rm": 152834.76,
+        "category": "Multiple — sub-classify",
+        "cat_code": "C06/C07/Other",
+        "regex": "Entity name after * or after acct no",
+        "execution_mode": "AI ASSIST",
+        "confidence": "MEDIUM",
+        "sample_1": "PAYMENT FR A/C EPF DPE * 00000000000253825",
+        "sample_2": "PAYMENT FR A/C 3040197137 * FACEBOOK.",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "CDM CASH DEPOSIT",
+        "count": 31,
+        "side": "CR",
+        "total_rm": 141900,
+        "category": "Cash Deposit (C17)",
+        "cat_code": "C17",
+        "regex": "CDM CASH DEPOSIT",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "CDM CASH DEPOSIT",
+        "sample_2": "31 deposits over 6 months",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "TT CREDIT WITHOUT FLOAT",
+        "count": 2,
+        "side": "CR",
+        "total_rm": 71590,
+        "category": "POTENTIAL FX — flag for review",
+        "cat_code": "FX?",
+        "regex": "TT CREDIT",
+        "execution_mode": "AI ASSIST",
+        "confidence": "LOW",
+        "sample_1": "TT CREDIT WITHOUT FLOAT HAMIDAH BINTI MOHD * UMRAH",
+        "sample_2": "Do NOT assume FX. Per Q9: flag only",
+        "review_status": "LOCKED — per Q9: flag, do not assume FX"
+      },
+      {
+        "pattern_prefix": "CASH DEPOSIT",
+        "count": 6,
+        "side": "CR",
+        "total_rm": 39860,
+        "category": "Cash Deposit (C17)",
+        "cat_code": "C17",
+        "regex": "^CASH DEPOSIT$",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "CASH DEPOSIT",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "INTER-BANK PAYMENT INTO",
+        "count": 4,
+        "side": "CR",
+        "total_rm": 10400,
+        "category": "3rd Party Customer",
+        "cat_code": "Other",
+        "regex": "INTER-BANK PAYMENT INTO",
+        "execution_mode": "AI ASSIST",
+        "confidence": "HIGH",
+        "sample_1": "INTER-BANK PAYMENT INTO A/C NORDIN BIN ABDUL RA",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "FPX REFUND",
+        "count": 1,
+        "side": "CR",
+        "total_rm": 3757.77,
+        "category": "Refund (keep in net credits)",
+        "cat_code": "Other",
+        "regex": "FPX REFUND",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "FPX REFUND BUYER 25091721502206",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "ELECTRONIC REMITTANCE - GIR",
+        "count": 10,
+        "side": "DR",
+        "total_rm": 2803.1,
+        "category": "3rd Party Supplier",
+        "cat_code": "Other",
+        "regex": "ELECTRONIC REMITTANCE",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "ELECTRONIC REMITTANCE - GIR TM UNIFI * 1080937160",
+        "sample_2": "ELECTRONIC REMITTANCE - GIR PRINT EXPERT SDN. B*",
+        "review_status": "LOCKED"
+      },
+      {
+        "pattern_prefix": "GIRO INWARD RETURN",
+        "count": 1,
+        "side": "CR",
+        "total_rm": 780,
+        "category": "Failed Transfer Return (C16)",
+        "cat_code": "C16",
+        "regex": "GIRO INWARD RETURN",
+        "execution_mode": "FULL CODE",
+        "confidence": "HIGH",
+        "sample_1": "GIRO INWARD RETURN CREDIT M 2601349I526345",
+        "sample_2": "Maybank equivalent of IBG INWARD RETURN",
+        "review_status": "LOCKED — excluded from net credits"
+      }
+    ]
+  },
+  "test_cases": [
+    {
+      "id": "TC01",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-25",
+      "description": "IBG CREDIT MTH END MTH END MUHAFIZ SECURITY SDN",
+      "credit": 500000,
+      "expected_category": "C01",
+      "expected_category_name": "Own Party Credit",
+      "expected_party_name": "MUHAFIZ SECURITY SDN BHD",
+      "execution_mode": "FULL CODE",
+      "notes": "Own-party: company name in description"
+    },
+    {
+      "id": "TC02",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-30",
+      "description": "IBG CREDIT MUHAFIZ SECURITY SDN MUHAFIZ SECURITY SDN SUBALIPACK (M) SDN.",
+      "credit": 4700.59,
+      "expected_category": "C01",
+      "expected_category_name": "Own Party Credit",
+      "expected_party_name": "MUHAFIZ SECURITY SDN BHD",
+      "execution_mode": "FULL CODE",
+      "notes": "Edge: SUBALIPACK mentioned but sender is own company"
+    },
+    {
+      "id": "TC03",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-04",
+      "description": "TR IBG MUHAFIZ SECURITY SDN TRANSFER BACK TO MBB",
+      "debit": 400000,
+      "expected_category": "C02",
+      "expected_category_name": "Own Party Debit",
+      "expected_party_name": "MUHAFIZ SECURITY SDN BHD",
+      "execution_mode": "FULL CODE",
+      "notes": "Inter-account transfer to own MBB account"
+    },
+    {
+      "id": "TC04",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-02",
+      "description": "TR TO C/A MUHAFIZ TECHNOLOGY SHAHARUDDIN B SAMSI",
+      "debit": 300000,
+      "expected_category": "C04",
+      "expected_category_name": "Related Party Debit",
+      "expected_party_name": "MUHAFIZ TECHNOLOGY",
+      "execution_mode": "FULL CODE",
+      "notes": "Sister company — root name match"
+    },
+    {
+      "id": "TC05",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-10-04",
+      "description": "TR TO C/A SHAHARUDDIN BIN SAM RHB CREDIT CARD",
+      "debit": 35422.68,
+      "expected_category": "C04",
+      "expected_category_name": "Related Party Debit",
+      "expected_party_name": "SHAHARUDDIN BIN SAMSI",
+      "execution_mode": "FULL CODE",
+      "notes": "Director's personal CC paid by company"
+    },
+    {
+      "id": "TC06",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-11-29",
+      "description": "DUITNOW TO ACCOUNT REFUND PROJECT KEM P MUHAFIZ PRIMA SDN. B",
+      "credit": 37000,
+      "expected_category": "C03",
+      "expected_category_name": "Related Party Credit",
+      "expected_party_name": "MUHAFIZ PRIMA SDN BHD",
+      "execution_mode": "FULL CODE",
+      "notes": "Sister company credit"
+    },
+    {
+      "id": "TC07",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-04",
+      "description": "AUTOPAY DR U2025090401455 RTB2509040300660378.TXT",
+      "debit": 1172563.2,
+      "expected_category": "C05",
+      "expected_category_name": "Salary",
+      "expected_party_name": "— (bulk payroll)",
+      "execution_mode": "FULL CODE",
+      "notes": "Large bulk salary batch — RM1.17M for ~100+ employees"
+    },
+    {
+      "id": "TC08",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-03",
+      "description": "AUTOPAY CHARGES",
+      "debit": 1.2,
+      "expected_category": "C24",
+      "expected_category_name": "Bank Fee",
+      "expected_party_name": "— (bank)",
+      "execution_mode": "FULL CODE",
+      "notes": "NOT salary — processing fee for AUTOPAY"
+    },
+    {
+      "id": "TC09",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-12",
+      "description": "I-PAYMENT FPXPAY KUMPULAN WANG SIMPANAN PEKERJA 0920250801611745C140",
+      "debit": 99655,
+      "expected_category": "C06",
+      "expected_category_name": "EPF (KWSP)",
+      "expected_party_name": "KUMPULAN WANG SIMPANAN PEKERJA",
+      "execution_mode": "FULL CODE",
+      "notes": "EPF via full Malay name — NOT 'EPF' keyword"
+    },
+    {
+      "id": "TC10",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-12",
+      "description": "I-PAYMENT FPXPAY PERTUBUHAN KESELAMATAN SOSIAL CP_120925_023519",
+      "debit": 39047.8,
+      "expected_category": "C07",
+      "expected_category_name": "SOCSO",
+      "expected_party_name": "PERTUBUHAN KESELAMATAN SOSIAL",
+      "execution_mode": "FULL CODE",
+      "notes": "SOCSO via full Malay name"
+    },
+    {
+      "id": "TC11",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2026-02-03",
+      "description": "I-PAYMENT FPXPAY LEMBAGA HASIL DALAM NEGERI MAL 2123104878073013",
+      "debit": 221411.6,
+      "expected_category": "C08",
+      "expected_category_name": "Tax (LHDN)",
+      "expected_party_name": "LEMBAGA HASIL DALAM NEGERI",
+      "execution_mode": "FULL CODE",
+      "notes": "Large lump-sum tax payment"
+    },
+    {
+      "id": "TC12",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-12-15",
+      "description": "I-PAYMENT FPXPAY PEMBANGUNAN SUMBER MANUSIA BER 25124943243",
+      "debit": 10835.02,
+      "expected_category": "C09",
+      "expected_category_name": "HRDF (PSMB)",
+      "expected_party_name": "PEMBANGUNAN SUMBER MANUSIA BERHAD",
+      "execution_mode": "FULL CODE",
+      "notes": "HRDF via Malay name"
+    },
+    {
+      "id": "TC13",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-19",
+      "description": "REMITTANCE CR 20251030681154330408/004./600048221 72500 JANM CAWANGAN KUCHING",
+      "credit": 473047.3,
+      "expected_category": "Other",
+      "expected_category_name": "3rd Party (Govt) — NOT FX",
+      "expected_party_name": "JANM CAWANGAN KUCHING",
+      "execution_mode": "FULL CODE",
+      "notes": "CRITICAL: 'REMITTANCE' does NOT mean FX. JANM = domestic MYR"
+    },
+    {
+      "id": "TC14",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-10-01",
+      "description": "TR IBG MUHAFIZ SECURITY SDN Term loan",
+      "debit": 16703,
+      "expected_category": "C02+C11",
+      "expected_category_name": "Own Party + Loan Repayment",
+      "expected_party_name": "MUHAFIZ SECURITY SDN BHD",
+      "execution_mode": "FULL CODE",
+      "notes": "DUAL TAG: own-party debit AND loan repayment"
+    },
+    {
+      "id": "TC15",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-10-01",
+      "description": "TR IBG SHAHARUDDIN BIN SAMS House Instalment",
+      "debit": 3110,
+      "expected_category": "C04",
+      "expected_category_name": "Related Party Debit (NOT C11)",
+      "expected_party_name": "SHAHARUDDIN BIN SAMSI",
+      "execution_mode": "FULL CODE",
+      "notes": "Director's PERSONAL house loan — C04, NOT C11"
+    },
+    {
+      "id": "TC16",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-10-28",
+      "description": "IBG CREDIT F ADVANCE F ADVANCE PLANWORTH GLOBAL FAC",
+      "credit": 101273.65,
+      "expected_category": "C10",
+      "expected_category_name": "Loan Disb (Factoring)",
+      "expected_party_name": "PLANWORTH GLOBAL FACTORING",
+      "execution_mode": "FULL CODE",
+      "notes": "Factoring advance — EXCLUDE from net credits"
+    },
+    {
+      "id": "TC17",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-09",
+      "description": "HSE CHQ DEPOSIT",
+      "credit": 1000000,
+      "expected_category": "C19",
+      "expected_category_name": "Cheque Deposit",
+      "expected_party_name": "— (Unidentified)",
+      "execution_mode": "FULL CODE",
+      "notes": "RM1M cheque — cannot identify payer"
+    },
+    {
+      "id": "TC18",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "—",
+      "description": "(hypothetical) TRANSFER TO A/C HASILA BINTI HASHIM* payment",
+      "credit": 5000,
+      "expected_category": "Other",
+      "expected_category_name": "3rd Party Customer",
+      "expected_party_name": "HASILA BINTI HASHIM",
+      "execution_mode": "FULL CODE",
+      "notes": "Edge: 'HASILA' contains 'HASIL' but is person's name, NOT LHDN"
+    },
+    {
+      "id": "TC19",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-08-22",
+      "description": "TRANSFER FR A/C DMC TRAVEL AND TOUR* Buraq Hotel mekah",
+      "debit": 3513.6,
+      "expected_category": "C02",
+      "expected_category_name": "Own Party Debit",
+      "expected_party_name": "DMC TRAVEL AND TOURS SDN BHD",
+      "execution_mode": "FULL CODE",
+      "notes": "Own-party paying from own account"
+    },
+    {
+      "id": "TC20",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-12-27",
+      "description": "TRANSFER TO A/C DMC TRAVEL AND TOUR* Visa MBB CT-",
+      "credit": 650,
+      "expected_category": "C01",
+      "expected_category_name": "Own Party Credit",
+      "expected_party_name": "DMC TRAVEL AND TOURS SDN BHD",
+      "execution_mode": "FULL CODE",
+      "notes": "Own-party credit from own account"
+    },
+    {
+      "id": "TC21",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-08-28",
+      "description": "TRANSFER FR A/C MUHAMMAD SIDDIQ BIN* Aug Salary",
+      "debit": 3089.15,
+      "expected_category": "C05",
+      "expected_category_name": "Salary",
+      "expected_party_name": "MUHAMMAD SIDDIQ BIN...",
+      "execution_mode": "FULL CODE",
+      "notes": "Individual salary — keyword 'Salary' present"
+    },
+    {
+      "id": "TC22",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-08-05",
+      "description": "TRANSFER FR A/C MUHAMMAD SIDDIQ BIN* Visa umrah Trip 6 ogos",
+      "debit": 6913.6,
+      "expected_category": "Other",
+      "expected_category_name": "Regular Expense",
+      "expected_party_name": "MUHAMMAD SIDDIQ BIN...",
+      "execution_mode": "AI ASSIST",
+      "notes": "Edge: Same person as TC21 but operational expense, NOT C04 per Q8"
+    },
+    {
+      "id": "TC23",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-10-15",
+      "description": "PAYMENT FR A/C EPF DPE * 0000000000025382587 20250812346264",
+      "debit": 2256,
+      "expected_category": "C06",
+      "expected_category_name": "EPF",
+      "expected_party_name": "KUMPULAN WANG SIMPANAN PEKERJA",
+      "execution_mode": "FULL CODE",
+      "notes": "Maybank EPF uses 'EPF DPE' format"
+    },
+    {
+      "id": "TC24",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-11-19",
+      "description": "PAYMENT FR A/C CP_191125_001552 * PERTUBUHAN KESELAMAT 2511191120120655",
+      "debit": 401.4,
+      "expected_category": "C07",
+      "expected_category_name": "SOCSO",
+      "expected_party_name": "PERTUBUHAN KESELAMATAN SOSIAL",
+      "execution_mode": "FULL CODE",
+      "notes": "Maybank truncates to 'PERTUBUHAN KESELAMAT'"
+    },
+    {
+      "id": "TC25",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-09-17",
+      "description": "TT CREDIT WITHOUT FLOAT HAMIDAH BINTI MOHD * UMRAH 0",
+      "credit": 57590,
+      "expected_category": "FX?",
+      "expected_category_name": "POTENTIAL FX — flag for review",
+      "expected_party_name": "HAMIDAH BINTI MOHD...",
+      "execution_mode": "AI ASSIST",
+      "notes": "TT = transfer method. Could be FX. Per Q9: flag, do not assume"
+    },
+    {
+      "id": "TC26",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-08-21",
+      "description": "TRANSFER TO A/C NUR THAHIRAH NAZIHA* Advance",
+      "credit": 3000,
+      "expected_category": "C03",
+      "expected_category_name": "Related Party Credit",
+      "expected_party_name": "NUR THAHIRAH NAZIHA",
+      "execution_mode": "AI ASSIST",
+      "notes": "Per Q7: Director. 'Advance' = personal funds injected = C03"
+    },
+    {
+      "id": "TC27",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-10-03",
+      "description": "CDM CASH DEPOSIT",
+      "credit": 10000,
+      "expected_category": "C17",
+      "expected_category_name": "Cash Deposit",
+      "expected_party_name": "— (Unidentified)",
+      "execution_mode": "FULL CODE",
+      "notes": "High frequency cash — travel industry norm"
+    },
+    {
+      "id": "TC28",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-08-06",
+      "description": "PAYMENT FR A/C 3040197137 * FACEBOOK. 2508061859110093",
+      "debit": 500,
+      "expected_category": "Other",
+      "expected_category_name": "3rd Party (Advertising)",
+      "expected_party_name": "FACEBOOK",
+      "execution_mode": "FULL CODE",
+      "notes": "Card payment to Facebook for ads"
+    },
+    {
+      "id": "TC29",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-09-15",
+      "description": "TRANSFER TO A/C MUHAMMAD SIDDIQ BIN* Advance DMC",
+      "credit": 5000,
+      "expected_category": "C03",
+      "expected_category_name": "Related Party Credit (per Q8)",
+      "expected_party_name": "MUHAMMAD SIDDIQ BIN...",
+      "execution_mode": "AI ASSIST",
+      "notes": "Per Q8: 'Advance'/'Advance DMC' credits = C03 (excluded from net credits)"
+    },
+    {
+      "id": "TC30",
+      "company": "DMC",
+      "bank": "Maybank",
+      "date": "2025-10-08",
+      "description": "TRANSFER TO A/C MUHAMMAD SIDDIQ BIN* Refund",
+      "credit": 2000,
+      "expected_category": "Excluded",
+      "expected_category_name": "Refund from related party",
+      "expected_party_name": "MUHAMMAD SIDDIQ BIN...",
+      "execution_mode": "AI ASSIST",
+      "notes": "Per Q8: Refund/Return credits from SIDDIQ = excluded from net credits"
+    },
+    {
+      "id": "TC31",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-10-01",
+      "description": "OTHER TRANSFER FEE Term loan",
+      "debit": 0.1,
+      "expected_category": "C24",
+      "expected_category_name": "Bank Fee (NOT C11)",
+      "expected_party_name": "— (bank)",
+      "execution_mode": "FULL CODE",
+      "notes": "v3.2: OTHER TRANSFER FEE = ALWAYS C24 regardless of purpose text"
+    },
+    {
+      "id": "TC32",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-11-01",
+      "description": "OTHER TRANSFER FEE Monthly Instalment",
+      "debit": 0.1,
+      "expected_category": "C24",
+      "expected_category_name": "Bank Fee (NOT C11)",
+      "expected_party_name": "— (bank)",
+      "execution_mode": "FULL CODE",
+      "notes": "v3.2: RM0.10 fee, not the loan repayment itself"
+    },
+    {
+      "id": "TC33",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-10-15",
+      "description": "TR IBG SAMSI BIN IBRAHIM Monthly Instalment",
+      "debit": 3215,
+      "expected_category": "C04",
+      "expected_category_name": "Related Party Debit (NOT C11)",
+      "expected_party_name": "SAMSI BIN IBRAHIM",
+      "execution_mode": "FULL CODE",
+      "notes": "v3.2: Family member's personal loan = C04 only, NEVER C11"
+    },
+    {
+      "id": "TC34",
+      "company": "MUHAFIZ",
+      "bank": "CIMB",
+      "date": "2025-09-15",
+      "description": "TR TO C/A MUHAFIZ TECHNOLOGY MTSB SHARE CAP",
+      "debit": 50000,
+      "expected_category": "C04",
+      "expected_category_name": "Related Party Debit (RP7 auto-detected)",
+      "expected_party_name": "MUHAFIZ TECHNOLOGY",
+      "execution_mode": "FULL CODE",
+      "notes": "v3.2 RP7: SHARE CAP payment → auto-detect as Sister Company"
+    }
+  ],
+  "closed_questions": [
+    {
+      "id": "Q1",
+      "question": "IBG/GIRO Inward Return — exclude from net credits?",
+      "decision": "YES — exclude. C16 is separate from C13 but both excluded from net credits. Added as Step 7 in net credits formula.",
+      "impact": "MUHAFIZ: RM18,622 (9 txns)\nDMC: RM780 (1 txn)",
+      "decided_by": "Meesha",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q2",
+      "question": "CREDIT ADV (RM4,504, no description) — how to classify?",
+      "decision": "Option A with tracking. Unclassified stays in net credits/debits. Track monthly (unclassified_cr_count/amount, unclassified_dr_count/amount). List individually when > RM10K (user-configurable).",
+      "impact": "Small but sets precedent",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q3",
+      "question": "TR TO SAVINGS (91 txns, RM316K) — all salary?",
+      "decision": "Option C — NOT auto-salary. AUTOPAY DR captures bulk salary. Classify individually: extract name → check related party (C04) → check salary keywords → if match = C05 → remainder = regular expense.",
+      "impact": "RM316K classification swing",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q4",
+      "question": "Planworth AUTOPAY CR without 'F ADVANCE' — exclude all?",
+      "decision": "Option B — only with 'F ADVANCE'/'ADVANCE'. AUTOPAY CR without advance keyword = potential surplus refund, stays in net credits. Applies to all factoring companies.",
+      "impact": "~RM700K difference",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q5",
+      "question": "SHAUFIAH NUR ASHIKIN (6 txns RM19K) — relationship?",
+      "decision": "Family Member — mother of SHAHARUDDIN (director). All 6 txns = C04.",
+      "impact": "RM19K related party DR",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q6",
+      "question": "DAYANG SITI RAUDZAH (33 txns RM179K) — relationship?",
+      "decision": "Family Member — wife of SHAHARUDDIN (director). All 33 txns = C04. Total RM179,632 (not RM44K as originally listed — TR TO SAVINGS added 21 more).",
+      "impact": "RM179K related party DR",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q7",
+      "question": "NUR THAHIRAH NAZIHA (90 txns, RM244K) — who?",
+      "decision": "Director/Shareholder. Credits (RM98,342) = C03. Debits (RM144,803) = C04.",
+      "impact": "RM244K classification",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q8",
+      "question": "MUHAMMAD SIDDIQ BIN (57 txns, RM190K) — classification?",
+      "decision": "Option C — split. Salary (RM3,089.15/month) = C05. Operational (visa, tickets) = regular expense. Credits 'Advance'/'Advance DMC' = C03. Credits 'Refund'/'Return' = excluded. RP3 behavioural detection.",
+      "impact": "RM190K across salary + related + expense",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q9",
+      "question": "TT CREDIT WITHOUT FLOAT (RM71,590) — is this FX?",
+      "decision": "Do NOT assume FX. TT = transfer method, not currency indicator. Flag as potential FX for analyst review. Default to NOT FX unless clear evidence.",
+      "impact": "FX classification for DMC",
+      "decided_by": "Luqman + Meesha",
+      "status": "CLOSED"
+    },
+    {
+      "id": "Q10",
+      "question": "STAFF INCENTIVE (RM10K) — salary or bonus?",
+      "decision": "Option A — include under C05. Staff incentive = employee compensation. STAFF INCENTIVE, STAFF OVERTIME, STAFF BONUS, STAFF ADVANCE, EXTRA SALARY = all C05.",
+      "impact": "RM10K, sets precedent",
+      "decided_by": "Luqman",
+      "status": "CLOSED"
+    }
+  ],
+  "ground_truth": {
+    "Gross Credits": {
+      "MUHAFIZ_CIMB": 19809991.83,
+      "DMC_Maybank": 1975661.58
+    },
+    "Gross Debits": {
+      "MUHAFIZ_CIMB": 21294425.51,
+      "DMC_Maybank": 2011535.32
+    },
+    "Net Credits": {
+      "MUHAFIZ_CIMB": 16415555.61,
+      "DMC_Maybank": 1754913.52,
+      "notes": "After all exclusions (C01+C03+C10+C12+C13+C16)"
+    },
+    "Net Debits": {
+      "MUHAFIZ_CIMB": 20422289.51,
+      "DMC_Maybank": 1959407.89,
+      "notes": "After exclusion of own_party_dr (C02) only. v3.3: C04 no longer excluded."
+    },
+    "Own Party CR": {
+      "MUHAFIZ_CIMB": 2784836.22,
+      "DMC_Maybank": 68690,
+      "notes": "MUHAFIZ: 14.1% of gross CR"
+    },
+    "Own Party DR": {
+      "MUHAFIZ_CIMB": 872136,
+      "DMC_Maybank": 52127.43,
+      "notes": "MUHAFIZ: 4.1% of gross DR"
+    },
+    "Related Party CR": {
+      "MUHAFIZ_CIMB": 609600,
+      "DMC_Maybank": 151278.06,
+      "notes": "MUHAFIZ: 3.1%, DMC: 7.7%"
+    },
+    "Related Party DR": {
+      "MUHAFIZ_CIMB": 2828523.41,
+      "DMC_Maybank": 269551.87,
+      "notes": "MUHAFIZ: 13.3%, DMC: 13.4%"
+    },
+    "Salary (C05)": {
+      "MUHAFIZ_CIMB": 11858343.2,
+      "DMC_Maybank": 50169.87,
+      "notes": "MUHAFIZ: AUTOPAY DR bulk. DMC: individual transfers"
+    },
+    "EPF (C06)": {
+      "MUHAFIZ_CIMB": 1728034,
+      "DMC_Maybank": 7750
+    },
+    "SOCSO (C07)": {
+      "MUHAFIZ_CIMB": 261074.1,
+      "DMC_Maybank": 848.9
+    },
+    "Tax (C08)": {
+      "MUHAFIZ_CIMB": 274484.94,
+      "DMC_Maybank": 0,
+      "notes": "DMC: not detected (may be paid elsewhere)"
+    },
+    "HRDF (C09)": {
+      "MUHAFIZ_CIMB": 10835.02,
+      "DMC_Maybank": 0,
+      "notes": "DMC: not detected"
+    },
+    "Loan Repayment (C11)": {
+      "MUHAFIZ_CIMB": 164780,
+      "DMC_Maybank": 0
+    },
+    "Cash Deposits (C17)": {
+      "MUHAFIZ_CIMB": 180,
+      "DMC_Maybank": 181760,
+      "notes": "DMC: travel industry cash-heavy"
+    },
+    "FX": {
+      "MUHAFIZ_CIMB": 0,
+      "DMC_Maybank": 71590,
+      "notes": "DMC: flagged as potential FX per Q9, not confirmed"
+    },
+    "Parsing Success": {
+      "MUHAFIZ_CIMB": "100% (6/6 PASS)",
+      "DMC_Maybank": "66.7% (4/6 PASS)",
+      "notes": "DMC has extraction gaps"
+    }
+  },
+  "general_notes": [
+    {
+      "id": "NOTE 1",
+      "text": "THREE EXECUTION MODES: All 25 classification rules serve THREE modes from ONE rulebook: (1) Full AI — Claude classifies from raw descriptions. (2) Optimised AI — Python handles deterministic rules first, AI handles fuzzy judgment only. (3) Full Code — everything in Python, zero AI. Execution Mode column indicates readiness: FULL CODE = works in all 3 modes. AI ASSIST = needs AI in modes 1 & 2, exhaustive rules needed for mode 3."
+    },
+    {
+      "id": "NOTE 2",
+      "text": "JOMPAY GLOBAL RULE: JomPAY is a payment channel, NOT a payee. Never classify based on JomPAY biller code alone. Only classify when entity name is visible in description. If description is just 'JOMPAY xxxx:xxxxx' with no entity name → leave as regular expense. Applies to C06, C07, C08, C09, and C11."
+    },
+    {
+      "id": "NOTE 3",
+      "text": "CLASSIFICATION RULE ORDER: C25 (filter balance rows) → C01/C02 (own party) → C05 (salary) → C03/C04 (related party) → C06-C09 (statutory) → C10 (loan disb) → C11 (loan repay) → C12-C13 (FD/reversal) → C14-C16 (returned cheques/returns) → C17-C20 (cash/cheque) → C24 (bank fees) → remainder = income/expense"
+    },
+    {
+      "id": "NOTE 4",
+      "text": "NO 'UNKNOWN' BUCKET: If no exclusion matches, transaction is income (credit side) or expense (debit side). It stays in net credits/debits."
+    },
+    {
+      "id": "NOTE 5",
+      "text": "DUAL-TAGGING: A single transaction can carry two category tags (e.g. C02 + C11). Excluded from net debits only ONCE via C02. C11 tracked separately for reporting."
+    },
+    {
+      "id": "NOTE 6",
+      "text": "COMPANY-AGNOSTIC: Rules use variables (company_name, related_parties[], known_factoring_entities[]) — not hardcoded names. Test data: MUHAFIZ (CIMB) and DMC (Maybank Islamic)."
+    },
+    {
+      "id": "NOTE 7",
+      "text": "UNCLASSIFIED TRANSACTIONS: Description too vague/missing to determine type. Track monthly: unclassified_cr_count, unclassified_cr_amount, unclassified_dr_count, unclassified_dr_amount. List individually when single transaction > RM10,000 (user-configurable). Stays in net credits/debits — NOT excluded."
+    },
+    {
+      "id": "NOTE 8",
+      "text": "FX DEFAULT RULE: Default to NOT FX unless clear conversion evidence exists. TT CREDIT = transfer method, NOT currency indicator. RENTAS/JANM = domestic MYR. Alphabet codes (GBPV, USDP) in reference fields = internal voucher codes, NOT currencies."
+    },
+    {
+      "id": "NOTE 9",
+      "text": "v3.1 STATUTORY COVERAGE VALIDATION: Statutory validation uses TWO layers. Layer 1 (PRIMARY) — Coverage Check: For every month where salary_paid > 0, check whether each statutory field (EPF, SOCSO, LHDN) is also > 0. Missing = GAP. Layer 2 (SECONDARY) — Per-Month Ratio Check: Only where BOTH salary and statutory exist in same month. EPF 8-16% OK, SOCSO 1-5% OK. Ratios above range may indicate lump-sum catch-up. NEVER compute ratio as total_statutory / total_salary across all months — this masks gaps. Output in consolidated.statutory_compliance with missing month lists and per-month ratios. See V7-V10 in Tab 6."
+    },
+    {
+      "id": "NOTE 10",
+      "text": "v3.1 SOCSO FALLBACK FIX: Previous threshold 'salary > RM50K' for SOCSO warning was too lenient. SOCSO is mandatory regardless of salary quantum. Removed the RM50K threshold. Now: if salary_paid > 0 in ANY month but statutory_socso = 0 → flag WARNING with missing month list."
+    },
+    {
+      "id": "NOTE 11",
+      "text": "v3.2 C11 SCOPE: C11 is for the COMPANY's own loan facilities ONLY. Director/family member personal loans (instalment, housing loan) paid by company = C04 only, NEVER C11. Test: if entity name is a RELATED PARTY (not company itself), it CANNOT be C11."
+    },
+    {
+      "id": "NOTE 12",
+      "text": "v3.2 OTHER TRANSFER FEE: 'OTHER TRANSFER FEE' entries (typically RM0.10) are ALWAYS C24 (bank fee) regardless of purpose text that follows. 'OTHER TRANSFER FEE Term loan' = C24, not C11."
+    },
+    {
+      "id": "NOTE 13",
+      "text": "v3.2 RP7/RP8 AUTO-DETECTION: RP7 — entities receiving SHARE CAPITAL/SHARE CAP debits = Sister Company (confirmed). RP8 — surname-based family detection: extract director surname, find other persons with same surname + personal loan keywords = Family Member."
+    },
+    {
+      "id": "NOTE 14",
+      "text": "v3.2 COUNTERPARTY NORMALISATION: (1) Merge PLANWORTH GLOBAL variants (FAC → FACTORING). (2) Suppress fragments ('FAC' alone → merge into parent). (3) Merge JANM CAWANGAN variants → 'JANM' for top party. (4) Same entity, different purposes → merge by entity name. (5) Related parties in top payees must show canonical name + is_related_party=true."
+    },
+    {
+      "id": "NOTE 15",
+      "text": "v3.2 DETERMINISTIC EOD: Walk transactions in statement order, group by date, EOD = last transaction's running balance per date. eod_lowest=MIN, eod_highest=MAX, eod_average=SUM/COUNT(distinct dates). Only dates with transactions count. Opening balance from previous month excluded."
+    },
+    {
+      "id": "NOTE 16",
+      "text": "v3.3 C04 EXCLUSION CHANGE: Related party debits (C04) are NO LONGER excluded from net debits. Net debits formula: gross_debits - own_party_dr(C02) only. C04 remains a reporting/tagging category — transactions are still classified, listed in own_related_transactions, and flagged in Flag 11. Rationale: conservative credit assessment — understate income, overstate costs. This also eliminates the consistency problem where name matching differences between AI runs would move net debit figures."
+    }
+  ]
+}

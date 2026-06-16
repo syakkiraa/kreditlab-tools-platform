@@ -1,0 +1,56 @@
+{
+  "07. PGSB CIMB4208 Jul 25.pdf": {
+    "opening_balance": 0.0,
+    "closing_balance": 0.0,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "08. PGSB CIMB4208 Aug 25.pdf": {
+    "opening_balance": 3000.0,
+    "closing_balance": 2084.53,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "09. PGSB CIMB4208 Sep 25.pdf": {
+    "opening_balance": 2084.53,
+    "closing_balance": 172919.59,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "10. PGSB CIMB4208 Oct 25.pdf": {
+    "opening_balance": 172919.59,
+    "closing_balance": 9069.15,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "11. PGSB CIMB4208 Nov 25.pdf": {
+    "opening_balance": 9069.15,
+    "closing_balance": 8961.15,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "12. PGSB CIMB4208 Dec 25.pdf": {
+    "opening_balance": 8961.15,
+    "closing_balance": 8853.15,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

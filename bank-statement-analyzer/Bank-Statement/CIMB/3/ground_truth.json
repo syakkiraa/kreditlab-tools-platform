@@ -1,0 +1,56 @@
+{
+  "Daya CIMB 7792 2025 4.pdf": {
+    "opening_balance": 24006.23,
+    "closing_balance": 6538.6,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Daya CIMB 7792 2025 5.pdf": {
+    "opening_balance": 6538.6,
+    "closing_balance": 1454.16,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Daya CIMB 7792 2025 6.pdf": {
+    "opening_balance": 1454.16,
+    "closing_balance": 20918.19,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Daya CIMB 7792 2025 7.pdf": {
+    "opening_balance": 20918.19,
+    "closing_balance": 20815.88,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Daya CIMB 7792 2025 8.pdf": {
+    "opening_balance": 20815.88,
+    "closing_balance": 81511.11,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "Daya CIMB 7792 2025 9.pdf": {
+    "opening_balance": 81511.11,
+    "closing_balance": 9797.65,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

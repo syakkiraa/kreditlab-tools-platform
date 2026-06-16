@@ -1,0 +1,56 @@
+{
+  "07 HLIB MTCE JULY 25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 30496.26,
+    "gross_debits": 1377563.0,
+    "gross_credits": 1398500.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "08 HLIB MTCE AUG 25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 494779.93,
+    "gross_debits": 1020656.06,
+    "gross_credits": 1484939.73,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "09 HLIB MTCE SEP 25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 12132.58,
+    "gross_debits": 2676290.11,
+    "gross_credits": 2193642.76,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "10 HLIB MTCE OCT 25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 3059.01,
+    "gross_debits": 1318911.57,
+    "gross_credits": 1309838.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "11 HLIB MTCE NOV 25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 38449.57,
+    "gross_debits": 1081141.55,
+    "gross_credits": 1116532.11,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "12 HLIB MTCE DEC 25.pdf": {
+    "opening_balance": null,
+    "closing_balance": 2764.96,
+    "gross_debits": 391684.61,
+    "gross_credits": 356000.0,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "10. BIMB8489 Oct 25.pdf": {
+    "opening_balance": 370462.39,
+    "closing_balance": 404917.79,
+    "gross_debits": 581467.79,
+    "gross_credits": 615923.19,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "11. BIMB8489 Nov 25.pdf": {
+    "opening_balance": 404917.79,
+    "closing_balance": 176303.99,
+    "gross_debits": 575223.43,
+    "gross_credits": 346609.63,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "12. BIMB8489 Dec 25.pdf": {
+    "opening_balance": 176303.99,
+    "closing_balance": 62332.79,
+    "gross_debits": 155927.54,
+    "gross_credits": 41956.34,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

@@ -1,0 +1,20 @@
+# Claude settings
+.claude/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit output (real customer data)
+validation runs - json/full_report*.json
+
+# PDF passwords — NEVER commit
+.pdf_passwords.json

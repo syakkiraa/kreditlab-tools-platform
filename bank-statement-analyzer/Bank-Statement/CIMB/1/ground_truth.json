@@ -1,0 +1,47 @@
+{
+  "CIMB AUG 2024.pdf": {
+    "opening_balance": 1671019.5,
+    "closing_balance": 1511073.49,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "CIMB JUL 2024.pdf": {
+    "opening_balance": 1599209.43,
+    "closing_balance": 1671019.5,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "CIMB JUN 2024.pdf": {
+    "opening_balance": 488584.58,
+    "closing_balance": 1599209.43,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "CIMB MAY 2024.pdf": {
+    "opening_balance": 410883.69,
+    "closing_balance": 488584.58,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  },
+  "CIMB SEP 2024.pdf": {
+    "opening_balance": 1511073.49,
+    "closing_balance": 187742.26,
+    "gross_debits": null,
+    "gross_credits": null,
+    "transaction_count": null,
+    "is_dr_balance": false,
+    "notes": "Auto-extracted from statement totals line \u2014 spot-check before trusting."
+  }
+}

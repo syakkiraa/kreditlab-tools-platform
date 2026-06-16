@@ -1,0 +1,101 @@
+{
+  "account_type": "Current",
+  "classification": {
+    "by_category": {
+      "C01": 4,
+      "C02": 7,
+      "C03": 27,
+      "C04": 143,
+      "C06": 2,
+      "C07": 6,
+      "C08": 3,
+      "C17": 8,
+      "C18": 6,
+      "C24": 72,
+      "UNCLASSIFIED": 759
+    },
+    "classified": 278,
+    "rate_pct": 26.81,
+    "total": 1037,
+    "unclassified": 759
+  },
+  "consolidated": {
+    "net_credits": 1716083.52,
+    "net_debits": 1399299.38
+  },
+  "convention": "CR",
+  "counterparty_ledger": {
+    "pattern_matched": 167,
+    "raw_fallback": 1,
+    "special_bucket": 869,
+    "total": 159
+  },
+  "deduped_rows": 1037,
+  "label": "waja_rhb",
+  "parsed_rows": 1037,
+  "reconciliation": {
+    "months_passed": 7,
+    "months_total": 7
+  },
+  "rp_scan": {
+    "auto_confirmed": 5,
+    "high": 5,
+    "low": 27,
+    "medium": 2,
+    "total": 34
+  },
+  "top_payees": [
+    {
+      "amount": 582875.21,
+      "count": 14,
+      "name": "ATASHA (POSSIBLY MULTIPLE PARTIES)"
+    },
+    {
+      "amount": 564480.0,
+      "count": 58,
+      "name": "ASHRUL (POSSIBLY MULTIPLE PARTIES)"
+    },
+    {
+      "amount": 120000.0,
+      "count": 3,
+      "name": "RN BINA"
+    },
+    {
+      "amount": 96184.92,
+      "count": 287,
+      "name": "MOHAMMAD (POSSIBLY MULTIPLE PARTIES)"
+    },
+    {
+      "amount": 82295.2,
+      "count": 1,
+      "name": "FUAD (POSSIBLY MULTIPLE PARTIES)"
+    }
+  ],
+  "top_payers": [
+    {
+      "amount": 556500.0,
+      "count": 22,
+      "name": "ASHRUL (POSSIBLY MULTIPLE PARTIES)"
+    },
+    {
+      "amount": 358979.3,
+      "count": 4,
+      "name": "JATI WAJA QUALITY SERVICES (OWN-PARTY)"
+    },
+    {
+      "amount": 306234.38,
+      "count": 16,
+      "name": "AKAUN SUB"
+    },
+    {
+      "amount": 246149.22,
+      "count": 18,
+      "name": "KEMENTERI (POSSIBLY MULTIPLE PARTIES)"
+    },
+    {
+      "amount": 242369.91,
+      "count": 43,
+      "name": "JABATAN (POSSIBLY MULTIPLE PARTIES)"
+    }
+  ]
+}
