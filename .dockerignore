@@ -1,0 +1,23 @@
+# Build from the repo root but only send deployment-relevant files.
+.git
+.agents
+.codex
+
+**/node_modules
+**/.next
+**/__pycache__
+**/*.pyc
+**/*.bak
+
+.env
+.env.*
+**/.env
+**/.env.*
+
+*.log
+npm-debug.log*
+.DS_Store
+
+/bank-statement-analyzer
+/dashboard/supabase
+/dashboard/financial-statement-analysis-logic/samples
