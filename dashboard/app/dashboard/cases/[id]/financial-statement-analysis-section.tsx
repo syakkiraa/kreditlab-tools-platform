@@ -24,6 +24,7 @@ import {
 } from "@/lib/claude-models";
 import { financialStatementAnalysisSection } from "@/lib/financial-statement-analysis-config";
 import { supabase } from "@/lib/supabase";
+import { ReportPreviewFrame } from "./report-preview-frame";
 
 type CaseDocument = {
   id: string;
@@ -1268,11 +1269,10 @@ export function FinancialStatementAnalysisSection({
 
           {exportError && <ErrorMessage message={exportError} />}
 
-          <div
-            className="mt-4 max-h-[900px] overflow-auto rounded-xl border border-slate-200"
-            dangerouslySetInnerHTML={{
-              __html: analysisHtml,
-            }}
+          <ReportPreviewFrame
+            title="Financial statement analysis result"
+            html={analysisHtml}
+            className="mt-4"
           />
         </div>
       )}

@@ -22,6 +22,7 @@ import {
   bankStatementAnalysisSection,
   type BankStatementBankName,
 } from "@/lib/bank-statement-analysis-config";
+import { ReportPreviewFrame } from "./report-preview-frame";
 
 type CaseDocument = {
   id: string;
@@ -466,11 +467,10 @@ export function BankStatementAnalysisSection({
 
           {exportError && <ErrorMessage message={exportError} />}
 
-          <div
-            className="mt-4 max-h-[900px] overflow-auto rounded-xl border border-slate-200"
-            dangerouslySetInnerHTML={{
-              __html: analysisHtml,
-            }}
+          <ReportPreviewFrame
+            title="Bank statement analysis result"
+            html={analysisHtml}
+            className="mt-4"
           />
         </div>
       )}

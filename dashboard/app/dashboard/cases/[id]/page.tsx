@@ -8,6 +8,7 @@ import { bankStatementAnalysisSection } from "@/lib/bank-statement-analysis-conf
 import { financialStatementAnalysisSection } from "@/lib/financial-statement-analysis-config";
 import {
   Building2,
+  ArrowLeft,
   CalendarDays,
   CircleDot,
   ClipboardList,
@@ -26,6 +27,7 @@ import {
   BankStatementAnalysisErrorBoundary,
   BankStatementAnalysisSection,
 } from "./bank-statement-analysis-section";
+import { ReportPreviewFrame } from "./report-preview-frame";
 
 type CaseItem = {
   id: string;
@@ -389,7 +391,8 @@ export default function CaseDetailPage() {
                 href="/dashboard/cases"
                 className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
               >
-                â† Back to Cases
+                <ArrowLeft className="h-4 w-4" />
+                Back to Cases
               </Link>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -442,7 +445,7 @@ export default function CaseDetailPage() {
               )}
 
               <p className="mt-1 text-sm text-slate-500">
-                {caseData?.case_code || caseData?.id} â€¢ {caseData?.client_name}
+                {caseData?.case_code || caseData?.id} - {caseData?.client_name}
               </p>
             </div>
 
@@ -1066,14 +1069,12 @@ export default function CaseDetailPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
-                        <div
-                          className="prose max-w-none"
-                          dangerouslySetInnerHTML={{
-                            __html: financialAnalysisReport.report_html,
-                          }}
-                        />
-                      </div>
+                      <ReportPreviewFrame
+                        title="Financial statement report preview"
+                        html={financialAnalysisReport.report_html}
+                        className="mt-4"
+                        iframeClassName="h-[760px]"
+                      />
                     )}
                   </div>
 
@@ -1092,14 +1093,12 @@ export default function CaseDetailPage() {
                         </p>
                       </div>
                     ) : (
-                      <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
-                        <div
-                          className="prose max-w-none"
-                          dangerouslySetInnerHTML={{
-                            __html: bankAnalysisReport.report_html,
-                          }}
-                        />
-                      </div>
+                      <ReportPreviewFrame
+                        title="Bank statement report preview"
+                        html={bankAnalysisReport.report_html}
+                        className="mt-4"
+                        iframeClassName="h-[760px]"
+                      />
                     )}
                   </div>
                 </section>
