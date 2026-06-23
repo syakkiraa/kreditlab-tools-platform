@@ -34,6 +34,14 @@ LLMWHISPERER_BASE = os.environ.get(
 app = FastAPI(title="Kredit Lab OCR", version="2.0")
 
 
+def _is_railway_runtime() -> bool:
+    return bool(
+        os.environ.get("RAILWAY_ENVIRONMENT_ID")
+        or os.environ.get("RAILWAY_PROJECT_ID")
+        or os.environ.get("RAILWAY_SERVICE_ID")
+    )
+
+
 def _check_auth(authorization: str | None) -> None:
     if not SERVICE_API_KEY:
         return
@@ -243,9 +251,10 @@ if __name__ == "__main__":
     import uvicorn
 
     port = int(os.environ.get("PORT", "8000"))
+    host = os.environ.get("HOST") or ("::" if _is_railway_runtime() else "0.0.0.0")
     print(
-        f"[kreditlab-ocr] starting uvicorn on 0.0.0.0:{port} "
+        f"[kreditlab-ocr] starting uvicorn on {host}:{port} "
         f"(ocr_model={OCR_MODEL})",
         flush=True,
     )
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host=host, port=port)

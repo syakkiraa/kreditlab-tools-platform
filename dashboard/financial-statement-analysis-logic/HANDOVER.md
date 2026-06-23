@@ -30,7 +30,13 @@ OCR_SERVICE_TIMEOUT_MS=240000
 On Railway, `OCR_SERVICE_URL` defaults to:
 
 ```text
-http://kreditlab-ocr-service.railway.internal
+http://kreditlab-tools-platform.railway.internal:8000
+```
+
+During local development it defaults to:
+
+```text
+http://127.0.0.1:8000
 ```
 
 Only set `OCR_SERVICE_URL` if the OCR service name is different or if the

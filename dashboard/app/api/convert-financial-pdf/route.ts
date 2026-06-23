@@ -177,6 +177,12 @@ export async function POST(req: Request) {
           process.env.OCR_SERVICE_URL || process.env.FINANCIAL_OCR_SERVICE_URL
         ),
         hasServiceApiKey: Boolean(process.env.SERVICE_API_KEY),
+        hasAzureDocumentIntelligenceEndpoint: Boolean(
+          process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT
+        ),
+        hasAzureDocumentIntelligenceKey: Boolean(
+          process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY
+        ),
       })
     );
 

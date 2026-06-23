@@ -207,7 +207,12 @@ const ANTHROPIC_VERSION = "2023-06-01";
 const DEFAULT_ANTHROPIC_MAX_TOKENS = 64000;
 const DEFAULT_OCR_SERVICE_TIMEOUT_MS = 240000;
 const DEFAULT_RAILWAY_OCR_SERVICE_URL =
-  "http://kreditlab-ocr-service.railway.internal";
+  "http://kreditlab-tools-platform.railway.internal";
+const DEFAULT_RAILWAY_OCR_SERVICE_PORT_URL =
+  "http://kreditlab-tools-platform.railway.internal:8000";
+const DEFAULT_RAILWAY_OCR_SERVICE_PUBLIC_URL =
+  "https://kreditlab-tools-platform-production.up.railway.app";
+const DEFAULT_LOCAL_OCR_SERVICE_URL = "http://127.0.0.1:8000";
 const DEFAULT_RENDERER_TIMEOUT_MS = 60000;
 const DEFAULT_FINANCIAL_RENDERER_API_URL =
   "https://financial-statement-analysis.kreditlab.my";
@@ -216,6 +221,7 @@ const FINANCIAL_LOGIC_DIR = path.join(
   "financial-statement-analysis-logic"
 );
 const FINANCIAL_LOGIC_BRIDGE = path.join(FINANCIAL_LOGIC_DIR, "render_bridge.py");
+const FINANCIAL_AZURE_OCR_SCRIPT = path.join(FINANCIAL_LOGIC_DIR, "azure_ocr.py");
 const CLAUDE_SCHEMA_INSTRUCTIONS_FILE = path.join(
   FINANCIAL_LOGIC_DIR,
   "claude_schema_instructions.md"
@@ -792,10 +798,7 @@ function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 async function extractPdfWithOcrService(
   document: FinancialStatementDocumentInput
 ) {
-  const baseUrl = getOcrServiceUrl();
-
-  const formData = new FormData();
-  formData.append("file", document.file, document.fileName);
+  const baseUrls = getOcrServiceUrls();
 
   const timeoutMs = getPositiveNumberEnv(
     "OCR_SERVICE_TIMEOUT_MS",
@@ -811,16 +814,49 @@ async function extractPdfWithOcrService(
   }
 
   let response: Response | null = null;
+  let responseBaseUrl = baseUrls[0] || getOcrServiceUrl();
+  let lastFetchError: unknown = null;
 
-  try {
-    response = await fetch(`${baseUrl}/parse`, {
-      method: "POST",
-      headers,
-      body: formData,
-      signal: controller.signal,
-    });
-  } catch (error) {
-    const isAbort = error instanceof Error && error.name === "AbortError";
+  for (const baseUrl of baseUrls) {
+    const formData = new FormData();
+    formData.append("file", document.file, document.fileName);
+
+    try {
+      response = await fetch(`${baseUrl}/parse`, {
+        method: "POST",
+        headers,
+        body: formData,
+        signal: controller.signal,
+      });
+      responseBaseUrl = baseUrl;
+      lastFetchError = null;
+      break;
+    } catch (error) {
+      responseBaseUrl = baseUrl;
+      lastFetchError = error;
+
+      const isAbort = error instanceof Error && error.name === "AbortError";
+      if (isAbort) break;
+    }
+  }
+
+  clearTimeout(timeout);
+
+  if (lastFetchError) {
+    const fallbackResult = await tryExtractPdfWithAzureFallback(
+      document,
+      timeoutMs,
+      {
+        reason: "ocr_service_unreachable",
+        detail: getErrorDetail(lastFetchError),
+        attemptedOcrServiceUrls: baseUrls.map(describeOcrServiceUrl),
+      }
+    );
+
+    if (fallbackResult) return fallbackResult;
+
+    const isAbort =
+      lastFetchError instanceof Error && lastFetchError.name === "AbortError";
 
     throw new FinancialAnalysisError(
       "ocr_extraction_failure",
@@ -828,11 +864,12 @@ async function extractPdfWithOcrService(
       isAbort ? 504 : 502,
       {
         fileName: document.fileName,
-        detail: error instanceof Error ? error.message : String(error),
+        detail: getErrorDetail(lastFetchError),
+        ocrServiceUrl: describeOcrServiceUrl(responseBaseUrl),
+        attemptedOcrServiceUrls: baseUrls.map(describeOcrServiceUrl),
+        railwayRuntime: isRailwayRuntime(),
       }
     );
-  } finally {
-    clearTimeout(timeout);
   }
 
   if (!response) {
@@ -840,18 +877,39 @@ async function extractPdfWithOcrService(
       "ocr_extraction_failure",
       "OCR service request failed",
       502,
-      { fileName: document.fileName }
+      {
+        fileName: document.fileName,
+        ocrServiceUrl: describeOcrServiceUrl(responseBaseUrl),
+        attemptedOcrServiceUrls: baseUrls.map(describeOcrServiceUrl),
+        railwayRuntime: isRailwayRuntime(),
+      }
     );
   }
 
   const responseBody = await readResponseBody(response);
 
   if (!response.ok) {
+    const fallbackResult = await tryExtractPdfWithAzureFallback(
+      document,
+      timeoutMs,
+      {
+        reason: "ocr_service_http_failure",
+        status: response.status,
+        ocrServiceUrl: describeOcrServiceUrl(responseBaseUrl),
+      }
+    );
+
+    if (fallbackResult) return fallbackResult;
+
     throw new FinancialAnalysisError(
       "ocr_extraction_failure",
       "OCR service extraction failed",
       502,
-      { status: response.status, body: responseBody }
+      {
+        status: response.status,
+        body: responseBody,
+        ocrServiceUrl: describeOcrServiceUrl(responseBaseUrl),
+      }
     );
   }
 
@@ -879,6 +937,220 @@ async function extractPdfWithOcrService(
   }
 
   return { fileId, parseId, markdown, pagesParsed, provider, servedBy };
+}
+
+async function tryExtractPdfWithAzureFallback(
+  document: FinancialStatementDocumentInput,
+  timeoutMs: number,
+  trigger: JsonRecord
+) {
+  if (!hasAzureDocumentIntelligenceConfig()) return null;
+
+  const tmpDir = mkdtempSync(path.join(os.tmpdir(), "kl-azure-ocr-"));
+  const inputPath = path.join(tmpDir, sanitizeTempFileName(document.fileName || "input.pdf"));
+  const outPath = path.join(tmpDir, "ocr-result.json");
+  const failures: JsonRecord[] = [];
+
+  try {
+    const bytes = Buffer.from(await document.file.arrayBuffer());
+    writeFileSync(inputPath, bytes);
+
+    for (const candidate of getPythonRendererCandidates()) {
+      try {
+        const responseBody = await runAzureOcrPyCandidate(
+          candidate,
+          inputPath,
+          outPath,
+          timeoutMs
+        );
+        const markdown = extractMarkdownFromOcrResult(responseBody);
+        const pagesParsed =
+          getNumberFromPath(responseBody, ["parsed_pages_count"]) ??
+          getNumberFromPath(responseBody, ["usage", "pages_parsed"]) ??
+          undefined;
+        const servedBy = getStringFromRecord(responseBody, "served_by") || "azure";
+        const provider =
+          getStringFromRecord(responseBody, "provider") || servedBy || "azure";
+
+        if (!markdown.trim()) {
+          throw new FinancialAnalysisError(
+            "ocr_empty_output",
+            "Azure OCR fallback did not return markdown content",
+            502,
+            { fileName: document.fileName, trigger }
+          );
+        }
+
+        return {
+          fileId: undefined,
+          parseId: undefined,
+          markdown,
+          pagesParsed,
+          provider,
+          servedBy,
+        };
+      } catch (error) {
+        failures.push({
+          candidate: candidate.command,
+          source: candidate.source,
+          detail:
+            error instanceof FinancialAnalysisError
+              ? error.detail || error.message
+              : error instanceof Error
+                ? error.message
+                : String(error),
+        });
+      }
+    }
+
+    throw new FinancialAnalysisError(
+      "ocr_extraction_failure",
+      "Azure OCR fallback could not be started",
+      502,
+      { fileName: document.fileName, trigger, failures }
+    );
+  } finally {
+    try {
+      rmSync(tmpDir, { recursive: true, force: true });
+    } catch {
+      // best-effort cleanup; ignore
+    }
+  }
+}
+
+function sanitizeTempFileName(fileName: string) {
+  const sanitized = fileName.replace(/[^\w.-]+/g, "_").replace(/^_+|_+$/g, "");
+  return sanitized || "document.pdf";
+}
+
+function runAzureOcrPyCandidate(
+  candidate: PythonRendererCandidate,
+  inputPath: string,
+  outPath: string,
+  timeoutMs: number
+): Promise<JsonRecord> {
+  return new Promise((resolve, reject) => {
+    const args = [
+      ...candidate.argsPrefix,
+      FINANCIAL_AZURE_OCR_SCRIPT,
+      inputPath,
+      "--out",
+      outPath,
+    ];
+
+    logFinancialStage({
+      stage: "ocr_conversion",
+      extra: {
+        engine: "azure_ocr.py",
+        pythonCandidate: candidate.command,
+        pythonCandidateSource: candidate.source,
+      },
+    });
+
+    const child = spawn(candidate.command, args, {
+      cwd: FINANCIAL_LOGIC_DIR,
+      env: { ...process.env },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
+
+    const timeout = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      child.kill();
+      reject(
+        new FinancialAnalysisError(
+          "ocr_extraction_failure",
+          "Azure OCR fallback timed out",
+          504,
+          { timeoutMs }
+        )
+      );
+    }, timeoutMs);
+
+    child.stdout.setEncoding("utf8");
+    child.stderr.setEncoding("utf8");
+    child.stdout.on("data", (chunk: string) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk: string) => {
+      stderr += chunk;
+    });
+
+    child.on("error", (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      reject(
+        new FinancialAnalysisError(
+          "ocr_extraction_failure",
+          "Azure OCR fallback could not be started",
+          502,
+          {
+            startFailure: true,
+            candidate: candidate.command,
+            source: candidate.source,
+            message: error instanceof Error ? error.message : String(error),
+            code: isRecord(error) ? error.code : undefined,
+          }
+        )
+      );
+    });
+
+    child.on("close", (code) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+
+      if (code !== 0) {
+        reject(
+          new FinancialAnalysisError(
+            "ocr_extraction_failure",
+            "Azure OCR fallback failed",
+            502,
+            { code, stdout, stderr }
+          )
+        );
+        return;
+      }
+
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(readFileSync(outPath, "utf8"));
+      } catch (error) {
+        reject(
+          new FinancialAnalysisError(
+            "ocr_extraction_failure",
+            "Azure OCR fallback returned invalid JSON",
+            502,
+            {
+              parseError: error instanceof Error ? error.message : String(error),
+              stdout,
+              stderr,
+            }
+          )
+        );
+        return;
+      }
+
+      if (!isRecord(parsed)) {
+        reject(
+          new FinancialAnalysisError(
+            "ocr_extraction_failure",
+            "Azure OCR fallback returned a non-object result",
+            502,
+            { code }
+          )
+        );
+        return;
+      }
+
+      resolve(parsed as JsonRecord);
+    });
+  });
 }
 
 function extractMarkdownFromOcrResult(result: unknown) {
@@ -3583,17 +3855,71 @@ function getPositiveNumberEnv(name: string, fallback: number) {
 }
 
 function getOcrServiceUrl() {
+  return getOcrServiceUrls()[0] || DEFAULT_LOCAL_OCR_SERVICE_URL;
+}
+
+function getOcrServiceUrls() {
   const configuredUrl = (
     process.env.OCR_SERVICE_URL ||
     process.env.FINANCIAL_OCR_SERVICE_URL ||
     ""
   ).replace(/\/+$/, "");
 
-  return configuredUrl || DEFAULT_RAILWAY_OCR_SERVICE_URL;
+  if (configuredUrl) return [configuredUrl];
+
+  return isRailwayRuntime()
+    ? [
+        DEFAULT_RAILWAY_OCR_SERVICE_PORT_URL,
+        DEFAULT_RAILWAY_OCR_SERVICE_URL,
+        DEFAULT_RAILWAY_OCR_SERVICE_PUBLIC_URL,
+      ]
+    : [DEFAULT_LOCAL_OCR_SERVICE_URL];
 }
 
 function getOcrServiceApiKey() {
   return process.env.SERVICE_API_KEY || "";
+}
+
+function hasAzureDocumentIntelligenceConfig() {
+  return Boolean(
+    process.env.AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT &&
+      process.env.AZURE_DOCUMENT_INTELLIGENCE_KEY
+  );
+}
+
+function isRailwayRuntime() {
+  return Boolean(
+    process.env.RAILWAY_ENVIRONMENT_ID ||
+      process.env.RAILWAY_PROJECT_ID ||
+      process.env.RAILWAY_SERVICE_ID
+  );
+}
+
+function describeOcrServiceUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    return `${parsed.protocol}//${parsed.host}`;
+  } catch {
+    return url;
+  }
+}
+
+function getErrorDetail(error: unknown): string {
+  if (!(error instanceof Error)) return String(error);
+
+  const cause = error.cause;
+  if (cause instanceof Error && cause.message) {
+    return `${error.message}: ${cause.message}`;
+  }
+
+  if (cause && typeof cause === "object" && "message" in cause) {
+    const causeMessage = (cause as { message?: unknown }).message;
+    if (typeof causeMessage === "string" && causeMessage) {
+      return `${error.message}: ${causeMessage}`;
+    }
+  }
+
+  return error.message;
 }
 
 function getStringFromRecord(value: unknown, key: string) {

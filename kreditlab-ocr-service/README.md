@@ -36,11 +36,11 @@ does not need the Azure or LLM Whisperer secrets. It only needs the same
 On Railway, the dashboard defaults to:
 
 ```text
-http://kreditlab-ocr-service.railway.internal
+http://kreditlab-tools-platform.railway.internal:8000
 ```
 
 Set dashboard `OCR_SERVICE_URL` only if the OCR service name is not
-`kreditlab-ocr-service` or you want to call a public URL.
+`kreditlab-tools-platform` or you want to call a public URL.
 
 ## Local Run
 

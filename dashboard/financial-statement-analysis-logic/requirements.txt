@@ -11,3 +11,4 @@ anthropic
 ftfy
 pypdf
 requests
+azure-ai-documentintelligence>=1.0.0

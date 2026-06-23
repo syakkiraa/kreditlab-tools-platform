@@ -61,7 +61,9 @@ PDF_UPLOAD_EXTENSIONS = [".pdf"]
 ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_VERSION = "2023-06-01"
 DEFAULT_OCR_SERVICE_TIMEOUT_SECONDS = 240
-DEFAULT_RAILWAY_OCR_SERVICE_URL = "http://kreditlab-ocr-service.railway.internal"
+DEFAULT_RAILWAY_OCR_SERVICE_URL = "http://kreditlab-tools-platform.railway.internal"
+DEFAULT_RAILWAY_OCR_SERVICE_PORT_URL = "http://kreditlab-tools-platform.railway.internal:8000"
+DEFAULT_LOCAL_OCR_SERVICE_URL = "http://127.0.0.1:8000"
 DEFAULT_ANTHROPIC_MAX_TOKENS = 64000
 
 CLAUDE_SCHEMA_INSTRUCTIONS_FILE = Path(__file__).with_name(
@@ -850,15 +852,31 @@ def get_anthropic_api_key() -> str:
 
 
 def ocr_service_url() -> str:
-    return (
+    configured = (
         os.getenv("OCR_SERVICE_URL")
         or os.getenv("FINANCIAL_OCR_SERVICE_URL")
-        or DEFAULT_RAILWAY_OCR_SERVICE_URL
+        or ""
     ).rstrip("/")
+
+    if configured:
+        return configured
+
+    if is_railway_runtime():
+        return DEFAULT_RAILWAY_OCR_SERVICE_PORT_URL
+
+    return DEFAULT_LOCAL_OCR_SERVICE_URL
 
 
 def ocr_service_api_key() -> str:
     return os.getenv("SERVICE_API_KEY") or ""
+
+
+def is_railway_runtime() -> bool:
+    return bool(
+        os.getenv("RAILWAY_ENVIRONMENT_ID")
+        or os.getenv("RAILWAY_PROJECT_ID")
+        or os.getenv("RAILWAY_SERVICE_ID")
+    )
 
 
 def ocr_service_timeout_seconds() -> int | float:

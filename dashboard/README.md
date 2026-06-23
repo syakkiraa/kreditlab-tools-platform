@@ -3,9 +3,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 ## OCR configuration
 
 PDF-to-TXT conversion uses the self-hosted OCR service, not the legacy hosted
-OCR API. On Railway, the dashboard defaults to the private OCR service
-URL `http://kreditlab-ocr-service.railway.internal`, so only the shared bearer
-key is required:
+OCR API. On Railway, the dashboard defaults to the private OCR service URL
+`http://kreditlab-tools-platform.railway.internal:8000` and retries the plain
+private hostname/public Railway URL if needed. If no OCR service is reachable,
+the dashboard falls back to direct Azure OCR using the same Railway Azure
+variables. During local development it defaults to `http://127.0.0.1:8000`.
+Only the shared bearer key is required for service calls:
 
 ```bash
 SERVICE_API_KEY=...
