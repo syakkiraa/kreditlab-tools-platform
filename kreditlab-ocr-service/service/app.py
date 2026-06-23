@@ -1,107 +1,192 @@
-"""Kredit Lab OCR service — self-hosted replacement for the Tensorlake hosted
-Document AI API (retires 2026-06-30).
+"""Kredit Lab OCR service for Railway.
 
-Wraps OpenIngest's in-process runner (`run_local_application`) with the azure-di
-backend, which was proven to reproduce Tensorlake's output at 100% value parity.
+Primary OCR is Azure Document Intelligence. LLM Whisperer is kept as an
+optional backup when LLMWHISPERER_API_KEY is configured.
 
-POST /parse  (multipart: file=<pdf>)  ->  Tensorlake-parse-shaped JSON:
-    { "chunks": [{"content": "<page markdown>"}...], "parsed_pages_count": N }
-so the dashboard's OCR result parser works unchanged.
+POST /parse accepts multipart file=<pdf> and returns:
+    { "chunks": [{"content": "<page markdown>"}], "parsed_pages_count": N }
 
-Backup OCR: if the primary (Azure) path fails AND LLMWHISPERER_API_KEY is set,
-the request automatically falls back to LLMWhisperer (Unstract). Proven at 100%
-value parity vs Tensorlake on the golden samples. Same response shape, so callers
-never know which engine served them. Unset the key -> Azure-only (today's behavior).
-
-Auth: Authorization: Bearer $SERVICE_API_KEY  (if SERVICE_API_KEY is set).
-Health: GET /health
+Auth: Authorization: Bearer $SERVICE_API_KEY, when SERVICE_API_KEY is set.
 """
-import base64
+
+from __future__ import annotations
+
 import os
 import time
+from typing import Any
 
 import requests
 from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 
-from tensorlake.applications import run_local_application
-from tensorlake_docai.pipeline.api import ParseRequest, ParsedDocument
-from tensorlake_docai.pipeline.file_converter import normalize_file_type_and_upload
-from tensorlake_docai.postprocess.formatter import page_to_markdown
+from tensorlake_docai.ocr.azure_markdown_extractor import AzureMarkdownExtractor
 
 OCR_MODEL = os.environ.get("OCR_MODEL", "azure-di")
-SERVICE_API_KEY = os.environ.get("SERVICE_API_KEY")  # set in Railway; protects the endpoint
+SERVICE_API_KEY = os.environ.get("SERVICE_API_KEY")
 
-# Backup OCR (LLMWhisperer / Unstract). Active only when the key is set.
+# Backup OCR (LLM Whisperer / Unstract). Active only when the key is set.
 LLMWHISPERER_API_KEY = os.environ.get("LLMWHISPERER_API_KEY")
-LLMWHISPERER_MODE = os.environ.get("LLMWHISPERER_MODE", "form")  # form = HQ+Table, best for financial tables
+LLMWHISPERER_MODE = os.environ.get("LLMWHISPERER_MODE", "form")
 LLMWHISPERER_BASE = os.environ.get(
     "LLMWHISPERER_BASE", "https://llmwhisperer-api.us-central.unstract.com/api/v2"
 )
 
-app = FastAPI(title="Kredit Lab OCR", version="1.1")
-
-
-def _parse_azure(raw: bytes, filename: str, content_type: str | None) -> dict:
-    """Primary path: OpenIngest in-process runner with the azure-di backend."""
-    req = ParseRequest(
-        file_name=filename or "document.pdf",
-        mime_type=content_type or "application/pdf",
-        file_bytes=base64.b64encode(raw).decode(),
-        ocr_model=OCR_MODEL,
-        chunk_strategy="page",          # matches dashboard lean profile
-        table_output_mode="markdown",
-        xpage_header_detection=False,   # production lean does not use it (needs OpenAI key)
-    )
-    handle = run_local_application(normalize_file_type_and_upload, req.model_dump())
-    result = handle.output()
-    if not result or "document" not in result:
-        raise RuntimeError("No document returned")
-    doc = ParsedDocument.model_validate(result["document"])
-    pages = doc.pages or []
-    chunks = [{"content": page_to_markdown(p, req)} for p in pages]
-    return {"chunks": chunks, "parsed_pages_count": doc.parsed_pages_count or len(pages)}
-
-
-def _parse_llmwhisperer(raw: bytes, filename: str) -> dict:
-    """Backup path: LLMWhisperer hosted API. Reshaped to the Tensorlake parse shape
-    (one chunk per page, split on the form-feed page separator)."""
-    headers = {"unstract-key": LLMWHISPERER_API_KEY, "Content-Type": "application/octet-stream"}
-    params = {"mode": LLMWHISPERER_MODE, "output_mode": "layout_preserving",
-              "file_name": filename or "document.pdf"}
-    r = requests.post(f"{LLMWHISPERER_BASE}/whisper", params=params, headers=headers,
-                      data=raw, timeout=120)
-    r.raise_for_status()
-    whash = r.json()["whisper_hash"]
-
-    for _ in range(120):  # poll up to ~6 min
-        time.sleep(3)
-        status = requests.get(
-            f"{LLMWHISPERER_BASE}/whisper-status", params={"whisper_hash": whash},
-            headers={"unstract-key": LLMWHISPERER_API_KEY}, timeout=30,
-        ).json().get("status")
-        if status == "processed":
-            break
-        if status in ("error", "unknown"):
-            raise RuntimeError(f"LLMWhisperer status={status}")
-    else:
-        raise RuntimeError("LLMWhisperer timed out")
-
-    out = requests.get(
-        f"{LLMWHISPERER_BASE}/whisper-retrieve", params={"whisper_hash": whash},
-        headers={"unstract-key": LLMWHISPERER_API_KEY}, timeout=60,
-    ).json()
-    text = out.get("result_text") or out.get("extraction", {}).get("result_text", "")
-    pages = [p for p in text.split("\f") if p.strip()] or [text]
-    return {"chunks": [{"content": p} for p in pages], "parsed_pages_count": len(pages)}
+app = FastAPI(title="Kredit Lab OCR", version="2.0")
 
 
 def _check_auth(authorization: str | None) -> None:
     if not SERVICE_API_KEY:
-        return  # no key configured -> open (dev only)
+        return
+
     expected = f"Bearer {SERVICE_API_KEY}"
     if authorization != expected:
         raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def _require_azure_config() -> None:
+    missing = [
+        name
+        for name in (
+            "AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT",
+            "AZURE_DOCUMENT_INTELLIGENCE_KEY",
+        )
+        if not os.environ.get(name)
+    ]
+
+    if missing:
+        raise RuntimeError(
+            "Azure Document Intelligence is not configured. Missing: "
+            + ", ".join(missing)
+        )
+
+
+def _fragment_markdown(fragment: dict[str, Any]) -> str:
+    content = fragment.get("content") if isinstance(fragment.get("content"), dict) else {}
+    fragment_type = str(fragment.get("fragment_type") or "text")
+
+    text = str(content.get("content") or "").strip()
+    markdown = str(content.get("markdown") or "").strip()
+    html = str(content.get("html") or "").strip()
+
+    if fragment_type in {"table", "form", "key_value_region"}:
+        table_text = markdown or text or html
+        return f"\n{table_text}\n\n" if table_text else ""
+
+    if fragment_type in {"section_header", "title"}:
+        level = content.get("level", 1)
+        try:
+            marker_count = max(1, min(int(level) + 1, 6))
+        except (TypeError, ValueError):
+            marker_count = 2
+        return f"\n{'#' * marker_count} {text}\n\n" if text else ""
+
+    if fragment_type == "list_item":
+        return f"* {text}\n" if text else ""
+
+    if fragment_type == "figure":
+        return f"\n### Figure\n{text}\n\n" if text else ""
+
+    if fragment_type == "chart":
+        return f"\n### Chart\n{text}\n\n" if text else ""
+
+    return f"{text}\n\n" if text else ""
+
+
+def _page_markdown_from_layout(layout_repr: dict[str, Any]) -> str:
+    fragments = layout_repr.get("page_fragments", [])
+    if not isinstance(fragments, list):
+        return ""
+
+    sorted_fragments = sorted(
+        (fragment for fragment in fragments if isinstance(fragment, dict)),
+        key=lambda fragment: int(fragment.get("reading_order") or 0),
+    )
+    return "".join(_fragment_markdown(fragment) for fragment in sorted_fragments).strip()
+
+
+def _parse_azure(raw: bytes) -> dict[str, Any]:
+    _require_azure_config()
+
+    extractor = AzureMarkdownExtractor()
+    result = extractor.analyze_document_bytes_direct(raw)
+    azure_pages = sorted(
+        getattr(result, "pages", None) or [],
+        key=lambda page: int(getattr(page, "page_number", 0) or 0),
+    )
+
+    chunks: list[dict[str, str]] = []
+    for azure_page in azure_pages:
+        page_number = int(getattr(azure_page, "page_number", 0) or 0)
+        if page_number <= 0:
+            continue
+
+        layout_repr = extractor.extract_page_layout_from_pdf_result(result, page_number)
+        page_markdown = _page_markdown_from_layout(layout_repr)
+        if page_markdown:
+            chunks.append({"content": page_markdown})
+
+    if not chunks:
+        fallback_markdown = str(getattr(result, "content", "") or "").strip()
+        if fallback_markdown:
+            chunks.append({"content": fallback_markdown})
+
+    return {"chunks": chunks, "parsed_pages_count": len(chunks)}
+
+
+def _parse_llmwhisperer(raw: bytes, filename: str | None) -> dict[str, Any]:
+    if not LLMWHISPERER_API_KEY:
+        raise RuntimeError("LLM Whisperer backup is not configured.")
+
+    headers = {
+        "unstract-key": LLMWHISPERER_API_KEY,
+        "Content-Type": "application/octet-stream",
+    }
+    params = {
+        "mode": LLMWHISPERER_MODE,
+        "output_mode": "layout_preserving",
+        "file_name": filename or "document.pdf",
+    }
+    response = requests.post(
+        f"{LLMWHISPERER_BASE}/whisper",
+        params=params,
+        headers=headers,
+        data=raw,
+        timeout=120,
+    )
+    response.raise_for_status()
+    whisper_hash = response.json()["whisper_hash"]
+
+    for _ in range(120):
+        time.sleep(3)
+        status_response = requests.get(
+            f"{LLMWHISPERER_BASE}/whisper-status",
+            params={"whisper_hash": whisper_hash},
+            headers={"unstract-key": LLMWHISPERER_API_KEY},
+            timeout=30,
+        )
+        status_response.raise_for_status()
+        status = status_response.json().get("status")
+
+        if status == "processed":
+            break
+        if status in {"error", "unknown"}:
+            raise RuntimeError(f"LLM Whisperer status={status}")
+    else:
+        raise RuntimeError("LLM Whisperer timed out")
+
+    output_response = requests.get(
+        f"{LLMWHISPERER_BASE}/whisper-retrieve",
+        params={"whisper_hash": whisper_hash},
+        headers={"unstract-key": LLMWHISPERER_API_KEY},
+        timeout=60,
+    )
+    output_response.raise_for_status()
+    output = output_response.json()
+
+    text = output.get("result_text") or output.get("extraction", {}).get("result_text", "")
+    pages = [page for page in text.split("\f") if page.strip()] or [text]
+    chunks = [{"content": page} for page in pages if page.strip()]
+    return {"chunks": chunks, "parsed_pages_count": len(chunks)}
 
 
 @app.get("/health")
@@ -109,6 +194,7 @@ def health():
     return {
         "status": "ok",
         "ocr_model": OCR_MODEL,
+        "primary": "azure",
         "azure_configured": bool(
             os.environ.get("AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT")
             and os.environ.get("AZURE_DOCUMENT_INTELLIGENCE_KEY")
@@ -128,29 +214,38 @@ def parse(
     if not raw:
         raise HTTPException(status_code=400, detail="Empty file")
 
-    # Primary: Azure (via OpenIngest). On failure, fall back to LLMWhisperer if configured.
     try:
-        return JSONResponse(
-            {**_parse_azure(raw, file.filename, file.content_type), "served_by": "azure"}
-        )
+        return JSONResponse({**_parse_azure(raw), "served_by": "azure"})
     except Exception as primary_err:
         if not LLMWHISPERER_API_KEY:
-            raise HTTPException(status_code=502, detail=f"OCR failed: {type(primary_err).__name__}: {primary_err}")
-        print(f"[kreditlab-ocr] primary (azure) failed: {primary_err!r} -> trying LLMWhisperer backup", flush=True)
+            raise HTTPException(
+                status_code=502,
+                detail=f"OCR failed: {type(primary_err).__name__}: {primary_err}",
+            ) from primary_err
+
+        print(
+            "[kreditlab-ocr] primary (azure) failed: "
+            f"{primary_err!r} -> trying LLM Whisperer backup",
+            flush=True,
+        )
         try:
             result = _parse_llmwhisperer(raw, file.filename)
         except Exception as backup_err:
             raise HTTPException(
                 status_code=502,
                 detail=f"OCR failed (azure: {primary_err}; backup: {backup_err})",
-            )
+            ) from backup_err
+
         return JSONResponse({**result, "served_by": "llmwhisperer"})
 
 
 if __name__ == "__main__":
-    # Read PORT in Python so no shell/${PORT} expansion is needed (Railway-proof).
     import uvicorn
 
     port = int(os.environ.get("PORT", "8000"))
-    print(f"[kreditlab-ocr] starting uvicorn on 0.0.0.0:{port} (ocr_model={OCR_MODEL})", flush=True)
+    print(
+        f"[kreditlab-ocr] starting uvicorn on 0.0.0.0:{port} "
+        f"(ocr_model={OCR_MODEL})",
+        flush=True,
+    )
     uvicorn.run(app, host="0.0.0.0", port=port)

@@ -2,18 +2,20 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## OCR configuration
 
-PDF-to-TXT conversion uses the self-hosted OCR service, not the hosted
-Tensorlake API. Configure:
+PDF-to-TXT conversion uses the self-hosted OCR service, not the legacy hosted
+OCR API. On Railway, the dashboard defaults to the private OCR service
+URL `http://kreditlab-ocr-service.railway.internal`, so only the shared bearer
+key is required:
 
 ```bash
-OCR_SERVICE_URL=https://your-ocr-service.example.com
 SERVICE_API_KEY=...
 OCR_SERVICE_TIMEOUT_MS=240000
 ```
 
 The OCR service owns the Azure and optional LLM Whisperer secrets. The dashboard
-only needs the service URL and bearer key. `SERVICE_API_KEY` must match the OCR
-service `SERVICE_API_KEY`.
+only needs the bearer key. Set `OCR_SERVICE_URL` only if the Railway service
+name is different or you want to use a public OCR service URL. `SERVICE_API_KEY`
+must match the OCR service `SERVICE_API_KEY`.
 
 ## Getting Started
 

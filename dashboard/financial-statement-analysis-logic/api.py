@@ -61,6 +61,7 @@ PDF_UPLOAD_EXTENSIONS = [".pdf"]
 ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages"
 ANTHROPIC_VERSION = "2023-06-01"
 DEFAULT_OCR_SERVICE_TIMEOUT_SECONDS = 240
+DEFAULT_RAILWAY_OCR_SERVICE_URL = "http://kreditlab-ocr-service.railway.internal"
 DEFAULT_ANTHROPIC_MAX_TOKENS = 64000
 
 CLAUDE_SCHEMA_INSTRUCTIONS_FILE = Path(__file__).with_name(
@@ -623,13 +624,6 @@ def extract_pdf_markdown_with_ocr_service(
 ) -> tuple[str, dict[str, Any]]:
     base_url = ocr_service_url()
 
-    if not base_url:
-        raise api_error(
-            500,
-            "missing_ocr_service_url",
-            "OCR_SERVICE_URL is missing.",
-        )
-
     headers: dict[str, str] = {}
     api_key = ocr_service_api_key()
 
@@ -859,7 +853,7 @@ def ocr_service_url() -> str:
     return (
         os.getenv("OCR_SERVICE_URL")
         or os.getenv("FINANCIAL_OCR_SERVICE_URL")
-        or ""
+        or DEFAULT_RAILWAY_OCR_SERVICE_URL
     ).rstrip("/")
 
 

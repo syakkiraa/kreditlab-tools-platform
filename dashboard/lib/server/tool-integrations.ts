@@ -20,10 +20,11 @@ export const toolIntegrations = {
     sectionLabel: financialStatementAnalysisSection.label,
     analysisType: financialStatementAnalysisSection.tool.analysisType,
     displayName: financialStatementAnalysisSection.tool.displayName,
-    requiredEnv: ["OCR_SERVICE_URL", "SERVICE_API_KEY"],
+    requiredEnv: ["SERVICE_API_KEY"],
     optionalEnv: [
-      "OCR_SERVICE_TIMEOUT_MS",
+      "OCR_SERVICE_URL",
       "FINANCIAL_OCR_SERVICE_URL",
+      "OCR_SERVICE_TIMEOUT_MS",
       "ANTHROPIC_API_KEY",
       "CLAUDE_API_KEY",
       "ANTHROPIC_MODEL",

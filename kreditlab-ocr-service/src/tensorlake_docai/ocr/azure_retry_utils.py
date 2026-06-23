@@ -14,8 +14,13 @@ from azure.core.exceptions import (  # type: ignore
     ServiceResponseError,
 )
 from requests.exceptions import ReadTimeout, SSLError, ConnectionError  # type: ignore
-from tensorlake.applications import RequestError as RequestException  # type: ignore
 from tensorlake_docai.providers.error_utils import extract_provider_error_message
+
+
+class RequestException(RuntimeError):
+    def __init__(self, message: str = "") -> None:
+        super().__init__(message)
+        self.message = message
 
 
 def _is_http_transient(err: BaseException) -> bool:

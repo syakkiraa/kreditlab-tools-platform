@@ -166,7 +166,6 @@ export type FinancialAnalysisExportArtifact = {
 export type FinancialAnalysisErrorCode =
   | "missing_input"
   | "missing_claude_api_key"
-  | "missing_ocr_service_url"
   | "invalid_file_type"
   | "pdf_upload_failure"
   | "ocr_extraction_failure"
@@ -207,6 +206,8 @@ const ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages";
 const ANTHROPIC_VERSION = "2023-06-01";
 const DEFAULT_ANTHROPIC_MAX_TOKENS = 64000;
 const DEFAULT_OCR_SERVICE_TIMEOUT_MS = 240000;
+const DEFAULT_RAILWAY_OCR_SERVICE_URL =
+  "http://kreditlab-ocr-service.railway.internal";
 const DEFAULT_RENDERER_TIMEOUT_MS = 60000;
 const DEFAULT_FINANCIAL_RENDERER_API_URL =
   "https://financial-statement-analysis.kreditlab.my";
@@ -266,14 +267,6 @@ export async function convertFinancialPdfsToText(
       hasOcrServiceApiKey: Boolean(getOcrServiceApiKey()),
     },
   });
-
-  if (!getOcrServiceUrl()) {
-    throw new FinancialAnalysisError(
-      "missing_ocr_service_url",
-      "OCR_SERVICE_URL is missing",
-      500
-    );
-  }
 
   const generatedTextFiles: FinancialStatementConversionResult["generatedTextFiles"] =
     [];
@@ -687,14 +680,6 @@ async function extractFinancialStatements(
     }
 
     if (extension === ".pdf" || isPdfMimeType(document.fileType)) {
-      if (!getOcrServiceUrl()) {
-        throw new FinancialAnalysisError(
-          "missing_ocr_service_url",
-          "OCR_SERVICE_URL is missing",
-          500
-        );
-      }
-
       const ocrResult = await extractPdfWithOcrService(document);
 
       extracted.push({
@@ -808,14 +793,6 @@ async function extractPdfWithOcrService(
   document: FinancialStatementDocumentInput
 ) {
   const baseUrl = getOcrServiceUrl();
-
-  if (!baseUrl) {
-    throw new FinancialAnalysisError(
-      "missing_ocr_service_url",
-      "OCR_SERVICE_URL is missing",
-      500
-    );
-  }
 
   const formData = new FormData();
   formData.append("file", document.file, document.fileName);
@@ -3606,11 +3583,13 @@ function getPositiveNumberEnv(name: string, fallback: number) {
 }
 
 function getOcrServiceUrl() {
-  return (
+  const configuredUrl = (
     process.env.OCR_SERVICE_URL ||
     process.env.FINANCIAL_OCR_SERVICE_URL ||
     ""
   ).replace(/\/+$/, "");
+
+  return configuredUrl || DEFAULT_RAILWAY_OCR_SERVICE_URL;
 }
 
 function getOcrServiceApiKey() {
