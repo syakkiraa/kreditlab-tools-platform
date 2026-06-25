@@ -211,7 +211,7 @@ const DEFAULT_RENDERER_TIMEOUT_MS = 60000;
 const DEFAULT_FINANCIAL_RENDERER_API_URL =
   "https://financial-statement-analysis.kreditlab.my";
 const FINANCIAL_LOGIC_DIR = path.join(
-  process.cwd(),
+  /*turbopackIgnore: true*/ process.cwd(),
   "financial-statement-analysis-logic"
 );
 const FINANCIAL_LOGIC_BRIDGE = path.join(FINANCIAL_LOGIC_DIR, "render_bridge.py");

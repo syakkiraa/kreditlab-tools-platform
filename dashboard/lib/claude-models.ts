@@ -108,11 +108,7 @@ export function estimateClaudeCost(input: {
   const model = getClaudeModelById(input.modelId);
   const inputTokens = estimateClaudeInputTokens(input.inputCharacters);
   const outputTokens =
-    input.outputTokens ??
-    (model && "defaultOutputTokens" in model
-      ? model.defaultOutputTokens
-      : model?.maxOutputTokens) ??
-    0;
+    input.outputTokens ?? model?.defaultOutputTokens ?? model?.maxOutputTokens ?? 0;
 
   if (!model) {
     return {
