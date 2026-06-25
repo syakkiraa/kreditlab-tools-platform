@@ -698,9 +698,17 @@ export function FinancialStatementAnalysisSection({
       })
         .then(async (response) => {
           if (!response.ok) {
-            const result = (await response
-              .json()
-              .catch(() => ({}))) as RunFinancialAnalysisResponse;
+            const responseText = await response.text().catch(() => "");
+            let result: RunFinancialAnalysisResponse = {};
+
+            if (responseText) {
+              try {
+                result = JSON.parse(responseText) as RunFinancialAnalysisResponse;
+              } catch {
+                result = { error: responseText.slice(0, 1000) };
+              }
+            }
+
             const statusFallback = `Claude analysis failed (HTTP ${response.status}${
               response.statusText ? ` ${response.statusText}` : ""
             })`;
@@ -720,7 +728,7 @@ export function FinancialStatementAnalysisSection({
       );
 
       const startedAt = Date.now();
-      const TIMEOUT_MS = 20 * 60 * 1000; // 20 min hard cap
+      const TIMEOUT_MS = 30 * 60 * 1000; // 30 min hard cap
       const POLL_MS = 5000;
 
       // Poll for the saved report.

@@ -177,6 +177,7 @@ export type FinancialAnalysisErrorCode =
   | "claude_rate_limit"
   | "claude_context_too_large"
   | "claude_output_truncated"
+  | "claude_upstream_unavailable"
   | "invalid_claude_request"
   | "claude_analysis_failure"
   | "missing_financial_statement_input"
@@ -204,7 +205,7 @@ export class FinancialAnalysisError extends Error {
 
 const ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages";
 const ANTHROPIC_VERSION = "2023-06-01";
-const DEFAULT_ANTHROPIC_MAX_TOKENS = 64000;
+const DEFAULT_ANTHROPIC_MAX_TOKENS = 32000;
 const DEFAULT_AZURE_OCR_TIMEOUT_MS = 240000;
 const DEFAULT_RENDERER_TIMEOUT_MS = 60000;
 const DEFAULT_FINANCIAL_RENDERER_API_URL =
@@ -223,7 +224,7 @@ const FINANCIAL_ANALYZE_SCRIPT = path.join(FINANCIAL_LOGIC_DIR, "analyze.py");
 // Generous ceiling so large audits (e.g. MTC's ~200KB doc) finish like they do
 // in the standalone CLI, which has no timeout. Only a genuinely hung process
 // should ever hit this. Override with FINANCIAL_ANALYZE_TIMEOUT_MS.
-const DEFAULT_ANALYZE_TIMEOUT_MS = 1200000; // 20 min
+const DEFAULT_ANALYZE_TIMEOUT_MS = 1800000; // 30 min
 // The pre-flight estimate only counts tokens (free count_tokens endpoint, no
 // Claude call), so it returns in ~1s. Override with FINANCIAL_ESTIMATE_TIMEOUT_MS.
 const DEFAULT_ESTIMATE_TIMEOUT_MS = 60000; // 1 min
@@ -1187,11 +1188,13 @@ function runAnalyzePyCandidate(
       outPath,
       "--model",
       model,
+      "--max-tokens",
+      String(getClaudeMaxOutputTokens(model)),
       "--strict",
       "--no-thinking",
       "--confirm",
       "--max-retries",
-      "2",
+      String(getAnalyzeMaxRetries()),
     ];
 
     logFinancialStage({
@@ -1303,11 +1306,12 @@ function createAnalyzePyFailureError(
   exitCode: number | null,
   stdout: string,
   stderr: string,
-  readError: string
+  readError: string,
+  fallbackMessage = "Financial statement analysis engine (analyze.py) did not produce valid JSON"
 ) {
   const message =
     getAnalyzePyFailureMessage(stdout, stderr) ||
-    "Financial statement analysis engine (analyze.py) did not produce valid JSON";
+    fallbackMessage;
   const code = getAnalyzePyFailureCode(message);
 
   return new FinancialAnalysisError(
@@ -1391,6 +1395,23 @@ function getAnalyzePyFailureCode(
     return "claude_output_truncated";
   }
   if (
+    normalized.includes("http 500") ||
+    normalized.includes("http 502") ||
+    normalized.includes("http 503") ||
+    normalized.includes("http 504") ||
+    normalized.includes("http 529") ||
+    normalized.includes("error code: 500") ||
+    normalized.includes("error code: 502") ||
+    normalized.includes("error code: 503") ||
+    normalized.includes("error code: 504") ||
+    normalized.includes("error code: 529") ||
+    normalized.includes("overloaded") ||
+    normalized.includes("service unavailable") ||
+    normalized.includes("temporarily unavailable")
+  ) {
+    return "claude_upstream_unavailable";
+  }
+  if (
     normalized.includes("invalid_request_error") ||
     normalized.includes("error code: 400")
   ) {
@@ -1409,6 +1430,8 @@ function getAnalyzePyFailureHttpStatus(code: FinancialAnalysisErrorCode) {
       return 429;
     case "claude_context_too_large":
       return 413;
+    case "claude_upstream_unavailable":
+      return 503;
     case "claude_auth_failure":
     case "claude_model_not_found":
     case "claude_output_truncated":
@@ -1604,9 +1627,7 @@ function runAnalyzePyDryRunCandidate(
   timeoutMs: number
 ): Promise<FinancialAnalysisCostEstimate> {
   return new Promise((resolve, reject) => {
-    // Mirror the input-token-affecting flags the real run uses (runAnalyzePyCandidate):
-    // same model, same --strict system prompt, default --max-tokens (64000). Only
-    // then does the count match what the run will actually send.
+    // Mirror the real run settings that affect cost/output ceilings.
     const args = [
       ...candidate.argsPrefix,
       FINANCIAL_ANALYZE_SCRIPT,
@@ -1614,6 +1635,8 @@ function runAnalyzePyDryRunCandidate(
       "--dry-run",
       "--model",
       model,
+      "--max-tokens",
+      String(getClaudeMaxOutputTokens(model)),
       "--strict",
       "--no-thinking",
     ];
@@ -1680,15 +1703,12 @@ function runAnalyzePyDryRunCandidate(
 
       if (!estimate) {
         reject(
-          new FinancialAnalysisError(
-            "claude_analysis_failure",
+          createAnalyzePyFailureError(
+            code,
+            stdout,
+            stderr,
             "Cost estimate (analyze.py --dry-run) produced no parseable token/cost output",
-            502,
-            {
-              code,
-              stdoutTail: stdout.slice(-2000),
-              stderrTail: stderr.slice(-2000),
-            }
+            "Cost estimate (analyze.py --dry-run) produced no parseable token/cost output"
           )
         );
         return;
@@ -2969,6 +2989,16 @@ function getClaudeMaxOutputTokens(modelId: string) {
   return Math.min(configuredMaxTokens, modelMaxTokens);
 }
 
+function getAnalyzeMaxRetries() {
+  // This is correction retries after the first Claude response. Default 2 means
+  // up to 3 analysis passes: initial + 2 corrections.
+  const configuredRetries = getNonNegativeNumberEnv(
+    "FINANCIAL_ANALYZE_MAX_RETRIES",
+    2
+  );
+  return Math.max(0, Math.min(Math.floor(configuredRetries), 3));
+}
+
 function buildClaudeUserPrompt(
   documents: Array<ExtractedFinancialStatement & { markdown: string }>
 ) {
@@ -3541,6 +3571,20 @@ function getClaudeErrorCode(
     return "claude_context_too_large";
   }
 
+  if (
+    status === 500 ||
+    status === 502 ||
+    status === 503 ||
+    status === 504 ||
+    status === 529 ||
+    errorType === "overloaded_error" ||
+    message.includes("overloaded") ||
+    message.includes("service unavailable") ||
+    message.includes("temporarily unavailable")
+  ) {
+    return "claude_upstream_unavailable";
+  }
+
   if (status === 400 || errorType === "invalid_request_error") {
     return "invalid_claude_request";
   }
@@ -3567,6 +3611,8 @@ function getClaudeErrorMessage(
       return "Claude input is too large";
     case "claude_output_truncated":
       return "Claude response hit the output token limit before completing JSON";
+    case "claude_upstream_unavailable":
+      return "Claude API is temporarily unavailable after retries";
     case "invalid_claude_request":
       return "Claude request is invalid";
     default:
@@ -3584,6 +3630,8 @@ function getClaudeHttpStatus(code: FinancialAnalysisErrorCode, status: number) {
       return 429;
     case "claude_context_too_large":
       return 413;
+    case "claude_upstream_unavailable":
+      return 503;
     case "claude_output_truncated":
       return 502;
     case "invalid_claude_request":
@@ -3733,6 +3781,12 @@ function getPositiveNumberEnv(name: string, fallback: number) {
   const value = Number(process.env[name]);
 
   return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function getNonNegativeNumberEnv(name: string, fallback: number) {
+  const value = Number(process.env[name]);
+
+  return Number.isFinite(value) && value >= 0 ? value : fallback;
 }
 
 function hasAzureDocumentIntelligenceConfig() {

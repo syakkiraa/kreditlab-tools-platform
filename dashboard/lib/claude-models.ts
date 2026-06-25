@@ -16,7 +16,7 @@ export const CLAUDE_MODEL_PRICING = [
     inputUsdPerMillionTokens: 5,
     outputUsdPerMillionTokens: 25,
     maxOutputTokens: 128000,
-    defaultOutputTokens: 64000,
+    defaultOutputTokens: 32000,
     defaultEffort: "high",
   },
   {
@@ -25,6 +25,7 @@ export const CLAUDE_MODEL_PRICING = [
     inputUsdPerMillionTokens: 3,
     outputUsdPerMillionTokens: 15,
     maxOutputTokens: 64000,
+    defaultOutputTokens: 32000,
     defaultEffort: "medium",
   },
   {
@@ -33,6 +34,7 @@ export const CLAUDE_MODEL_PRICING = [
     inputUsdPerMillionTokens: 1,
     outputUsdPerMillionTokens: 5,
     maxOutputTokens: 64000,
+    defaultOutputTokens: 32000,
   },
   {
     id: "claude-opus-4-7",
@@ -40,14 +42,14 @@ export const CLAUDE_MODEL_PRICING = [
     inputUsdPerMillionTokens: 5,
     outputUsdPerMillionTokens: 25,
     maxOutputTokens: 128000,
-    defaultOutputTokens: 64000,
+    defaultOutputTokens: 32000,
     defaultEffort: "high",
   },
 ] as const;
 
 export type ClaudeModelId = (typeof CLAUDE_MODEL_PRICING)[number]["id"];
 
-export const DEFAULT_CLAUDE_MODEL_ID: ClaudeModelId = "claude-opus-4-8";
+export const DEFAULT_CLAUDE_MODEL_ID: ClaudeModelId = "claude-sonnet-4-6";
 
 export function getClaudeModelById(modelId: string) {
   return CLAUDE_MODEL_PRICING.find((model) => model.id === modelId) || null;

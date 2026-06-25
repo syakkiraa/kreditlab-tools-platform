@@ -17,9 +17,9 @@ const DOCUMENT_BUCKET = "case-documents";
 const financialStatementTool = toolIntegrations.financialStatement;
 
 export const runtime = "nodejs";
-// Large audits on Opus 4.8 can take several minutes. Locally this is advisory;
-// on a deployed host it's capped by the platform's function limit.
-export const maxDuration = 800;
+// Large audits can take several minutes. Locally this is advisory; on a
+// deployed host it's capped by the platform's function limit.
+export const maxDuration = 1800;
 
 type GeneratedTextFileInput = {
   id?: unknown;

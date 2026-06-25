@@ -33,7 +33,7 @@ Usage:
 Cost guardrails:
     --max-cost-usd N    Refuse to call if pre-call estimate exceeds N (default 2.00)
     --confirm           Bypass that ceiling for a single run
-    --max-retries N     Cap on self-correction passes (default 1, clamped 0..3)
+    --max-retries N     Cap on self-correction passes (default 1 in CLI, clamped 0..3)
 
 Every call's actual usage and cost is appended to samples/.runs/.
 """
@@ -41,6 +41,8 @@ Every call's actual usage and cost is appended to samples/.runs/.
 from __future__ import annotations
 
 import argparse
+import html
+from html.parser import HTMLParser
 import json
 import os
 import re
@@ -75,6 +77,9 @@ PRICING: dict[str, dict[str, float]] = {
         "in": 1.00, "out": 5.00, "cache_write_5m": 1.25, "cache_read": 0.10
     },
 }
+
+ANTHROPIC_TRANSIENT_STATUS_CODES = {408, 409, 429, 500, 502, 503, 504, 529}
+ANTHROPIC_MAX_ATTEMPTS = 4
 
 # `opus` always points at the current top-tier. Explicit version aliases let
 # callers pin a specific version for reproducibility or one-line rollback if a
@@ -216,7 +221,80 @@ def load_framework() -> str:
     return clean_text(FRAMEWORK_PATH.read_text(encoding="utf-8"), label="framework")
 
 
-def load_input_files(paths: list[str]) -> str:
+class TableTextExtractor(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.rows: list[list[str]] = []
+        self._row: list[str] | None = None
+        self._cell: list[str] | None = None
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag == "tr":
+            self._row = []
+        elif tag in {"td", "th"}:
+            self._cell = []
+        elif tag == "br" and self._cell is not None:
+            self._cell.append(" ")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in {"td", "th"} and self._row is not None and self._cell is not None:
+            cell = normalize_inline_text("".join(self._cell))
+            self._row.append(cell)
+            self._cell = None
+        elif tag == "tr" and self._row is not None:
+            if any(cell for cell in self._row):
+                self.rows.append(self._row)
+            self._row = None
+
+    def handle_data(self, data: str) -> None:
+        if self._cell is not None:
+            self._cell.append(data)
+
+
+def normalize_inline_text(value: str) -> str:
+    return re.sub(r"\s+", " ", html.unescape(value)).strip()
+
+
+def table_html_to_text(match: re.Match[str]) -> str:
+    parser = TableTextExtractor()
+    parser.feed(match.group(0))
+    parser.close()
+
+    lines = [
+        " | ".join(cell for cell in row if cell).strip()
+        for row in parser.rows
+    ]
+    lines = [line for line in lines if line]
+    return "\n".join(lines)
+
+
+def compact_ocr_text(text: str) -> str:
+    """Reduce Azure markdown/HTML noise while preserving statement rows."""
+    original_length = len(text)
+    text = re.sub(r"<!--\s*Page(?:Number|Header)=[\s\S]*?-->", "", text)
+    text = re.sub(
+        r"<table\b[\s\S]*?</table>",
+        table_html_to_text,
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(r"<br\s*/?>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"</(?:p|div|section|h[1-6])>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = "\n".join(normalize_inline_text(line) for line in text.splitlines())
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+
+    if original_length and len(text) < original_length:
+        saved_pct = (original_length - len(text)) / original_length * 100
+        print(
+            f"  [compact] OCR text reduced {original_length:,} -> "
+            f"{len(text):,} chars ({saved_pct:.1f}% smaller)"
+        )
+
+    return text
+
+
+def load_input_files(paths: list[str], compact: bool = True) -> str:
     """Concatenate input .txt files with delimiters so the model knows the boundaries.
     Each file goes through clean_text() to defang any OCR-introduced mojibake."""
     parts = []
@@ -225,6 +303,8 @@ def load_input_files(paths: list[str]) -> str:
         if not path.exists():
             sys.exit(f"[fatal] Input not found: {p}")
         body = clean_text(path.read_text(encoding="utf-8"), label=path.name)
+        if compact:
+            body = compact_ocr_text(body)
         parts.append(f"===== SOURCE FILE: {path.name} =====\n\n{body}")
     return "\n\n".join(parts)
 
@@ -370,6 +450,84 @@ def call_claude(
         final = stream.get_final_message()
     sys.stdout.write("\n")
     return "".join(chunks), final
+
+
+def anthropic_status_code(exc: BaseException) -> int | None:
+    status = getattr(exc, "status_code", None)
+    if isinstance(status, int):
+        return status
+
+    response = getattr(exc, "response", None)
+    response_status = getattr(response, "status_code", None)
+    return response_status if isinstance(response_status, int) else None
+
+
+def is_retryable_anthropic_error(exc: BaseException) -> bool:
+    status = anthropic_status_code(exc)
+    if status in ANTHROPIC_TRANSIENT_STATUS_CODES:
+        return True
+
+    name = type(exc).__name__
+    return name in {"APIConnectionError", "APITimeoutError"}
+
+
+def format_anthropic_error(exc: BaseException) -> str:
+    status = anthropic_status_code(exc)
+    prefix = f"HTTP {status}: " if status else ""
+    return f"{prefix}{exc}"
+
+
+def run_anthropic_with_retries(label: str, operation):
+    last_error: BaseException | None = None
+
+    for attempt in range(1, ANTHROPIC_MAX_ATTEMPTS + 1):
+        try:
+            return operation()
+        except Exception as exc:
+            last_error = exc
+
+            if (
+                attempt >= ANTHROPIC_MAX_ATTEMPTS
+                or not is_retryable_anthropic_error(exc)
+            ):
+                raise
+
+            delay = min(2 ** attempt, 20)
+            print(
+                f"[warn] Claude API transient failure during {label} "
+                f"(attempt {attempt}/{ANTHROPIC_MAX_ATTEMPTS}): "
+                f"{format_anthropic_error(exc)}. Retrying in {delay}s..."
+            )
+            time.sleep(delay)
+
+    if last_error is not None:
+        raise last_error
+
+    raise RuntimeError(f"Claude API {label} did not run")
+
+
+def call_claude_with_retries(
+    client: anthropic.Anthropic,
+    model: str,
+    system: list[dict],
+    messages: list[dict],
+    max_tokens: int,
+    thinking: bool,
+    effort: str | None,
+    label: str,
+) -> tuple[str, Any]:
+    return run_anthropic_with_retries(
+        label,
+        lambda: call_claude(
+            client,
+            model,
+            system,
+            messages,
+            max_tokens=max_tokens,
+            thinking=thinking,
+            effort=effort,
+        ),
+    )
 
 
 # -----------------------------------------------------------------------------
@@ -877,7 +1035,10 @@ def main() -> int:
         "--max-retries",
         type=int,
         default=1,
-        help="Self-correction attempts on validation failure (0..3). Default: 1",
+        help=(
+            "Self-correction attempts on validation failure (0..3). "
+            "Dashboard default is 2, so a run can make up to 3 Claude analysis passes."
+        ),
     )
     parser.add_argument(
         "--max-tokens",
@@ -903,6 +1064,11 @@ def main() -> int:
         help="Append completeness-rules preamble (forces line-item granularity, mandatory "
              "sections, DSCR cross-section consistency, etc). Address UAT-found gaps.",
     )
+    parser.add_argument(
+        "--no-compact-input",
+        action="store_true",
+        help="Disable OCR text compaction before sending source documents to Claude.",
+    )
     args = parser.parse_args()
 
     args.max_retries = max(0, min(args.max_retries, 3))
@@ -926,7 +1092,7 @@ def main() -> int:
 
     # Load framework + inputs
     framework = load_framework()
-    input_text = load_input_files(args.inputs)
+    input_text = load_input_files(args.inputs, compact=not args.no_compact_input)
     print(f"  [inputs] framework: {len(framework):,} chars   docs: {len(input_text):,} chars across {len(args.inputs)} files")
 
     system = build_system(framework, strict=args.strict)
@@ -941,10 +1107,17 @@ def main() -> int:
     # Free token count
     print("  [tokens] counting input tokens via free count_tokens endpoint...")
     try:
-        tc = client.messages.count_tokens(model=model, system=system, messages=messages)
+        tc = run_anthropic_with_retries(
+            "count_tokens",
+            lambda: client.messages.count_tokens(
+                model=model,
+                system=system,
+                messages=messages,
+            ),
+        )
         input_tokens = tc.input_tokens
-    except anthropic.APIError as e:
-        sys.exit(f"[fatal] count_tokens failed: {e}")
+    except Exception as e:
+        sys.exit(f"[fatal] count_tokens failed: {format_anthropic_error(e)}")
 
     # Pre-call estimate. Assume the framework + docs all hit cache_creation on the
     # first call (1.25x). Output worst case = the full max_tokens ceiling — this is
@@ -981,12 +1154,16 @@ def main() -> int:
 
     print(f"\n=== Attempt 1 ({model}) ===")
     t0 = time.monotonic()
-    response_text, final = call_claude(
-        client, model, system, messages,
-        max_tokens=args.max_tokens,
-        thinking=thinking_enabled,
-        effort=args.effort,
-    )
+    try:
+        response_text, final = call_claude_with_retries(
+            client, model, system, messages,
+            max_tokens=args.max_tokens,
+            thinking=thinking_enabled,
+            effort=args.effort,
+            label="messages attempt 1",
+        )
+    except Exception as e:
+        sys.exit(f"[fatal] Claude API call failed: {format_anthropic_error(e)}")
     elapsed = time.monotonic() - t0
     usage = usage_to_dict(final.usage)
     cost = cost_from_usage(usage, model)
@@ -1037,12 +1214,16 @@ def main() -> int:
         retry_msgs = build_correction_messages(input_text, json.dumps(data), errors)
 
         t0 = time.monotonic()
-        response_text, final = call_claude(
-            client, model, system, retry_msgs,
-            max_tokens=args.max_tokens,
-            thinking=thinking_enabled,
-            effort=args.effort,
-        )
+        try:
+            response_text, final = call_claude_with_retries(
+                client, model, system, retry_msgs,
+                max_tokens=args.max_tokens,
+                thinking=thinking_enabled,
+                effort=args.effort,
+                label=f"messages correction attempt {attempt_num}",
+            )
+        except Exception as e:
+            sys.exit(f"[fatal] Claude API call failed: {format_anthropic_error(e)}")
         elapsed = time.monotonic() - t0
         usage = usage_to_dict(final.usage)
         cost = cost_from_usage(usage, model)
